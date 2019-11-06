@@ -70,7 +70,7 @@ class Modal extends Component{
 
     render(){
         return (
-            <div>
+            <div className="tamaño-window">
                 <div className="modal-wrapper"
                     // onClick={this.handleDisablebutton}
                     style={{

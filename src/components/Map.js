@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import {GoogleMap, withScriptjs, withGoogleMap, Marker, InfoWindow} from 'react-google-maps'
-import { FaWindows } from 'react-icons/fa'
 
 class Map extends Component {
   constructor(props){

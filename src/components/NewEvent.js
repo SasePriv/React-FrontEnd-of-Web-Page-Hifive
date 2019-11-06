@@ -101,6 +101,7 @@ class NewEvent extends Component{
             let timezone = new Date()
             timezone = timezone.getTimezoneOffset();
             this.props.subEvent(date, startTime, finisthTime, timezone)
+            // console.log(startTime)
         }
     }
 
@@ -135,6 +136,7 @@ class NewEvent extends Component{
             this.setState({
                 hourError: "La hora no puede estar vacia"
             })
+            return false
         }else{
             this.setState({
                 hourError: ""
@@ -180,7 +182,7 @@ class NewEvent extends Component{
     
     render(){ 
         return(
-            <div className="d-flex fondo">
+            <div className="d-flex fondo tamaño-window">
                 <div className="flex-column carta" >
                     <div className="p-2 sin-padding">
                         <img src={require('../assets/img/image11.jpg')}></img>

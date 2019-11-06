@@ -50,7 +50,7 @@
     box-sizing: border-box;
     border-radius: 20px;
     background-color: #fff;
-
+    cursor: pointer;
     position: absolute;
     bottom: 0;
     left: 90%;

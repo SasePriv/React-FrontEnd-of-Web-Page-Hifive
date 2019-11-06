@@ -41,8 +41,7 @@ class ModalService extends Component{
             if(res.data.response){
                 this.setState({
                     redirect: true
-                })
-            //   this.fetchInfoServices()
+                })            
             }else{
               this.setState({
                 error: res.message
@@ -64,39 +63,15 @@ class ModalService extends Component{
             try{
                 await axios
                 .post(`/removedServices/${this.props.serviceId}`)
-                .then(res => {
-                    if (res.data.response) {
-                        console.log("eliminado")
+                .then(res => {                    
+                    if (res.data.response) {                                             
+                        this.props.rediProfile()
                     }
                 })
             }catch(error){
-                const service_id = this.props.serviceId
-                try{
-                    if (this.props.status) {
-                        axios
-                        .post('/servicesStatusChange', { service_id })
-                        .then(res => {
-                          if(res.data.response){
-                            this.setState({
-                              sucesMessage: res.data.message
-                            })
-                            this.fetchInfoServices()
-                          }else{
-                            this.setState({
-                              error: res.message
-                            })
-                          }
-                        }) 
-                    }else{
-                        alert("El servicio ya fue desactivado")
-                    }                    
-                }catch(error){
-                    console.log(error)
-                }
+                console.log(error)
             }
-            this.setState({
-                redirect: true
-            })
+            this.props.rediProfile()
         }
     }
 
@@ -105,14 +80,14 @@ class ModalService extends Component{
         if (this.state.redirect) {
             return (<Redirect to={{
                 pathname: "/myprofile/",
-                state: {status: Math.random()}
+                state: {status: true}
             }} />)
         }
 
         return (
             <div>
                 <div className="modal-wrapper"
-                    // onClick={this.handleDisablebutton}
+                    
                     style={{
                         transform: this.props.show ? 'translateY(0vh)' : 'translateY(-100vh)',
                         opacity: this.props.show ? '1' : '0',

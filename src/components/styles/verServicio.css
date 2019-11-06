@@ -154,7 +154,22 @@ color: #929292;
     width: 40px;
     height: 40px;
     border-radius: 50px;
+    object-fit:cover;
+    background-color: grey;
+}
+
+.imagen-valorac img{
+    width: 40px;
+    height: 40px;
     object-fit:cover
+}
+
+.smile-review{
+    width: 24px !important;
+    height: 24px !important;
+    margin-left: 8px;
+    margin-top: 9px;
+    object-fit: unset !important;
 }
 
 .titulo-valora{
@@ -186,8 +201,14 @@ color: #929292;
     font-size: 14px;
     line-height: 17px;
     text-align: center;
-
+    margin-left: -25px;
+    margin-top: 20px;
     color: #4285F4;
+    cursor: pointer;
+}
+
+.clikc-cora{
+    cursor: pointer;
 }
 
 #titulo-header{
@@ -195,9 +216,37 @@ color: #929292;
 }
 
 .papelera{
-    margin-top: 2px;
-    position: absolute;
+    margin-top: 2px;    
     cursor: pointer;
     right: 0;
     margin-right: 10px;
+}
+
+.papelera img{
+    float: right;
+}
+
+.puntualidad-numer{
+     margin-right: 80px;     
+}
+
+.trabajo-number{
+    margin-right: 60px;
+}
+
+.number-review{
+    margin-left: -30px;
+}
+
+.feeling-number{
+        
+}
+
+.review-items{
+}
+
+.tamaño-window{
+    max-width: 500px;
+    margin-right: auto;
+    margin-left: auto;
 }

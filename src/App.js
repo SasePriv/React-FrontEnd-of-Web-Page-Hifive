@@ -10,12 +10,9 @@ import RecoveringPassword from './components/RecoveringPassword'
 import Mypersonalinfo from './components/Mypersonalinfo'
 import ChatMenu from './components/ChatMenu'
 import Chat from './components/Chat'
-import Review from './components/Review'
 import NewService from './components/NewService'
 import VerServicio from './components/VerServicio'
 import MyProfile from './components/MyProfile'
-import NewEvent from './components/NewEvent'
-import Pruebas from './components/Pruebas'
 
 
 function App() {
@@ -30,6 +27,7 @@ function App() {
         <Route exact path="/newservice" component={NewService} />
         <Route exact path="/editservice/:id" component={NewService} />
         <Route exact path="/recoveringpassword" component={RecoverPass} />
+        <Route exact path="/recoverpass/:token" component={RecoveringPassword} />
         <Route exact path="/chat-menu" component={ChatMenu} />
         <Route exact path="/chat/:roomid" component={Chat} />
         <Route exact path="/" component={Home} />

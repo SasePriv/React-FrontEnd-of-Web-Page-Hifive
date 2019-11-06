@@ -193,9 +193,11 @@ class Login extends Component{
             <div className="d-flex justify-content-center p-out">
                 <div className="flex-column">
                     <div className="p-2 centrar-text centrar texto-desing" id="titulo-header">Iniciar sesión</div>
-                    <div className="p-2">                    
-                     <img className="centrar" id="imagen-logo" src={loginImg}></img>
-                    </div>
+                    <Link to="/">
+                        <div className="p-2">                    
+                        <img className="centrar" id="imagen-logo" src={loginImg}></img>
+                        </div>
+                    </Link>
                    <form className="p-2 customCheckbox" onSubmit={this.handlesubmit}>
                         <div className="form-group">    
                             <button className="desing buton-centro" style={{border: '1px solid #000'}}><img src={require("../assets/img/google-icon.png")}></img><p>Continuar con Google</p></button>

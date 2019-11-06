@@ -16,7 +16,8 @@ class RecoverPass extends Component{
             form: {
                 email: ""
             },
-            error_code: ""
+            error_mess: "",
+            response_mess: ""
         }
     }
 
@@ -38,19 +39,32 @@ class RecoverPass extends Component{
             await axios
             .post('/forgotPassword', {email})
             .then(res => {
+                console.log(res.data)
                 if(res.data.response){
                     this.setState({
-                        redirect: true
+                        response_mess: res.data.message
                     })
                 }else{
                     this.setState({
-                        error_code: res.data.status
+                        error_mess: res.data.message
                     })
                 }
             })
         } catch (error) {
             console.log("error")
         }        
+    }
+
+    handleError = () => {
+        if (this.state.error_mess == "Email id not found") {
+            return(
+                <div className="error-message mb-2">Email no registrado</div>
+            )
+        }else if(this.state.response_mess == "Email sent to your id"){
+            return(<div className="error-message color-good mb-2">Se ha enviado el correo de recuperacion,<br></br> por favor revise su correo</div>)
+        }else if(this.state.error_mess != ""){
+            return(<div className="error-message mb-2">Ha ocurrido un error</div>)
+        }
     }
 
     handleChange = (e) =>{
@@ -80,6 +94,7 @@ class RecoverPass extends Component{
                                 <img className="icon-input recover-input"src={emailImg}></img>
                             </fieldset>
                         </div>
+                        {this.handleError()}
                         <div className="texto-desing" id="texto-informativo">
                             Te enviaremos un email con un enlace<br></br>
                             desde el que podrás establecer una <br></br>

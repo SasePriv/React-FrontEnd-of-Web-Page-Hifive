@@ -1,3 +1,5 @@
+/* eslint-disable no-fallthrough */
+/* eslint-disable eqeqeq */
 import React, {Component} from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import axios from 'axios'
@@ -5,7 +7,6 @@ import ArrowBack from './ArrowBack'
 import Geocode from "react-geocode";
 import Map from './Map'
 import { GOOGLE_API_KEY } from '../googleApiKey.js'
-import Autocomplete from 'react-google-autocomplete'
 import {Redirect} from 'react-router-dom'
 
 import './styles/newservice.css'
@@ -19,6 +20,7 @@ import uss from '../assets/svg/uss.svg'
 import germany from '../assets/svg/germany.svg'
 import italy from '../assets/svg/italy.svg'
 import france from '../assets/svg/france.svg'
+import videoPhoto from '../assets/img/video.png'
 
 Geocode.setApiKey(GOOGLE_API_KEY)
 Geocode.enableDebug();
@@ -34,15 +36,19 @@ class NewService extends Component{
                 file1: null,
                 file1Url: null,
                 file1Type: "",
+                file1Id: "",
                 file2: null,
                 file2Url: null,
                 file2Type: "",
+                file2Id: "",
                 file3: null,
                 file3Url: null,
                 file3Type: "",
+                file3Id: "",
                 file4: null,
                 file4Url: null,
                 file4Type: "",
+                file4Id: "",
             },   
             form:{
                 title: "",
@@ -93,7 +99,8 @@ class NewService extends Component{
             sunday: [false,false],
             redirect: false,
             redirecToView: false,
-            createServiceId: ""
+            createServiceId: "",
+            urlService: "https://hifive.es/hifive-rest-api/public/serviceImages/",
         }
 
         this.fetchInfoServices = this.fetchInfoServices.bind(this)
@@ -148,7 +155,34 @@ class NewService extends Component{
             await axios
             .post('/getSingleServices', { service_id })
             .then(res => {
-            if (res.data.response) {
+            if (res.data.response) {            
+                
+                for (let index = 0; index < res.data.data.serviceImage?.length; index++) {
+                    let temp = index + 1
+                    if (res.data.data.serviceImage[index].type == "image") {
+                        this.setState({                        
+                            imageFile: {
+                                ...this.state.imageFile,
+                                ["file"+temp.toString()]: "server",
+                                ["file"+temp.toString()+"Url"]: this.state.urlService+res.data.data.serviceImage[index].attachment,
+                                ["file"+temp.toString()+"Type"]:  res.data.data.serviceImage[index].type,
+                                ["file"+temp.toString()+"Id"]: res.data.data.serviceImage[index].id
+                            }
+                        })  
+                    }else{
+                        this.setState({                        
+                            imageFile: {
+                                ...this.state.imageFile,
+                                ["file"+temp.toString()]: "server",
+                                ["file"+temp.toString()+"Url"]: videoPhoto,
+                                ["file"+temp.toString()+"Type"]:  res.data.data.serviceImage[index].type,
+                                ["file"+temp.toString()+"Id"]: res.data.data.serviceImage[index].id
+                            }
+                        })
+                    }
+                      
+                }
+
                 this.setState({
                     form: {
                         title: res.data.data.title,
@@ -178,9 +212,7 @@ class NewService extends Component{
                         italian: res.data.data.italian,
                         german: res.data.data.german,
                     }
-                })
-
-                console.log(parseFloat(res.data.data.latitude), res.data.data.latitude)
+                })                
             }else{
                 this.setState({
                 error: res.data.message
@@ -260,14 +292,26 @@ class NewService extends Component{
 
     handleChangeFile = (e) => {
         if (e.target.files[0]) {
-            this.setState({
-                imageFile: {
-                    ...this.state.imageFile,
-                    [e.target.name]: e.target.files[0],
-                    [e.target.name+"Url"]: URL.createObjectURL(e.target.files[0]),
-                    [e.target.name+"Type"]: e.target.files[0].type.split("/")[0]
-                }
-            })
+            if (e.target.files[0].type.split("/")[0] == "video") {
+                this.setState({
+                    imageFile: {
+                        ...this.state.imageFile,
+                        [e.target.name]: e.target.files[0],
+                        [e.target.name+"Url"]: videoPhoto,
+                        [e.target.name+"Type"]: e.target.files[0].type.split("/")[0]
+                    }
+                })
+            } else {
+                this.setState({
+                    imageFile: {
+                        ...this.state.imageFile,
+                        [e.target.name]: e.target.files[0],
+                        [e.target.name+"Url"]: URL.createObjectURL(e.target.files[0]),
+                        [e.target.name+"Type"]: e.target.files[0].type.split("/")[0]
+                    }
+                }) 
+            }
+                       
         }
     }
 
@@ -323,6 +367,37 @@ class NewService extends Component{
         e.preventDefault()
         if(this.state.service_id){
             console.log("editar")
+
+            let form = this.state.form
+            form.service_id = this.state.service_id
+            form.user_id = this.state.user_id
+            form.monday_time = this.chagneCheckboxDaysToForm(this.state.monday, "monday")
+            form.tuesday_time = this.chagneCheckboxDaysToForm(this.state.tuesday, "tuesday")
+            form.wednesday_time = this.chagneCheckboxDaysToForm(this.state.wednesday, "wednesday")            
+            form.thursday_time = this.chagneCheckboxDaysToForm(this.state.thursday, "thursday")
+            form.friday_time = this.chagneCheckboxDaysToForm(this.state.friday, "friday")
+            form.saturday_time = this.chagneCheckboxDaysToForm(this.state.saturday, "saturday")
+            form.sunday_time = this.chagneCheckboxDaysToForm(this.state.sunday, "sunday")            
+            form = this.formDaySet(form)
+
+            const isValidate = this.validateInputs()
+
+            try {
+                if (isValidate) {
+                    await axios
+                    .post('/editUserServices', form)
+                    .then(res => {
+                        if (res.data.response) {
+                            this.setState({
+                                redirecToView: true,                                
+                            })
+                        }                        
+                    })
+                }
+            } catch (error) {
+                console.log(error)
+            }
+
         }else{
             let form = this.state.form
             form.user_id = this.state.user_id
@@ -349,8 +424,7 @@ class NewService extends Component{
                                 createServiceId: res.data.data.id
                             })
                             service_id = res.data.data.id
-                            this.addFileImagetoService(service_id)
-                            console.log(res)
+                            this.addFileImagetoService(service_id)                            
                         }
                     })
                 }
@@ -366,22 +440,24 @@ class NewService extends Component{
         const files = ["file1", "file2", "file3", "file4"]
         files.forEach(async (eachFile) => {
             if (this.state.imageFile[eachFile] != null) {
-                let attachment = this.state.imageFile[eachFile]
-                let formData = new FormData()
-                formData.append("attachment", attachment)
-                try {                    
-                    await axios
-                    .post(`/addServicesImage/${this.state.imageFile[eachFile+"Type"]}/${user_id}/${service_id}`, formData, {
-                        headers: {'content-type': 'multipart/form-data'}
-                    })
-                    .then(res => {
-                        if (res.data.response) {
-                            console.log("Se ha agragado perfecto")                            
-                        }
-                    })
-                } catch (error) {
-                    console.log(error)
-                }
+                if (this.state.imageFile[eachFile+"Id"] == "") {
+                    let attachment = this.state.imageFile[eachFile]
+                    let formData = new FormData()
+                    formData.append("attachment", attachment)
+                    try {                    
+                        await axios
+                        .post(`/addServicesImage/${this.state.imageFile[eachFile+"Type"]}/${user_id}/${service_id}`, formData, {
+                            headers: {'content-type': 'multipart/form-data'}
+                        })
+                        .then(res => {
+                            if (res.data.response) {
+                                console.log("Se ha agragado perfecto")                            
+                            }
+                        })
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }                
             }
         })
         
@@ -412,7 +488,6 @@ class NewService extends Component{
 
     validateInputs = () => {
         const listaDays = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-        let re = ""
         //File
         if (this.state.imageFile.file1 == null && this.state.imageFile.file2 == null && this.state.imageFile.file3 == null && this.state.imageFile.file4 == null) {
             this.setState({
@@ -634,6 +709,43 @@ class NewService extends Component{
         );  
     }
 
+    handleRemoveImageService = async (e, number,selectFile) =>{
+        e.preventDefault()
+        let files = this.state.imageFile               
+        if (files[selectFile+"Id"] == "") {            
+            this.setState({                
+                imageFile:{
+                    ...this.state.imageFile,
+                    [selectFile]: null,
+                    [selectFile+"Url"]: null,
+                    [selectFile+"Type"]: ""
+                }
+
+            })
+        }else{
+            try {
+                await axios
+                .post(`/removedAttachement/${files[selectFile+"Id"]}`)
+                .then(res => {
+                    if (res.data.response) {
+                        this.setState({
+                            imageFile:{
+                                ["file"+number]: null,
+                                ["file"+number+"Url"]: null,
+                                ["file"+number+"Type"]: "",
+                                ["file"+number+"Id"]: "",
+                            }
+                        })
+                    }else{
+                        console.log("error eliminando")
+                    }
+                })
+            } catch (error) {
+                console.log(error)
+            }
+        }        
+    }
+
     /**
      * When the marker is dragged you get the lat and long using the functions available from event object.
      * Use geocode to get the address, city, area and state from the lat and lng positions.
@@ -663,12 +775,6 @@ class NewService extends Component{
         );  
     };
 
-    prueba = () => {
- 
-            console.log("preuba")
-        
-    }
-
 
     render(){ 
 
@@ -680,12 +786,12 @@ class NewService extends Component{
             return (<Redirect to={`/viewService/${this.state.createServiceId}`} />)
         }
 
-        console.log(this.state.imageFile["file1"])
-        console.log(this.state.imageFile["file2"] != null)
-        console.log(this.state.imageFile["file1"+"Type"])
-
+        // console.log(this.state.imageFile["file1"])
+        // console.log(this.state.imageFile["file2"] != null)
+        // console.log(this.state.imageFile["file1"+"Type"])
+          
         return(
-            <div className="d-flex  p-out">                
+            <div className="d-flex  p-out tamaño-window">                
                 <form onSubmit={this.handleSubmit} className="flex-column" style={{width: "100%"}}>      
                     <div  className="p-2" onClick={this.arrowBackButton}><ArrowBack /></div>          
                     <div className="p-2 centrar-text centrar headerTitulo" id="titulo-header" style={{marginTop: "-9px"}}>{this.state.service_id != "" ? "Editar" : "Nuevo"} servicio</div>                            
@@ -694,13 +800,13 @@ class NewService extends Component{
                         <div className="d-flex flex-row justify-content-center">
                             <div className="p-2 sepa-derecho">
                                 <fieldset className="cuadro">
-                                    <legend className="boton-cuadro">                                
+                                    <legend onClick={this.state.imageFile.file1 != null ? (e) => this.handleRemoveImageService(e,1,"file1") : null} className="boton-cuadro">                                
                                         <img 
                                             className={this.state.imageFile.file1 != null ? "menos-icon" :"suma-icon"} 
                                             alt="mas" 
                                             src={this.state.imageFile.file1 != null ? menos : simMas}>
                                         </img>
-                                        <input onChange={this.handleChangeFile}  type="file" id="1" name="file1"></input>
+                                        <input onChange={this.handleChangeFile} style={this.state.imageFile.file1 != null ? {display: "none"} : null}  type="file" id="1" name="file1"></input>
                                     </legend>
                                     <img 
                                         alt="caraniño" 
@@ -712,13 +818,13 @@ class NewService extends Component{
                             </div>
                             <div className="p-2 sepa-derecho">
                                 <fieldset className="cuadro">
-                                    <legend className="boton-cuadro">                                
+                                    <legend onClick={this.state.imageFile.file2 != null ? (e) => this.handleRemoveImageService(e,2,"file2") : null} className="boton-cuadro">                                
                                         <img 
                                             className={this.state.imageFile.file2 != null ? "menos-icon" :"suma-icon"}
                                             src={this.state.imageFile.file2 != null ? menos : simMas} 
                                             alt="mas">                                            
                                         </img>
-                                        <input onChange={this.handleChangeFile}  type="file" id="2" name="file2"></input>
+                                        <input onChange={this.handleChangeFile} style={this.state.imageFile.file2 != null ? {display: "none"} : null} type="file" id="2" name="file2"></input>
                                     </legend>
                                     <img 
                                         alt="caraniño" 
@@ -730,14 +836,14 @@ class NewService extends Component{
                             </div>
                             <div className="p-2 sepa-derecho">
                                 <fieldset className="cuadro">
-                                    <legend className="boton-cuadro">                                
+                                    <legend onClick={this.state.imageFile.file3 != null ? (e) => this.handleRemoveImageService(e,3,"file3") : null} className="boton-cuadro">                                
                                         <img 
                                             className={this.state.imageFile.file3 != null ? "menos-icon" :"suma-icon"}
                                             src={this.state.imageFile.file3 != null ? menos : simMas} 
                                             alt="mas"
                                             >
                                         </img>
-                                        <input onChange={this.handleChangeFile}  type="file" id="3" name="file3"></input>
+                                        <input onChange={this.handleChangeFile} style={this.state.imageFile.file3 != null ? {display: "none"} : null} type="file" id="3" name="file3"></input>
                                     </legend>
                                     <img 
                                         alt="caraniño" 
@@ -749,18 +855,13 @@ class NewService extends Component{
                             </div>
                             <div className="p-2">
                                 <fieldset className="cuadro" >
-                                    <legend  className="boton-cuadro">                                
+                                    <legend onClick={this.state.imageFile.file4 != null ? (e) => this.handleRemoveImageService(e,4,"file4") : null} className="boton-cuadro">                                
                                         <img 
                                             className={this.state.imageFile.file4 != null ? "menos-icon" :"suma-icon"}
                                             src={this.state.imageFile.file4 != null ? menos : simMas} 
                                             alt="mas">                                                
                                         </img>
-                                        {this.state.imageFile.file4 != null 
-                                        ? 
-                                        <div onClick={this.prueba(this.state.imageFile.file4)}></div>
-                                        : 
-                                        <input onChange={this.handleChangeFile}  type="file" id="4" name="file4"></input>
-                                        }                                        
+                                        <input onChange={this.handleChangeFile} style={this.state.imageFile.file4 != null ? {display: "none"} : null} type="file" id="4" name="file4"></input>                                                                            
                                     </legend>
                                     <img 
                                         alt="caraniño" 
@@ -786,7 +887,7 @@ class NewService extends Component{
                     <div className="p-2 textoSercice espacio-iz">Categoría</div>
                     <div className="p-2 d-flex justify-content-center">
                         <select onChange={this.handleChangeInput} value={this.state.form.category} name="category" className="forma-input" id="select-form">
-                            <option selected value="0">Selecciona una Categoría</option>
+                            <option defaultValue value="0">Selecciona una Categoría</option>
                             <option value="Babysitter">Babysitter</option>
                             <option value="Mascotas">Mascotas</option>
                             <option value="Profesores">Profesores</option>

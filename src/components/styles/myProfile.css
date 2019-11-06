@@ -29,7 +29,7 @@
 }
 
 .centro-imagen-smile{
-    margin-top: 30px;
+    margin-top: 5px;
 }
 
 .medio{
@@ -64,12 +64,17 @@
     
 }
 
-.lapiz{
-    position: absolute;
-    right: 0;
+.lapiz{    
     margin-right: 20px;
     margin-top: 1px;
     cursor: pointer;
+    margin-right: 0px;
+}
+
+.lapiz img{
+    margin-left: auto;
+    float: right;
+    margin-right: 10px;
 }
 
 .ti-perf{
@@ -307,6 +312,42 @@
     opacity: 0.5 !important;
 }
 
+.smile-edit-photo{
+    margin-top: 30px;
+}
+
+.boton-cuadro-profile{
+    width: 25px;
+    height: 25px;
+    border: 0px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    background-color: #fff;
+    position: relative;
+    bottom: 0;
+    left: 90%;
+    transform: translate(-54%, 5%);
+    margin: 0;
+}
+
+.suma-icon-profile{
+    position: absolute;
+    margin-top: 2px;
+    margin-left: 1px;
+    width: 20px;
+    height: 20px;    
+    transform: translate(-54%, 5%);
+}
+
+.boton-cuadro-profile input[type="file"] {
+    width: 25px;
+    height: 25px;
+    opacity: 0;
+    position: absolute;
+    background-color: green;
+    cursor: pointer;
+    left: 0;
+}
 
 
 @media only screen and (max-width: 768px){

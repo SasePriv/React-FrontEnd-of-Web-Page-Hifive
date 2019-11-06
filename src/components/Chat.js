@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import React, {Component} from 'react';
 import ArrowBack from './ArrowBack'
 import TextareaAutosize from 'react-textarea-autosize';
@@ -5,11 +6,14 @@ import axios from 'axios'
 import io from 'socket.io-client'
 import ScrollToBottom from 'react-scroll-to-bottom';
 import NewEvent from './NewEvent'
+import Review from './Review'
 import event_one from '../assets/svg/event1.svg'
 import event_two from '../assets/svg/event2.svg'
 import event_three from '../assets/svg/event3.svg'
 import addevent from '../assets/svg/add-event.svg'
 import startReview from '../assets/svg/star.svg'
+import smile from '../assets/svg/smile-perfil.svg'
+
 import '../components/styles/chat.css'
 
  
@@ -36,10 +40,20 @@ class Chat extends Component{
             allevents:[],
             allreviews: [],
             eventStatus: false,
-            updateNumber: 0,
+            reviewStatus: false,
+            reviewModifi: false,
+            formReview:{
+                kindness: "",
+                knowledge: "",
+                punctuality: "",
+                comment: ""
+            },
+            typingStatus: false,
+            onlineStatus: "offline",
             opcion: "",
             redirect: false,
         };
+        this.fecha = ""
         this.handleInfoChat = this.handleInfoChat.bind(this)
     }
 
@@ -70,17 +84,8 @@ class Chat extends Component{
         }
     }
 
-    // componentDidUpdate = (prevProps, prevState) =>{
-    //     if (prevState.updateNumber != this.state.updateNumber) {
-    //         return true 
-    //     }
-    // }
-
-
     componentDidMount = async() =>{
         let userServiceId
-
-        console.log(this.props.location.state.serviceId)
 
         try {
             await axios
@@ -106,19 +111,146 @@ class Chat extends Component{
         })
 
         this.socket.on('changeStatus', status =>{
-            this.fetchAllEvents(userServiceId)
+            this.fetchAllEvents(userServiceId)            
             let message = this.state.messages
             if (status.status == "") {                                
                 let mess = this.state.messages.filter(each => each.event_id != status.user_id)                                
                 this.setState({messages: mess})
             }else{            
                 this.setState({messages: message})
+            }            
+        })
+
+        this.socket.on('typeIn', msg => {
+            if (msg.sender_id != this.state.user_id) {
+                if (msg.message == "") {
+                    this.setState({
+                        typingStatus: false
+                    })
+                }else{
+                    this.setState({
+                        typingStatus: msg.status
+                    })
+                }
             }
         })
+
+        this.socket.on('online', msg => {
+            if (msg.sender_id != this.state.user_id) {
+                this.setState({
+                    onlineStatus: "online"
+                })
+            }
+        })
+
+        this.socket.on('room leave', msg =>{
+            if (msg.sender_id != this.state.user_id) {
+                this.setState({
+                    onlineStatus: "offline"
+                })
+            }
+        })
+
+        const formOnline = {            
+            room_id: this.state.room_id,
+            sender_id: this.state.user_id
+        }
+
+        this.socket.emit('online', formOnline) 
         
         this.fetchCompleteChat() 
         this.fetchAllEvents(userServiceId)
         this.fetchReviews()
+        this.fecthExistingReview()
+        this.fetchStatusOnline()
+        this.onlineSetStatus("online")
+        window.addEventListener("beforeunload", (ev) => 
+        {  
+            ev.preventDefault();
+            const formOffline = {
+                room_id: this.state.room_id,
+                sender_id: this.state.user_id,
+                lastSeen: new Date()
+            }           
+            this.socket.emit("room leave", formOffline)
+        });
+    }
+
+    componentWillUnmount = () =>{
+        const formOffline = {
+            room_id: this.state.room_id,
+            sender_id: this.state.user_id,
+            lastSeen: new Date()
+        }
+        this.socket.emit("room leave", formOffline)
+
+        window.addEventListener("beforeunload", (ev) => 
+        {  
+            ev.preventDefault();
+            this.socket.emit("room leave", formOffline)
+        });
+    }
+ 
+
+    onlineSetStatus = async(status) =>{
+        let formData = {
+            user_id: this.state.user_id,
+            onlineStatus: status
+        }
+
+        try {
+            await axios
+            .post("/onlineStatus", formData)
+            .then(res => {
+                if (res.data.response) {
+                    // console.log("Status Updated")
+                }
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    fetchStatusOnline = async() =>{
+        let formData = {
+            user_id: this.state.to_user_id
+        }
+
+        try {
+            await axios
+            .post("/onlineStatus", formData)
+            .then(res => {
+                if (res.data.response) {
+                    this.setState({onlineStatus: res.data.data.onlineStatus})
+                }
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    fecthExistingReview = async () =>{
+        const user_id = this.state.user_id
+        const service_id = this.state.service_room_id
+
+        try {
+            await axios
+            .post("/getReviewOfService", {user_id, service_id})
+            .then(res =>{
+                if (res.data.response) {
+                    this.setState({
+                        formReview:{
+                            kindness: res.data.data.kindness,
+                            knowledge: res.data.data.knowledge,
+                            punctuality: res.data.data.punctuality,
+                            comment: res.data.data.comment,                            
+                        }
+                    })
+                }
+            })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     fetchReviews = async() =>{
@@ -178,14 +310,23 @@ class Chat extends Component{
 
     handleInfoChat = (mensajes) => {
         if (mensajes != "") {
+            // eslint-disable-next-line array-callback-return
             return mensajes.rows.map( (eachMes, index) => {   
+                
                 const idEvent = eachMes.event_id
                 let eachEvent = this.state.allevents.filter(eve => eve.id == idEvent)
+                // eslint-disable-next-line array-callback-return
                 let eachReview = this.state.allreviews.filter(rew =>{
                     if (rew.user_id == this.state.user_id || rew.user_id == this.state.to_user_id) {
                         return true
                     }
                 })
+                const formRead = {
+                    room_id: this.state.room_id,
+                    unique_code: eachMes.unique_code,                    
+                }
+
+                this.socket.emit('message read', formRead)
 
                 if (eachMes.sender_id == this.state.user_id) {
                     if (eachMes.event_id != null) {
@@ -196,9 +337,12 @@ class Chat extends Component{
                         }                        
                     }else{
                         return(                        
-                            <div className="d-flex flex-row-reverse mt-3" key={index}>
-                            <div className="p-2 texto-2 texto-azul texto-chat-box">{eachMes.message}</div>
+                            <React.Fragment key={index}>
+                            {this.handleTimeMessage(eachMes)}
+                            <div className="d-flex flex-row-reverse mt-3" key={index}>                                
+                                <div className="p-2 texto-2 texto-azul texto-chat-box">{eachMes.message}</div>
                             </div>
+                            </React.Fragment>
                         )
                     }
                 }else{
@@ -210,9 +354,12 @@ class Chat extends Component{
                         }  
                     }else{
                         return (
-                            <div className="d-flex flex-row mt-3" key={index}>
+                            <React.Fragment key={index}>
+                            {this.handleTimeMessage(eachMes)}
+                            <div className="d-flex flex-row mt-3" key={index}>                                
                                 <div className="p-2 texto-2 texto-chat-box">{eachMes.message}</div>
                             </div>
+                            </React.Fragment>
                         )
                     }                    
                 }
@@ -224,20 +371,25 @@ class Chat extends Component{
         if (mes.sender_id == this.state.user_id) {
             if (review[0]) {
                 return(
-                <div className="p-2 flex-row-reverse mt-3 mt-1 mr-1 review-user-right">
+                <React.Fragment>
+                {this.handleTimeMessage(mes)}
+                <div className="p-2 flex-row-reverse mt-3 mt-1 mr-1 review-user-right">                    
                     <div className="d-flex event-box1 review-box1 event-font ">
                         <img alt="estrella" src={startReview} />
                         <div>Valoración</div>
                     </div>
                     <div className="event-box2 mt-1 review-box2">
-                        <div>{review[0].avg_rating+" estrellas"}</div>
+                        <div>{Math.round(review[0].avg_rating)+" estrellas"}</div>
                     </div>
-                    <button className="btn-event mt-2 event-font review-btn">Modificar</button>
+                    <button onClick={this.handleClickReviewModi} className="btn-event mt-2 event-font review-btn">Modificar</button>
                 </div>
+                </React.Fragment>
                 )
             }else{
                 return(
-                <div className="p-2 flex-row-reverse mt-3 mt-1 mr-1 review-user-right">
+                <React.Fragment>
+                {this.handleTimeMessage(mes)}
+                <div className="p-2 flex-row-reverse mt-3 mt-1 mr-1 review-user-right">                    
                     <div className="d-flex event-box1 review-box1 event-font ">
                         <img alt="estrella" src={startReview} />
                         <div>Valoración</div>
@@ -245,26 +397,32 @@ class Chat extends Component{
                     <div className="event-box2 mt-1 review-box2">
                         <div>{"Valorar a "+this.state.name}</div>
                     </div>
-                    <button className="btn-event mt-2 event-font review-btn">Valorar</button>
+                    <button onClick={this.handleClickReview} className="btn-event mt-2 event-font review-btn">Valorar</button>
                 </div>
+                </React.Fragment>
                 ) 
             }
         }else{
             if (review[0]) {
                 return(
-                <div className="p-2 flex-row-reverse mt-3 mt-1 mr-1 ml-1">
+                <React.Fragment>
+                {this.handleTimeMessage(mes)}
+                <div className="p-2 flex-row-reverse mt-3 mt-1 mr-1 ml-1">                    
                     <div className="d-flex event-box1 review-box1 event-font ">
                         <img alt="estrella" src={startReview} />
                         <div>Valoración</div>
                     </div>
                     <div className="event-box2 mt-1 review-box2">
-                        <div>{review[0].avg_rating+" estrellas"}</div>
+                        <div>{Math.round(review[0].avg_rating)+" estrellas"}</div>
                     </div>                    
                 </div>
+                </React.Fragment>
                 )
             }else{
                 return(
-                <div className="p-2 flex-row-reverse mt-3 mt-1 mr-1 ml-1">
+                <React.Fragment>
+                {this.handleTimeMessage(mes)}                    
+                <div className="p-2 flex-row-reverse mt-3 mt-1 mr-1 ml-1">                    
                     <div className="d-flex event-box1 review-box1 event-font ">
                         <img alt="estrella" src={startReview} />
                         <div>Valoración</div>
@@ -273,17 +431,40 @@ class Chat extends Component{
                         <div>Esperando Valoración</div>
                     </div>
                 </div>
+                </React.Fragment>
                 ) 
             }
         }
     }
 
+    handleClickReview = () =>{
+        this.setState({
+            reviewStatus: true
+        })
+    }
+
+    handleClickReviewModi = () =>{
+        this.setState({
+            reviewStatus: true
+        })
+    }
+
+    handleSubmitReview = (newData) =>{
+
+        this.setState({
+            reviewStatus: false,
+            allreviews: [newData]
+        })
+    }
+ 
+    
+
 
     handleInfoEvent = (mess, status, idEvent) =>{                
         if (mess.sender_id == this.state.user_id) {
             if (status == "active") {
-                return(
-                    <div className="p-2 flex-row-reverse mt-3 mt-1 mr-1 event-azul">
+                return( 
+                    <div className="p-2 flex-row-reverse mt-3 mt-1 mr-1 event-azul" key={mess.id}>
                         <div className="d-flex event-box1 event-font event-azul-fondo">
                             <img alt="evento 1" src={event_one}></img>
                             <div>Evento Pendiente</div>
@@ -294,7 +475,7 @@ class Chat extends Component{
                 )
             }else if (status == "accepted"){
                 return(
-                    <div className="p-2 flex-row-reverse mt-3 mt-1 mr-1 event-azul">
+                    <div className="p-2 flex-row-reverse mt-3 mt-1 mr-1 event-azul" key={mess.id}>
                         <div className="d-flex event-box1 event-font event-azul-fondo">
                             <img alt="evento 1" src={event_two}></img>
                             <div>Evento Confirmado</div>
@@ -305,7 +486,7 @@ class Chat extends Component{
                 )
             }else if (status == "rejected"){
                 return(
-                    <div className="p-2 flex-row-reverse mt-3 mt-1 mr-1 event-azul">
+                    <div className="p-2 flex-row-reverse mt-3 mt-1 mr-1 event-azul" key={mess.id}>
                         <div className="d-flex event-box1 event-font event-azul-fondo">
                             <img alt="evento 1" src={event_three}></img>
                             <div>Evento Cancelado</div>
@@ -317,7 +498,7 @@ class Chat extends Component{
         }else{
             if (status == "active") {
                 return(
-                    <div className="p-2 flex-row mt-3 mt-1 ml-1">
+                    <div className="p-2 flex-row mt-3 mt-1 ml-1" key={mess.id}>
                         <div className="d-flex event-box1 event-font">
                             <img alt="evento 1" src={event_one}></img>
                             <div>Evento Pendiente</div>
@@ -328,7 +509,7 @@ class Chat extends Component{
                 )
             }else if (status == "accepted"){
                 return(
-                    <div className="p-2 flex-row mt-3 mt-1 ml-1">
+                    <div className="p-2 flex-row mt-3 mt-1 ml-1" key={mess.id}>
                         <div className="d-flex event-box1 event-font">
                             <img alt="evento 1" src={event_two}></img>
                             <div>Evento Confirmado</div>
@@ -339,7 +520,7 @@ class Chat extends Component{
                 )
             }else if (status == "rejected"){
                 return(
-                    <div className="p-2 flex-row mt-3 mt-1 ml-1">
+                    <div className="p-2 flex-row mt-3 mt-1 ml-1" key={mess.id}>
                         <div className="d-flex event-box1 event-font">
                             <img alt="evento 1" src={event_three}></img>
                             <div>Evento Cancelado</div>
@@ -435,6 +616,24 @@ class Chat extends Component{
                 [e.target.name]: e.target.value
             }
         })
+
+    
+        if (e.target.value == "") {
+            let formData = {
+                room_id: this.state.room_id,
+                sender_id: this.state.user_id,
+                message: e.target.value
+            }
+            this.socket.emit('typeIn', formData)            
+        }else{
+            let formData = {
+                room_id: this.state.room_id,
+                sender_id: this.state.user_id,
+                message: e.target.value
+            }
+            this.socket.emit('typeIn', formData)            
+        }
+
     }
 
     arrowBackButton = () =>{
@@ -451,6 +650,7 @@ class Chat extends Component{
             unique_code: Date.now()+Math.floor(Math.random() * Math.floor(10))+parseInt(this.state.room_id),
             local_time: new Date()
         }
+
         if (this.state.form.inputText != "") {
             this.socket.emit('message', formData)
             this.setState({
@@ -458,6 +658,13 @@ class Chat extends Component{
                     inputText: ""
                 }
             })
+
+            let formTyping = {
+                room_id: this.state.room_id,
+                sender_id: this.state.user_id,
+                message: ""
+            }
+            this.socket.emit('typeIn', formTyping)
         }
     }
 
@@ -492,7 +699,7 @@ class Chat extends Component{
             return false
         }
 
-        let formDataEvent = new FormData
+        let formDataEvent = new FormData()
         formDataEvent.append("date",dateStart)
         formDataEvent.append("timeZone","europe/madrid")
         formDataEvent.append("start_time",hourStart)
@@ -501,8 +708,7 @@ class Chat extends Component{
         formDataEvent.append("service_user_id",parseInt(userServiceId))
         formDataEvent.append("service_id",service_id)
         formDataEvent.append("reminder1","1 hora antes")
-        formDataEvent.append("status","active")
-        formDataEvent.append("message_type","event")
+        formDataEvent.append("status","active")        
 
         try {
             await axios
@@ -526,21 +732,113 @@ class Chat extends Component{
             receiver_id: this.state.to_user_id,
             event_id: eventId,
             unique_code: Date.now()+Math.floor(Math.random() * Math.floor(10))+parseInt(this.state.room_id),
-            local_time: new Date()
+            local_time: new Date(),
+            message_type: "event"
         }        
 
         this.socket.emit('message', formData)
 
     }
 
+    formatDate = (date, option1) => {
+        let d = new Date(date),
+            month = d.getMonth() + 1,
+            day =  d.getDate(),
+            year = d.getFullYear();
+        
+            if (day.length < 2) 
+            day = '0' + day;
+
+        let acutalDate = new Date()
+
+        if (!option1) {
+            option1 = false
+        }
+
+        switch (month) {
+            case 1:
+                month = "Ene"
+                break;
+            case 2:
+                month = "Feb"
+                break;
+            case 3:
+                month = "Mar"
+                break;
+            case 4: 
+                month = "Abr"
+                break;
+            case 5:
+                month = "May"
+                break;
+            case 6:
+                month = "Jun"
+                break;
+            case 7:
+                month = "Jul"
+                break;
+            case 8:
+                month = "Ago"
+                break;
+            case 9:
+                month = "Sep"
+                break;
+            case 10:
+                month = "Oct"
+                break;
+            case 11:
+                month = "Nov"
+                break;
+            case 12:
+                month = "Dic"
+                break;
+            default:
+                break;
+        }
+
+        // if (day.length < 2) 
+        //     day = '0' + day;
+    
+        if (year != acutalDate.getFullYear() || option1) {
+            return [day, month, year].join(' ');    
+        }else{
+            return [month, day].join(' ');    
+        }
+    }
+
+    handleTimeMessage = (messa) =>{
+        let datemessage = this.formatDate(messa.created_date, true)
+        let currentDay = this.formatDate(new Date(), true)
+
+        if (datemessage != this.fecha) {
+            this.fecha = datemessage
+            if (datemessage == currentDay) {
+                return (<div className="fechaMesa">Hoy</div>)
+            } else {
+                return (<div className="fechaMesa">{datemessage}</div>)
+            }                    
+        }
+    }
+
     render(){
-
-        console.log(this.state.allevents)
-
+        
         if (this.state.eventStatus) {
             return (
                 <NewEvent 
                     subEvent={this.submitEvent}
+                />
+            )
+        }
+
+        if (this.state.reviewStatus) {
+            return(
+                <Review
+                    userid={this.state.user_id}
+                    serviceUserId={this.state.service_user_id}    
+                    serviceId={this.state.service_room_id}
+                    formReview={this.state.formReview}
+                    modi={this.state.reviewModifi}
+                    onSubmitEvent={this.handleSubmitReview}
                 />
             )
         }
@@ -553,42 +851,65 @@ class Chat extends Component{
                 if (message.event_id != null) {
                     return this.handleInfoEvent(message,status[0]?.status, idEvent)
                 }else{
-                    return(                        
+                    return(   
+                        <React.Fragment>
+                        {this.handleTimeMessage(message)}                     
                         <div className="d-flex flex-row-reverse mt-3" key={index}>
                           <div className="p-2 texto-2 texto-azul texto-chat-box">{message.message}</div>
-                        </div>)
+                        </div>
+                        </React.Fragment>
+                    )
                 }
             }else{
                 if (message.event_id != null) {
                     return this.handleInfoEvent(message,status[0]?.status, idEvent)
                 }else{
                     return (
+                        <React.Fragment>
+                        {this.handleTimeMessage(message)}  
                         <div className="d-flex flex-row mt-3" key={index}>
                             <div className="p-2 texto-2 texto-chat-box">{message.message}</div>
                         </div>
+                        </React.Fragment>
                     )
                 }
             }
           }); 
 
+        const statusImage = this.state.imageUrl.split("/")               
+
         return(
-            <div className="d-flex " >
+            <div className="d-flex tamaño-window" >
                 <div className="flex-column top-chat ">
                     <div className="p-2 arriba" > 
                         <div className="d-flex ejemplo">
-                            <div className="arrowBackChat" onClick={this.arrowBackButton}><ArrowBack /></div>
-                            <img id="imagen-current-chat" src={this.state.imageUrl}></img>
+                            <div className="arrowBackChat" onClick={this.arrowBackButton}><ArrowBack /></div>                                            
+                            {statusImage[statusImage.length-1] != "undefined" 
+                            ? 
+                                <div className="lazy-load">
+                                    <img id="imagen-current-chat" alt="imagen-perfil" src={this.state.imageUrl} />
+                                </div>
+                            :
+                                <div className="lazy-load lazy-load-no">
+                                    <img id="imagen-current-chat" alt="imagen-default-perfil" src={smile} />
+                                </div>
+                            }                            
                             <div className="texto-desing texto-chat-current">{this.state.name}</div>
+                            {this.state.onlineStatus == "online" 
+                            ? 
                             <div className="d-flex contaier-online">
                                 <div className="ciruclo-online"></div>
                                 <div className="texto-desing texto-chat-current online-text">En Linea</div>
                             </div>
-                            <div className="texto-desing texto-chat-current typing-live">Escribiendo...</div>
+                            :
+                            null    
+                            }
+                            {this.state.typingStatus ? <div className="texto-desing texto-chat-current typing-live">Escribiendo...</div>: null}
                         </div>
                     </div>
                     <ScrollToBottom className="box-chat box-chat-scroll"  >                                                  
                         {this.handleInfoChat(this.state.chatData)}
-                        {messages.reverse()}                                                                                                                         
+                        {messages.reverse()}                                                                                                                                                 
                     </ScrollToBottom>
                     <div className="input-text-box d-flex">
                         <TextareaAutosize onChange={this.handleChange} value={this.state.form.inputText} name="inputText" maxRows={2} id="entrada-chat" placeholder="Escriba" className="input-entrada p-2"></TextareaAutosize>                   

@@ -174,3 +174,10 @@
 #sepa{
     margin-top: 30px;
 }
+
+.image-service-review{
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 100px;
+}

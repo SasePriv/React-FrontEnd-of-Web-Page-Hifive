@@ -1,11 +1,15 @@
+/* eslint-disable eqeqeq */
 import React, {Component} from 'react';
 import Bar from './Bar';
 import { chatDatos } from '../assets/chat_list.json'
 import {Redirect, Link} from 'react-router-dom'
 import { Tabs, Tab } from 'react-bootstrap';
 import axios from 'axios'
+import ImageLoader  from './ImageLoader.js';
+import LazyLoad from 'react-lazy-load';
 import '../components/styles/chat-menu.css'
 import nochat from '../assets/svg/chat.svg'
+import smile from '../assets/svg/smile-perfil.svg'
 
 class ChatMenu extends Component{
     constructor(){
@@ -46,8 +50,7 @@ class ChatMenu extends Component{
         try {
             await axios
             .post("/get_chats", formData)
-            .then(res => {
-                console.log(res.data.data)
+            .then(res => {                
                 if (res) {
                     if (type == "professional") {
                         this.setState({
@@ -69,18 +72,102 @@ class ChatMenu extends Component{
         }
     }
 
-    notificaion_icon(datos1){
-        if(false){
-            return(<div className="notifi">{datos1.ncant}</div>)
+    notificaion_icon(eachchat){        
+        if(eachchat.unreadchats.length != 0){
+            return(<div className="notifi">{eachchat.unreadchats.length}</div>)
         }else{
-            return(<div className="texto-tiempo"><span>{datos1.chatUserService?.price}</span>$/h</div>)
+            return(<div className="texto-tiempo"><span>{eachchat.chatUserService?.price}</span>€/h</div>)
+        }
+    }
+
+    formatDate = (date) => {
+        let d = new Date(date),
+            month = d.getMonth() + 1,
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+        
+        let acutalDate = new Date()
+    
+        switch (month) {
+            case 1:
+                month = "Ene"
+                break;
+            case 2:
+                month = "Feb"
+                break;
+            case 3:
+                month = "Mar"
+                break;
+            case 4: 
+                month = "Abr"
+                break;
+            case 5:
+                month = "May"
+                break;
+            case 6:
+                month = "Jun"
+                break;
+            case 7:
+                month = "Jul"
+                break;
+            case 8:
+                month = "Ago"
+                break;
+            case 9:
+                month = "Sep"
+                break;
+            case 10:
+                month = "Oct"
+                break;
+            case 11:
+                month = "Nov"
+                break;
+            case 12:
+                month = "Dic"
+                break;
+            default:
+                break;
+        }
+
+        if (day.length < 2) 
+            day = '0' + day;
+    
+        if (year != acutalDate.getFullYear()) {
+            return [day, month, year].join(' ');    
+        }else{
+            return [month, day].join(' ');    
+        }
+    }
+
+    formHours = (time) =>{
+        let hours = time.getHours()
+        let minute = time.getMinutes()
+
+        if (hours < 10) {
+            hours = "0" + hours.toString()
+        }
+
+        if (minute < 10) {
+            minute = "0" + minute.toString()
+        }
+
+        return [hours, minute].join(':')
+    }
+
+    showTimeChats = (date) =>{
+        let lastMessageChat = this.formatDate(date)
+        let actualDate = this.formatDate(new Date())
+        let time = new Date(date)        
+        
+        if (lastMessageChat == actualDate) {
+            return this.formHours(time)
+        }else{
+            return lastMessageChat
         }
     }
 
     render(){
-
-        console.log(this.state)
-
+        
         if (this.state.redirect) {
             return (<Redirect to="/" />)
         }
@@ -93,7 +180,6 @@ class ChatMenu extends Component{
                     <Tabs defaultActiveKey="home" id="uncontrolled-tab-example">
                         <Tab eventKey="home" title="Clientes">
                         {this.state.chatCus != null ? this.state.chatCus.map( (eachChat, index) => {
-                                console.log(eachChat)
                                 return(
                                     <div className="mt-1 cada-chat" key={index}>  
                                         <Link 
@@ -101,22 +187,35 @@ class ChatMenu extends Component{
                                                 pathname:  `/chat/${eachChat.room_id}`, 
                                                 state:{
                                                     name: eachChat.userDataa.name,
-                                                    imageUrl: this.state.url+eachChat.userDataa?.userProfileImage.profile_image,
+                                                    imageUrl: this.state.url+eachChat.userDataa?.userProfileImage?.profile_image,
                                                     to_user_id: eachChat.to_user_id,
                                                     serviceId: eachChat.service_id
                                                 }                                                
                                             }}>
                                             <div className="p-2">
                                                 <div className="d-flex each-chat">
-                                                    <div className="foto-chat-perfil">
-                                                        <img className="imagen-photo" src={this.state.url+eachChat.userDataa?.userProfileImage.profile_image} />                                                         
-                                                    </div>
+                                                    <LazyLoad 
+                                                        width={288}
+                                                        height={216}
+                                                        debounce={false}
+                                                        offsetVertical={250}
+                                                        
+                                                    >
+                                                        <div className="foto-chat-perfil">
+                                                            {eachChat.userDataa?.userProfileImage 
+                                                            ?
+                                                                <ImageLoader className="imagen-photo" alt="photo-perfil" src={this.state.url+eachChat.userDataa?.userProfileImage.profile_image} />
+                                                            :
+                                                                <ImageLoader className="imagen-photo noPhoto" alt="photo-default-perfil" src={smile} />                                                         
+                                                            } 
+                                                        </div>
+                                                    </LazyLoad>
                                                     <div className="contenido-menu-chat">
                                                         <div className="texto-desing text-menu-title">{eachChat.userDataa.name}</div>
                                                         <div className="texto-desing text-menu-subtitle">{eachChat.chatUserService.title}</div>
                                                     </div>
                                                     <div className="tiempo-menu-chat tiempo-chat">
-                                                        <div className="texto-tiempo">22:16</div>
+                                                    <div className="texto-tiempo">{this.showTimeChats(eachChat.last_message_time)}</div>
                                                         {this.notificaion_icon(eachChat)}
                                                     </div>
                                                 </div>
@@ -138,8 +237,7 @@ class ChatMenu extends Component{
                             }
                         </Tab>
                         <Tab eventKey="profile" title="Profesionales">
-                            {this.state.chatPro != null ? this.state.chatPro.map( (eachChat, index) => {
-                                console.log("ser: "+eachChat.service_id)
+                            {this.state.chatPro != null ? this.state.chatPro.map( (eachChat, index) => {                                
                                 return(
                                     <div className="mt-1 cada-chat" key={index}>  
                                         <Link 
@@ -147,7 +245,7 @@ class ChatMenu extends Component{
                                                 pathname:  `/chat/${eachChat.room_id}`, 
                                                 state:{
                                                     name: eachChat.userDataa.name,
-                                                    imageUrl: this.state.url+eachChat.userDataa?.userProfileImage.profile_image,
+                                                    imageUrl: this.state.url+eachChat.userDataa?.userProfileImage?.profile_image,
                                                     to_user_id: eachChat.to_user_id ,
                                                     serviceId: eachChat.service_id
                                                 }                                                
@@ -155,7 +253,12 @@ class ChatMenu extends Component{
                                             <div className="p-2">
                                                 <div className="d-flex each-chat">
                                                     <div className="foto-chat-perfil">
-                                                        <img className="imagen-photo" src={this.state.url+eachChat.userDataa?.userProfileImage.profile_image} />                                                         
+                                                        {eachChat.userDataa?.userProfileImage 
+                                                        ?
+                                                            <img className="imagen-photo" alt="perfil" src={this.state.url+eachChat.userDataa?.userProfileImage.profile_image} />
+                                                        :
+                                                            <img alt="perfil-default" className="imagen-photo noPhoto" src={smile} />                                                         
+                                                        }                                                                                                                
                                                     </div>
                                                     <div className="contenido-menu-chat">
                                                         <div className="texto-desing text-menu-title">{eachChat.userDataa.name}</div>

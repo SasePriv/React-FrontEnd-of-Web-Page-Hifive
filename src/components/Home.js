@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import React, {Component} from 'react';
 import Category from './Category'
 import Search from './Search'
@@ -6,9 +7,7 @@ import Bar from './Bar';
 import Settings from '../assets/svg/settings.svg'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
-
 import './styles/home.css'
-import { faThList } from '@fortawesome/free-solid-svg-icons';
 
 class Home extends Component{
 
@@ -32,14 +31,11 @@ class Home extends Component{
   }
   
   async componentDidMount(){
-    if(this.state.user_id != ""){
       navigator.geolocation.getCurrentPosition((position) => {
-        let x = position.coords.latitude;
-        let y = position.coords.longitude;
         this.setState({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude
-        })
+        })        
         this.fetchInfo(); 
       },
       (error) => {
@@ -48,9 +44,7 @@ class Home extends Component{
           this.setState({
             error: error.code
           })
-      });
-    }
-    
+      }); 
   }
 
   UNSAFE_componentWillMount = () =>{    
@@ -96,12 +90,11 @@ class Home extends Component{
     }
   }
 
-  mostrarSettings = () =>{
-    // const currentData =  JSON.parse(sessionStorage.getItem('userData'))
+  mostrarSettings = () =>{    
     if (this.state.auth){
       return(
         <Link to={"/myprofile/"}>
-          <img className="settings-button" src={Settings}  />
+          <img className="settings-button" alt="settings" src={Settings}  />
         </Link>
       )
     }
@@ -224,8 +217,7 @@ class Home extends Component{
     }
   }
 
-  handleSearchChange = (e) =>{
-    // console.log(e.target.value)
+  handleSearchChange = (e) =>{    
     if (e.target.value != "") {
       this.setState({
         info: this.state.info.filter(x => this.filtroSearch(x, e.target.value))
@@ -247,12 +239,7 @@ class Home extends Component{
   }
 
   render(){
-    
-    // const x = this.state.info.filter(this.pruebaFiltrado)
-
-    // console.log(this.state.error) Profesores
-    // console.log("Latitude: "+this.state.latitude+ ", Longitude: "+this.state.longitude)
-
+       
     return (
       <div className="d-flex justify-content-center flex-column p-out">
           <div className="p-2 p-out order-2">
@@ -282,12 +269,19 @@ class Home extends Component{
               <div className="error-message-geo">Por favor active Geolocalización para continuar</div>
               :
               <div className="abajo-margen">
+              {this.state.info.length
+              ?
               <Content 
                 data={this.state.info}
                 auth={this.state.auth}
                 url={this.state.url}      
-                
+                latitude={this.state.latitude}
+                longitude={this.state.longitude}
               />
+              :
+              <div className="error-message-geo">No se encontró ningún servicio</div>
+              }
+              
               </div>
               }                      
               {this.mostrar()}

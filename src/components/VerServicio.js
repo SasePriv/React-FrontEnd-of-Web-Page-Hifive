@@ -1,5 +1,5 @@
+/* eslint-disable eqeqeq */
 import React, { Component } from 'react';
-import TextareaAutosize from 'react-textarea-autosize';
 import Slider from "react-slick";
 import Rating from 'react-star-review';
 import { IoIosHeart } from 'react-icons/io';
@@ -18,15 +18,12 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 import papelera from '../assets/svg/papelera.svg'
-import caraBoy from '../assets/svg/cara-boy.svg'
-import niña from '../assets/svg/niña.svg'
-import simMas from '../assets/svg/mas.svg'
-import geomap from '../assets/svg/geo.svg'
 import spain from '../assets/svg/spain.svg'
 import uss from '../assets/svg/uss.svg'
 import germany from '../assets/svg/germany.svg'
 import italy from '../assets/svg/italy.svg'
 import france from '../assets/svg/france.svg'
+import smile from '../assets/svg/smile-perfil.svg'
 
 class VerService extends Component{
     constructor(props){
@@ -44,10 +41,14 @@ class VerService extends Component{
             isShowing: false,
             hide: "none",
             url: "https://hifive.es/hifive-rest-api/public/serviceImages/",
+            urlProfile: "https://hifive.es/hifive-rest-api/public/userProfileImages/",
             imageFirst: true,
             room_id: "",
+            ver_mas_count: 1,
             redirect: false,
+            favoCount: 0,
             redirecToChat: false,
+            redirectModal: false
         }
     }
 
@@ -85,17 +86,18 @@ class VerService extends Component{
         const service_id = this.state.service_id
 
         try {
-            axios
+            await axios
             .post('/getSingleServices', { service_id })
             .then(res => {
             if (res.data.response) {
                 this.setState({
-                datos: res.data.data,
-                user_service_id: res.data.data.user_id
+                    datos: res.data.data,
+                    user_service_id: res.data.data.user_id
                 })
             }else{
                 this.setState({
-                error: res.data.message
+                    error: res.data.message,
+                    redirectModal: true
                 })
             }   
             })
@@ -172,6 +174,79 @@ class VerService extends Component{
         }
     }
 
+    generador_reviews = () =>{
+        const reviewsList = this.state.datos.reviews
+        let arrayListReview = []
+
+        if (reviewsList) {
+            if (reviewsList.length != 0) {
+                for (let index = 0; index < this.state.ver_mas_count && index < reviewsList.length; index++) {
+
+                    let image_profile = reviewsList[index].reviewUser.userProfileImage
+                    if (image_profile) {
+                        image_profile = this.state.urlProfile+reviewsList[index].reviewUser.userProfileImage?.profile_image
+                    }else{
+                        image_profile = smile
+                    }
+
+
+                    arrayListReview.push(
+                        <React.Fragment>
+                            <div className="d-flex flex-row">
+                                <div className="p-2">
+                                    <div className="imagen-valorac">
+                                        <img className={!reviewsList[index].reviewUser.userProfileImage? "smile-review": null} alt="imagen-perfil" src={image_profile}></img>
+                                    </div>
+                                </div>
+                                <div className="p-2">
+                                    <div className="titulo-valora">{reviewsList[index].reviewUser.name}</div>
+                                    <Rating size={18} filledColor="#ed8a19" borderColor="#ed8a19" rating={parseInt(reviewsList[index].avg_rating)}></Rating>
+                                </div>
+                            </div>
+                            <div className="texto-dentro-valo">
+                            {reviewsList[index].comment}
+                            </div>
+                        </React.Fragment>
+                    )
+
+                }
+            }  
+        }
+        
+        return (
+            <React.Fragment>
+            {arrayListReview}
+            {arrayListReview.length
+            ?
+                this.state.ver_mas_count == 1 
+                ?
+                    <div onClick={this.handleClickVermas} className="texto-de-ver-mas">Ver más</div>
+                :
+                    <div onClick={this.handleClickVermenos} className="texto-de-ver-mas">Ver menos</div>
+                
+            :
+                null
+            }
+            
+            
+            </React.Fragment>
+        )
+    }
+
+    handleClickVermas = (e) =>{
+        e.preventDefault()
+        this.setState({
+            ver_mas_count: 9
+        })
+    }
+
+    handleClickVermenos = (e) =>{
+        e.preventDefault()
+        this.setState({
+            ver_mas_count: 1
+        })
+    }
+
     closeModalHandler = () => {
         this.setState({
             isShowing: false,
@@ -194,7 +269,7 @@ class VerService extends Component{
     }
 
     handleButtonChat = async () =>{
-        let formData = new FormData
+        let formData = new FormData()
         formData.append("user_id",this.state.user_id)
         formData.append("service_id", this.state.service_id)
         formData.append("to_user_id", this.state.user_service_id)
@@ -226,7 +301,49 @@ class VerService extends Component{
         });
     }
 
+    handleRedirectModal = () =>{
+        this.setState({
+            redirectModal: true
+        })
+    }
+
+    handleFavorite = async () =>{
+
+        let formdata = {
+            by_user_id: this.state.user_id,
+            service_id: this.state.service_id
+        }
+
+        try {
+            await axios
+            .post("/favouriteunfavourite", formdata)
+            .then(res => {
+                console.log(res.data)
+                if (res.data.response) {
+                    if (res.data.message == "you have successfully marked as fav") {
+                        this.setState({
+                            favoCount: this.state.favoCount + 1
+                        })
+                    }else{
+                        this.setState({
+                            favoCount: this.state.favoCount - 1
+                        })
+                    }
+                }
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     render(){ 
+
+        if (this.state.redirectModal) {
+            return (<Redirect to={{
+              pathname: "/myprofile/",
+              state: {status: true}
+            }} />)
+        }
 
         if (!this.state.edit) {
             if (this.state.user_id == this.state.datos.user_id) {
@@ -241,7 +358,13 @@ class VerService extends Component{
         }
 
         if (this.state.redirecToChat) {
-            return (<Redirect to={`/chat/${this.state.room_id}`} />)
+            return (<Redirect to={{
+                pathname:`/chat/${this.state.room_id}`,
+                state: {
+                    to_user_id: this.state.user_service_id
+                }
+        
+            }} />)
         }
       
 
@@ -252,9 +375,10 @@ class VerService extends Component{
             slidesToShow: 1,
             slidesToScroll: 1
         };        
+        
 
         return(
-            <div className="d-flex  p-out">
+            <div className="d-flex  p-out tamaño-window">
                 <div className="flex-column" style={{width: "100%"}}>
                     { this.state.isShowing ? <div onClick={this.closeModalHandler} className="back-drop"></div> : null }
 
@@ -272,24 +396,44 @@ class VerService extends Component{
                     {  this.state.datos.serviceImage?.length > 1 ?                                 
                         <Slider className="d-flex" {...settings}>                            
                             {this.state.datos.serviceImage?.map( (eachImage) =>{    
-                                this.setState({imageFirst: false})                            
-                                return(
-                                    <div className={this.state.imageFirst ? "image-ca" : null}>                                        
-                                        <img className="caja-image" alt="imagen-servi" src={(this.state.url + eachImage.attachment)}></img>
-                                    </div>
-                                )
+                                this.setState({imageFirst: false})   
+                                if (eachImage.type == "image") {
+                                    return(
+                                        <div className={this.state.imageFirst ? "image-ca" : null}>                                        
+                                            <img className="caja-image" alt="imagen-servi" src={(this.state.url + eachImage.attachment)}></img>
+                                        </div>
+                                    )
+                                }else{
+                                    return(
+                                        <div className= "image-ca">      
+                                            <video width="360" height="259" controls poster={eachImage.videoThumbnail}>
+                                                <source src={(this.state.url+ eachImage.attachment)} type="video/mp4" />                            
+                                            </video>                                          
+                                        </div>
+                                    )
+                                }                                                                                         
                             } )}
                         </Slider> 
                         :
                         null
                     }
                     </div>
-                    {  this.state.datos.serviceImage?.length == 1 ? 
-                    <div className={this.state.imageFirst ? "image-ca" : null}>                        
-                        <img className="caja-image" alt="imagen-servi" src={(this.state.url + this.state.datos.serviceImage[0].attachment)}></img>
-                    </div>
-                    : null}
-
+                    {  this.state.datos.serviceImage?.length == 1 
+                    ?   
+                        this.state.datos.serviceImage[0].type == "image" 
+                        ?
+                            <div className={this.state.imageFirst ? "image-ca" : null}>                        
+                                <img className="caja-image" alt="imagen-servi" src={(this.state.url + this.state.datos.serviceImage[0].attachment)}></img>
+                            </div>
+                        :
+                            <div className= "image-ca">      
+                                <video width="360" height="259" controls poster={this.state.datos.serviceImage[0].videoThumbnail}>
+                                    <source src={(this.state.url+ this.state.datos.serviceImage[0].attachment)} type="video/mp4" />                            
+                                </video>                                          
+                            </div>
+                    :
+                    null
+                    }                
                     <div className="p-2 titutlo-servi margen-izqui">{this.state.datos.title}</div>
                     <div className="p-2 margen-izqui precio-name">{this.state.datos.price} $/hora</div>
                     <div className="p-2 textoSercice espacio-iz resumen">
@@ -322,11 +466,11 @@ class VerService extends Component{
                             <div className="p-2">
                                 <div className="counter-star">{this.state.datos.avg_rating}</div>
                             </div>
-                            <div>
-                                <IoIosHeart className="estilo-cora"/>
+                            <div className="clikc-cora" onClick={this.handleFavorite}>
+                                <IoIosHeart  className="estilo-cora"/>
                             </div>
                             <div className="counter-cora">
-                                {this.state.datos.fav_count}
+                                {this.state.datos.fav_count+this.state.favoCount}
                             </div>
                         </div>                        
                     </div>
@@ -335,8 +479,8 @@ class VerService extends Component{
 
                     <div className="p-2 textoSercice espacio-iz mini-sub-title">¿Dónde?</div>
                     <div className="p-2 margen-izqui texto-dire">{this.state.datos.address}</div>
-                    <div className="p-2 justify-content-center">
-                        <div className="mapa-google">
+                    <div className="p-2 justify-content-center" >
+                        <div className="mapa-google" style={this.state.isShowing ? {opacity: "0.5"}: null}>
                             {this.state.datos.latitude 
                             ?
                             <Map
@@ -403,32 +547,20 @@ class VerService extends Component{
                     </div>
                     <div className="p-2 textoSercice espacio-iz mt-3 mini-sub-title">Valoraciones</div>
                     <div className="p-2 ">
-                        <div className="d-flex flex-row justify-content-center texto-valo">
-                            <div className="p-2 mr-5" >4.2/5</div>
-                            <div className="p-2 ml-2 mr-4">4.2/5</div>
-                            <div className="p-2 ml-2">4.2/5</div>
+                        <div className="d-flex flex-row justify-content-center texto-valo number-review">
+                            <div className="p-2 puntualidad-numer" >4.2/5</div>
+                            <div className="p-2 trabajo-number">4.2/5</div>
+                            <div className="p-2 feeling-number">4.2/5</div>
                         </div>
                         <div className="d-flex flex-row justify-content-center texto-valo" style={{fontWeight: 500}}>
-                            <div className="p-2 mr-4">puntualidad </div>
-                            <div className="p-2 mr-4">trabajo </div>
-                            <div className="p-2 mr-4">feeling</div>
+                            <div className="p-2 mt-1 mr-5">puntualidad </div>
+                            <div className="p-2 mt-1 mr-5">trabajo </div>
+                            <div className="p-2 mt-1 mr-5">feeling</div>
                         </div>
                     </div>
                     <div className="p-2 margen-izqui">
-                        <div className="d-flex flex-row">
-                            <div className="p-2">
-                                <img className="imagen-valorac" alt="imagen-perfil" src={require('../assets/img/imagen-card2.jpg')}></img>
-                            </div>
-                            <div className="p-2">
-                                <div className="titulo-valora">Jannie Sky</div>
-                                <Rating size={18} filledColor="#ed8a19" borderColor="#ed8a19" rating={0}></Rating>
-                            </div>
-                        </div>
-                        <div className="texto-dentro-valo">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
-                        </div>
-                    </div>
-                    <div className="p-2 texto-de-ver-mas">Ver más</div>
+                        {this.generador_reviews()}
+                    </div>                    
                     <div className="p-2 centro-medio">
                         {this.state.edit ? 
                         <Link to={"/editservice/"+this.state.datos.id}><button className="btn-crear-serv">Editar servicio</button></Link> 
@@ -445,6 +577,7 @@ class VerService extends Component{
                         close={this.closeModalHandler}
                         serviceId={this.state.service_id}
                         status={this.state.datos.status}
+                        rediProfile={this.handleRedirectModal}
                     />                    
                     </div>                  
                 </div>

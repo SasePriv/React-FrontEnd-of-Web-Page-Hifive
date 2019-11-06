@@ -1,3 +1,5 @@
+/* eslint-disable no-useless-escape */
+/* eslint-disable eqeqeq */
 import React, {Component} from 'react';
 import './styles/register.css'
 import loginImg from '../assets/svg/logo_vec.svg';
@@ -39,8 +41,7 @@ class Register extends Component{
         e.preventDefault()
             const isValid = this.validate()  
             if (isValid) {
-                const email = this.state.form.email
-                const password = this.state.form.password
+                const email = this.state.form.email                
                 try {
                     await axios
                     .post('/checkEmail', {email})
@@ -102,6 +103,17 @@ class Register extends Component{
             })
         }
 
+        if (password.length < 8) {
+            this.setState({
+                passError: "La contraseña debe tener al menos 8 caracteres"
+            })
+            return false
+        } else {
+            this.setState({
+                passError: ""
+            })
+        }
+
         if(password == email){
             this.setState({
                 passError: "No puede ser igual al correo"
@@ -128,7 +140,7 @@ class Register extends Component{
         re = /[a-z]/;
         if(!re.test(password)){
             this.setState({
-                passError: "La contraseña debe tener al menos una letre en minuscula"
+                passError: "La contraseña debe tener al menos una letra en minuscula"
             })
             return false
         }else{
@@ -222,14 +234,14 @@ class Register extends Component{
                         <fieldset className="border scheduler-border">
                             <legend className="w-auto texto-desing">Email</legend>
                             <input onChange={this.handleChange} name="email" value={this.state.form.email} className="texto-desing" id="email" placeholder="Correo" />
-                            <img className="icon-input"src={emailImg}></img>
+                            <img alt="email" className="icon-input"src={emailImg}></img>
                         </fieldset>
                     </div>
                     <div className="error-message mb-2">{this.state.emailError}</div>
                     <div className="form-group">
                         <fieldset id="contra" className="border scheduler-border">
                             <input onChange={this.handleChange} name="password" value={this.state.form.password} className="texto-desing mar-t" type="password" id="pass" placeholder="Contraseña"></input>
-                            <img className="icon-input mar-t" id="icon-pass" src={passImg}></img>
+                            <img alt="pass" className="icon-input mar-t" id="icon-pass" src={passImg}></img>
                         </fieldset>
                     </div>
                     <div className="error-message mb-2">{this.state.passError}</div>
@@ -239,7 +251,7 @@ class Register extends Component{
                     </div>  
                     <div className="error-message mb-2">{this.state.checkError}</div>
                     <Link to="/login">
-                        <div className="texto-desing texto-inicio" id="inicio2"><a href="#">¿Ya tienes cuenta? Inicia sesión</a></div>
+                        <div className="texto-desing texto-inicio" id="inicio2">¿Ya tienes cuenta? Inicia sesión</div>
                     </Link>
                     <div className="form-group">
                         <button type="submit" id="btn-submit" className="btn btn-desing texto-desing">Registrarme</button>
@@ -258,7 +270,7 @@ class Register extends Component{
                             <label className="texto-desing" id="terminos" for="checkbox1">Acepto los <span>términos y condiciones</span> y la <span>politica de privacidad</span></label>
                     </div>
                     <Link to="/login">
-                        <div className="texto-desing texto-inicio"><a href="#">¿Ya tienes cuenta? Inicia sesión</a></div>
+                        <div className="texto-desing texto-inicio">¿Ya tienes cuenta? Inicia sesión</div>
                     </Link>
                 </div>
             )
@@ -282,15 +294,17 @@ class Register extends Component{
             <div className="d-flex justify-content-center p-out">
                 <div className="flex-column">
                     <div className="p-2 centrar-text centrar texto-desing" id="titulo-header">Crear Cuenta</div>
+                    <Link to="/">
                     <div className="p-2">                    
-                     <img className="centrar" id="imagen-logo" src={loginImg}></img>
+                     <img className="centrar" alt="logo" id="imagen-logo" src={loginImg}></img>
                     </div>
+                    </Link>
                    <div className="p-2 customCheckbox">
                         <div className="form-group">    
-                            <button className="desing buton-centro" style={{border: '1px solid #000'}}><img src={require("../assets/img/google-icon.png")}></img><p>Continuar con Google</p></button>
+                            <button className="desing buton-centro" style={{border: '1px solid #000'}}><img alt="google" src={require("../assets/img/google-icon.png")}></img><p>Continuar con Google</p></button>
                         </div>
                         <div className="form-group">
-                            <button className="desing buton-centro" style={this.handleEmailStyle()} onClick={(x) => this.changeBoolean(x)}><img id="email-icon" style={this.handleEmailStyleImg()} src={emailImg}></img><p>Continuar con Email</p></button>
+                            <button className="desing buton-centro" style={this.handleEmailStyle()} onClick={(x) => this.changeBoolean(x)}><img id="email-icon" alt="email" style={this.handleEmailStyleImg()} src={emailImg}></img><p>Continuar con Email</p></button>
                         </div>
                         {this.handleEmail()}
                         {this.handleInfo()}

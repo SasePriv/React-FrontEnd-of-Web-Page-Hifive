@@ -29,13 +29,14 @@ class ImageLoader extends Component {
     };
 
     render() { 
-        let { className, loadedClassName, loadingClassName, ...props } = this.props;
+        let { className, loadedClassName, loadingClassName } = this.props;
 
         className = `${className} ${this.state.loaded
         ? loadedClassName
         : loadingClassName}`;
 
         return <img 
+                alt={this.props.alt}
                 src={this.props.src} 
                 onClick={this.props.onClick} 
                 className={className} 

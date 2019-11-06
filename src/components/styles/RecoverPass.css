@@ -31,3 +31,7 @@
     box-sizing: border-box;
     margin-left: -5px;
 }
+
+.color-good{
+    color: blue !important
+}

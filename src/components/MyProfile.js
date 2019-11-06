@@ -9,7 +9,7 @@ import axios from 'axios'
 import ArrowBack from './ArrowBack'
 import { Redirect, Link } from 'react-router-dom'
 import { isMobile } from 'react-device-detect';
-
+import simMas from '../assets/svg/mas.svg'
 import smile from '../assets/svg/smile-perfil.svg'
 import pencil from '../assets/svg/pencil.svg'
 
@@ -39,12 +39,11 @@ class MyProfile extends Component{
       url: "https://hifive.es/hifive-rest-api/public/userProfileImages/",
       progress: "",
       progress_status: "none",
-      change: ""
+      change_status: true,       
     }
   }
 
-  UNSAFE_componentWillMount = () =>{
-    console.log(sessionStorage.getItem("userData"))
+  UNSAFE_componentWillMount = () =>{    
     if (!sessionStorage.getItem("userData")) {
       this.setState({
           redirect: true
@@ -63,8 +62,9 @@ class MyProfile extends Component{
   }
 
   componentDidUpdate(prevProps, prevState){
-    if (prevProps.location.status !== this.state.change) {
+    if (prevProps.location.state?.status == true && this.state.change_status) {
       this.fetchInfoServices()
+      this.setState({change_status: false})
     }
   }
 
@@ -263,6 +263,18 @@ class MyProfile extends Component{
     }
   }
 
+  handleChangeInputAndPost = (e) =>{
+    if (e.target.files[0]) {
+        this.setState({
+            file_url: URL.createObjectURL(e.target.files[0]),
+            file: e.target.files[0]
+        }, () =>{
+          this.handleUploadImage()
+        })
+    }
+  }
+
+
   generadorPerfil(data){
       return (
             <div>
@@ -274,16 +286,33 @@ class MyProfile extends Component{
               <div className="p-2 p-out caja-perfil ">
                 <div className="lapiz" onClick={this.handleClick}><img alt="pencil" src={pencil}></img></div>
                 <div className="d-flex justify-content-center">
-                  <div id="circulo-foto" className={"" + 
-                    Object.entries(this.state.url+this.state.datos.userProfileImage).length == 0                     
+                  <div 
+                    id="circulo-foto" 
+                    className={ 
+                    !this.state.datos.userProfileImage && this.state.file == null                     
                     ?
-                    " border-foto"
+                    "border-foto"
                     :
                     null
                   }>
-                    {Object.entries(this.state.url+this.state.datos.userProfileImage).length == 0 
+                    {!this.state.datos.userProfileImage 
                     ?
-                    <img className="centro-imagen-smile" alt="profile-iamge" src={smile}/>
+                    <div>
+                    {this.state.file == null 
+                    ?
+                      <legend className="boton-cuadro boton-cuadro-profile">                                
+                          <img 
+                              className={this.state.datos.userProfileImage ? null :"suma-icon-profile"} 
+                              alt="mas" 
+                              src={this.state.datos.userProfileImage ? null : simMas}>
+                          </img>
+                          <input onChange={this.handleChangeInputAndPost} accept="image/x-png,image/jpeg" type="file" id="1" name="file1"></input>
+                      </legend>
+                    :
+                    null
+                    }                    
+                    <img className={this.state.file == null ? "centro-imagen-smile" : "centro-imagen-circulo"} alt="profile-iamge" src={this.state.file == null ? smile : this.state.file_url}/>
+                    </div>
                     :
                     <img className="centro-imagen-circulo" alt="profile-iamge" src={this.state.url+this.state.datos.userProfileImage?.profile_image}/>
                     }                                       
@@ -305,8 +334,7 @@ class MyProfile extends Component{
                 :
                 <div className="p-2 centrar vamos">¡Vamos, crea tu primer servicio! </div>
               
-                } 
-                {console.log(data)}            
+                }                            
               </div>
             </div>
       )
@@ -364,9 +392,9 @@ class MyProfile extends Component{
       <div className="p-2 editar-caja-perfil ">
         <div className="d-flex justify-content-center p-out">
           <div className="editar-circulo-foto">
-            {Object.entries(this.state.url+this.state.datos.userProfileImage).length == 0 
+            {!this.state.datos.userProfileImage 
             ?
-            <img className="centro-imagen-smile" alt="profile-iamge" src={this.state.file == null ? smile : this.state.file_url}/>
+            <img className={this.state.file == null ? "centro-imagen-smile smile-edit-photo" : "centro-imagen-circulo"} alt="profile-iamge" src={this.state.file == null ? smile : this.state.file_url}/>
             :
             <img className="centro-imagen-circulo" alt="profile-iamge" src={this.state.file == null ? this.state.url+this.state.datos.userProfileImage?.profile_image : this.state.file_url}/>
             } 
@@ -397,16 +425,14 @@ class MyProfile extends Component{
 
   render(){
 
-    
-
     if (this.state.redirect) {
       return (<Redirect to="/" />)
     }
 
     return (
-      <div className="d-flex flex-column p-out">
-        <div class="progress" style={{height: "2px", display: this.state.progress_status}}>
-          <div class="progress-bar" role="progressbar" style={{width: this.state.progress+"%"}} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+      <div className="d-flex flex-column p-out tamaño-window">
+        <div className="progress" style={{height: "2px", display: this.state.progress_status}}>
+          <div className="progress-bar" role="progressbar" style={{width: this.state.progress+"%"}} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
           { this.state.editShowing ? this.generadorEditPerfil(): this.generadorPerfil(this.state.servicios) }
 
@@ -416,7 +442,7 @@ class MyProfile extends Component{
           <Modal
               show={this.state.isShowing}
               close={this.closeModalHandler}
-              userId={this.state.user_id}
+              userId={this.state.user_id}              
           />          
           </div>
           
