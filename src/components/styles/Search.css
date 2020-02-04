@@ -1,0 +1,39 @@
+.search-input{
+    width: 262px;
+    height: 40px;
+    background: rgb(233, 233, 233);
+    border-radius: 8px !important;
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 19px;
+    display: flex;
+    align-items: flex-end;
+    border: 0px;
+    margin-top: 5px;
+    padding-left: 40px;
+}
+
+.search {
+    position: absolute;
+    /* left: 20%; */
+    margin:10px;
+    
+}
+
+.icon-logo{
+    position: absolute;
+}
+
+.in{
+    margin-left: 50px;
+    position: relative;
+}
+
+.icono-buscar{
+    position: absolute;
+    top: 12px;
+    left: 13px;
+    color: gray;
+}

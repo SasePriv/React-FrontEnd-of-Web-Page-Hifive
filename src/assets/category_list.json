@@ -1,0 +1,40 @@
+{
+    "cate": [
+        {
+            "title": "Niños",
+            "path_image": "niños.jpg",
+            "alt": "Niños",
+            "number": 1
+        },
+        {
+            "title": "Limpieza",
+            "path_image": "limpieza.jpg",
+            "alt": "Limpieza",
+            "number": 2
+        },
+        {
+            "title": "Mascotas",
+            "path_image": "mascotas.jpg",
+            "alt": "Mascotas",
+            "number": 3
+        },
+        {
+            "title": "Profes",
+            "path_image": "profes.jpg",
+            "alt": "Profesores",
+            "number": 4
+        },
+        {
+            "title": "Entrenadores",
+            "path_image": "entrenadores.jpg",
+            "alt": "Entrenadores",
+            "number": 5
+        },
+        {
+            "title": "Otros",
+            "path_image": "otros.jpg",
+            "alt": "Imagen-Persona",
+            "number": 6
+        }
+    ]
+}
