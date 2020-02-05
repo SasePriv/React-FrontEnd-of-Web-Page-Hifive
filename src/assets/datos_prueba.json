@@ -1,0 +1,46 @@
+{
+    "home": [
+        {
+            "number": 0,
+            "title": "Deporte",
+            "precio": 12,
+            "distancia": 25,
+            "path_image": "imagen-card1.jpg"
+        },
+        {
+            "number": 1,
+            "title": "Agencia",
+            "precio": 15,
+            "distancia": 13,
+            "path_image": "imagen-card2.jpg"
+        },
+        {
+            "number": 2,
+            "title": "Estudios",
+            "precio": 18,
+            "distancia": 20 ,
+            "path_image": "imagen-card3.jpg"
+        },
+        {
+            "number": 3,
+            "title": "Arte",
+            "precio": 20,
+            "distancia": 21,
+            "path_image": "imagen-card3.jpg"
+        },
+        {
+            "number": 4,
+            "title": "Futbol",
+            "precio": 12,
+            "distancia": 25,
+            "path_image": "imagen-card2.jpg"
+        },
+        {
+            "number": 5,
+            "title": "Basket",
+            "precio": 35,
+            "distancia": 10 ,
+            "path_image": "imagen-card1.jpg"
+        }
+    ]
+}

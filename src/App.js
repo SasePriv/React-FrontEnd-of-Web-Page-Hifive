@@ -1,15 +1,16 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Home from './components/Home';
 import Category from './components/Category'
 import Search from './components/Search'
+import Content from './components/Content'
 
 function App() {
   return (
     <div>
-      {/* <Category />
-      <Search></Search> */}
+       {/* <Category />
+       <Search></Search>  */}
+       <Content></Content>
     </div>
   );
 }
