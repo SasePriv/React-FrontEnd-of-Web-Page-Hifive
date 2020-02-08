@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import '../App.css';
 import './styles/Category.css'
 
 import { cate } from '../assets/category_list.json'
