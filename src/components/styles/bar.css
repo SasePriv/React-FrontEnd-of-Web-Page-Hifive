@@ -1,14 +1,49 @@
 .bar{
     position: fixed;
-    background-color: blue;
+    /* background-color: blue; */
     height: 86px;
-    width: 1089px;
-    /* background: #FFFFFF;
+    width: auto;
+    background: #FFFFFF;
     opacity: 0.9;
-    border-radius: 15px; */
+    border-radius: 15px;
     margin-left: auto; 
     margin-right: auto; 
     left: 0;
     right: 0;
     bottom:0px;
+}
+
+.prueba{
+    position: absolute;
+    height: 100%;
+    /* background-color: lightcoral; */
+    top: 0;
+    bottom: 0;
+    padding-top: 22px;
+    left: 0;
+    right: 0;
+    /* border: 1px solid ; */
+}
+
+.perso{
+    margin-top: -2px;
+}
+
+.circule{
+    position: absolute;
+    width: 15px;
+    height: 14px;
+    left: calc(49.80%);
+    top: calc(22%);
+    bottom: 45px;
+
+    background: #5FE584;
+    border: 1px solid #FFFFFF;
+    box-sizing: border-box;
+    border-radius: 20px;
+}
+
+.sombra:hover {
+    box-shadow: 1px 2px 10px 1px #5FE584;
+    
 }
