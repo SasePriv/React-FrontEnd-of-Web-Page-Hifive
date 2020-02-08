@@ -1,4 +1,4 @@
-import React, {Component ,useState, useEffect} from 'react';
+import React, {Component} from 'react';
 import '../App.css';
 import './styles/Category.css'
 
@@ -34,12 +34,12 @@ class Category extends Component {
 
   selected() {
 
-    const select_pers = this.state.cate.filter(cate => {return cate.number == this.state.selectItem})
+    const select_pers = this.state.cate.filter(cate => {return cate.number === this.state.selectItem})
 
-    if (this.state.opcion == 1) {
-      return (<div className="box1 justify-content-center container">  
+    if (this.state.opcion === 1) {
+      return (<div className="box1 justify-content-center">  
                 <div>
-                  <img className="picture rounded-circle red-shadow" src={require("../assets/img/"+select_pers[0].path_image)}></img>
+                  <img className="picture rounded-circle red-shadow" alt={select_pers.alt}src={require("../assets/img/"+select_pers[0].path_image)}></img>
                 </div>                
                   <div className="text-box red-box" onClick={(e) => this.handaleUnSelect(e)}>
                     <p>{select_pers[0].title}</p>
@@ -57,7 +57,7 @@ class Category extends Component {
 
     if(this.state.opcion !== 0){
       catego = this.state.cate.filter((cate) => {
-        return cate.number != this.state.selectItem
+        return cate.number !== this.state.selectItem
       });
       size = {
         width: '748px',
@@ -68,15 +68,15 @@ class Category extends Component {
     }
 
     return (
-      <div>
+      <div className="d-flex justify-content-center ">
           { this.selected()}
           <div className="Category" style={size}>
-              <div className="container-fluid boxe">
+              <div className="container flex-wrap boxe">
                 <div className="row">
                   { catego.map(e => 
-                  <div className="col justify-content-center " key={e.number}>  
+                  <div className="col" key={e.number}>  
                     <div>
-                      <img className="picture rounded-circle" src={require("../assets/img/"+e.path_image)}></img>
+                      <img className="picture rounded-circle" alt={e.alt} src={require("../assets/img/"+e.path_image)}></img>
                     </div>
                       <div className="text-box" onClick={(x) => this.handaleSelect(x,e.number)}>
                         <p>{e.title}</p>

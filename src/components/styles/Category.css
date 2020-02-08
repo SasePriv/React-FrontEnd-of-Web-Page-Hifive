@@ -1,10 +1,10 @@
 .Category {
-    position: absolute;
+    /* position: absolute; */
     width: 858px;
     height: 171px;
     background: #ECF0F6;
     border-radius: 200px;
-    left: 28%;
+    /* left: 28%; */
     margin-top: 5px;
   }
 
@@ -14,12 +14,12 @@
     width: 95%;
     height: 80%;
     margin: 20px 20px 20px 20px;
-    
+    /* padding-top: 18px; */
   }
 .box1{
-  position: absolute;
+  /* position: absolute; */
   /* background-color: yellow; */
-  left: 22%;
+  /* left: 22%; */
   margin-top: 28px;
   text-align: center;
   width: 130px;

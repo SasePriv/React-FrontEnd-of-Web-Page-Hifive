@@ -16,10 +16,10 @@
 }
 
 .search {
-    position: absolute;
-    /* left: 20%; */
+    /* position: absolute; */
+    /* left: 40%; */
     margin:10px;
-    
+    padding-left: 40%;
 }
 
 .icon-logo{
@@ -33,7 +33,7 @@
 
 .icono-buscar{
     position: absolute;
-    top: 12px;
+    top: 16px;
     left: 13px;
     color: gray;
 }

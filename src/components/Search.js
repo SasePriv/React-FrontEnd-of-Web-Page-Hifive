@@ -9,9 +9,9 @@ class Search extends Component {
     render(){
 
         return (
-            <div className="search">
+            <div className="d-flex search">
                 <div className="icon-logo">
-                    <img src={require("../assets/img/logo_vec.png")}></img>
+                    <img alt="logo" src={require("../assets/img/logo_vec.png")}></img>
                 </div>
                 <div className="in">
                     <FontAwesomeIcon className="icono-buscar"icon={faSearch}/>
