@@ -37,3 +37,33 @@
     left: 13px;
     color: gray;
 }
+
+
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+
+    .search{
+        padding-left: 0;
+    }
+
+    .search-input{
+        width: 300px;
+        height: 40px;
+    }
+}
+
+@media only screen and (max-width: 1600px) {
+    /* For mobile phones: */
+
+    .search{
+        padding-left: 20%;
+    }
+}
+
+@media only screen and (max-width: 880px) {
+    /* For mobile phones: */
+
+    .search{
+        padding-left: 10%;
+    }
+}

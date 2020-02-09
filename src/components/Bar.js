@@ -19,7 +19,7 @@ class Bar extends Component{
 
         return(
             <div className="bar ">
-                <div className="d-flex justify-content-center prueba">
+                <div className="d-flex justify-content-center ajust">
                     <div  className="mr-5">
                         <a href="#">
                             <img src={require("../assets/img/menu1.png")}></img>

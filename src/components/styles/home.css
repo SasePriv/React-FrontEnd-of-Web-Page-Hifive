@@ -1,0 +1,27 @@
+.p-out{
+    padding-right: 0px !important;
+  }
+
+.order-1, .order-2, .order-3{
+    all: initial;
+}
+
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    .ajust-size{
+        left: 0;
+        right: 0;
+        margin: auto;
+    }
+
+    .order-1{
+      order: unset;
+    }
+    .order-2{
+      order: 1;
+    }
+    .order-3{
+      order: 1;
+    }
+    
+}

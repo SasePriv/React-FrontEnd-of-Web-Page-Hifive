@@ -1,11 +1,12 @@
 .Category {
     /* position: absolute; */
     width: 858px;
-    height: 171px;
+    height: auto;
     background: #ECF0F6;
     border-radius: 200px;
     /* left: 28%; */
     margin-top: 5px;
+    float: left;
   }
 
 .boxe {
@@ -84,4 +85,30 @@
   box-shadow: 0px 2px 10px #FF7575;
 }
   
+.slide-cate{
+  display: flexbox !important;
+  overflow: auto;
+  
+}
+
+.slide-cate::-webkit-scrollbar {
+  display: none;
+}
+
+.slide-cate {
+  -ms-overflow-style: none;
+}
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+
+  .box1{
+    margin-left: 10px;
+    margin-right: 5px;
+  }
+
+  .row{
+    flex-wrap: unset;
+  }
+}
   

@@ -67,25 +67,27 @@ class Category extends Component {
     }
 
     return (
-      <div className="d-flex justify-content-center ">
-          { this.selected()}
-          <div className="Category" style={size}>
-              <div className="container flex-wrap boxe">
-                <div className="row">
-                  { catego.map(e => 
-                  <div className="col" key={e.number}>  
-                    <div>
-                      <img className="picture rounded-circle" alt={e.alt} src={require("../assets/img/"+e.path_image)}></img>
-                    </div>
-                      <div className="text-box" onClick={(x) => this.handaleSelect(x,e.number)}>
-                        <p>{e.title}</p>
+      <div className="d-flex justify-content-center p-out">
+        { this.selected()}
+        <div className="slide-cate p-out">
+            <div className="Category " style={size}>
+                <div className="container boxe">
+                  <div className="row">
+                    { catego.map(e => 
+                    <div className="col" key={e.number}>  
+                      <div>
+                        <img className="picture rounded-circle" alt={e.alt} src={require("../assets/img/"+e.path_image)}></img>
                       </div>
+                        <div className="text-box" onClick={(x) => this.handaleSelect(x,e.number)}>
+                          <p>{e.title}</p>
+                        </div>
+                    </div>
+                    )}
+                    
                   </div>
-                  )}
-                  
                 </div>
-              </div>
-          </div>  
+            </div>  
+        </div>
       </div>
     );
   }

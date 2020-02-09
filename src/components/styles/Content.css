@@ -66,3 +66,23 @@
 
     color: #FFFFFF;
 }
+
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    .buton-regi{
+        position: fixed;
+        top: unset;
+        bottom: 0;
+        background-color: white;
+        /* width: 100%;        
+        margin-left: auto;
+        margin-right: auto;
+        left: 0;
+        right: 0; */
+    }
+    .boton{
+        width: 350px;
+        margin: 5px;
+        font-size: 20px;
+    }
+}
