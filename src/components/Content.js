@@ -8,7 +8,7 @@ class Content extends Component{
         super();
         this.state = {
             home,
-            auth: false
+            auth: true
         };
     }
     

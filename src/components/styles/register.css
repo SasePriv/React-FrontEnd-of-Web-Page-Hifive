@@ -1,0 +1,234 @@
+.desing{
+    width: 100%;
+    height: 48px;
+    background: #FFFFFF;
+    border: 1px solid #000000;
+    box-sizing: border-box;
+    border-radius: 5px;
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 19px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #000000;
+    padding-top: 10px;
+}
+
+.centrar{
+    display: flex;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.texto-inicio{
+    font-weight: 800 !important;
+    font-size: 12px !important;
+    color: #000000 !important;
+    width: 100%;
+    text-align: center;
+    display: absolute;
+    margin-top: 90px;
+}
+
+.texto-inicio a{
+    color: black;
+}
+
+.btn-desing{
+    background: #5591F5;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    width: 310px;
+    height: 50px;
+    color: white !important;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+    display: flex;
+    margin-top: 10px;
+}
+
+#terminos{
+    font-size: 10px;
+    width: 340px;
+}
+
+#inicio2{
+    margin-top: 20px !important;
+    margin-bottom: 30px !important;
+}
+
+.pa-right{
+    padding-left: 10px !important;
+}
+
+.centrar-text{
+    justify-content: center;
+}
+
+.texto-desing{
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 19px;
+    color: rgba(0, 0, 0, 0.65);
+}
+
+#titulo-header{
+    margin-bottom: 30px;
+    margin-top: 5px;
+    font-size: 17px;
+}
+
+#terminos span{
+    font-weight: 900;
+    color: black;
+}
+
+#imagen-logo{
+    margin-bottom: 60px;
+    margin-top: 10px;
+}
+#email-icon{
+    margin-right: 30px;
+}
+
+.cuadro-email{
+    border: 1px solid;
+}
+
+.icon-input{
+    float: right;
+    margin-right: 10px;
+}
+
+.scheduler-border legend {
+    margin-left: 10px; /* To give a bit of padding on the left and right */
+    color: black;
+    font-size: 12px;
+    margin-bottom: 0px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+#contra{
+    height: 47px;
+}
+
+.mar-t{
+    margin-top: 12px;
+}
+
+#icon-pass{
+    margin-right: 15px;
+}
+
+#pass{
+    width: 80%;
+    border: 0px;
+    margin-left: 10px;
+    color: black;
+}
+
+#pass{
+    border: 0px;
+    outline: none !important;
+}
+
+#email{
+    width: 80%;
+    border: 0px;
+    margin-left: 10px;
+    color: black;
+}
+
+#email:focus{
+    border: 0px;
+    outline: none !important;
+}
+
+.desing:focus{
+    border: 0px;
+    outline: none !important;
+}
+
+.scheduler-border{
+    border: 1px solid rgba(0, 0, 0, 0.36) !important;
+    box-sizing: border-box;
+    border-radius: 4px;
+    height: 56px;
+}
+
+.scheduler-border:focus-within{
+    border: 2px solid black !important;
+}
+
+
+
+.buton-centro{
+    align-content: center;
+    justify-content: center;
+}
+
+.buton-centro img{
+    margin-right: 20px;
+    margin-bottom: 16px;
+}
+
+.customCheckbox input[type="checkbox"] {
+    position: absolute;
+    left: -9999px;
+}
+
+.customCheckbox input[type="checkbox"] +label{
+    position: relative;
+    padding: 0 0 0 20px;
+    cursor: pointer;
+}
+
+.customCheckbox input[type="checkbox"] +label:before{
+    content: '';
+    background: #fff;
+    border: 1px solid black;
+    border-radius: 2px;
+    box-sizing: border-box;
+    width: 17px;
+    height: 17px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-top: 0px;
+}
+
+.customCheckbox input[type="checkbox"] +label:after{
+    content: '';
+    border-style: solid;
+    border-width: 0 0 2px 2px;
+    border-color: transparent transparent black black;
+    width: 9px;
+    height: 5px;
+    position: absolute;
+    top: 5px;
+    left: 4px;
+    opacity: 0;
+    transform: scale(2) rotate(-45deg);
+    transition: transform 0.3s linear, opacity 0.3s linear;
+}
+
+.customCheckbox input[type="checkbox"]:checked + label:after{
+    opacity: 1;
+    transform: scale(1) rotate(-45deg);
+}
+
+.p-out{
+    padding-left: 0px;
+}
+
