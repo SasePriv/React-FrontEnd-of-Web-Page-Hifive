@@ -1,0 +1,23 @@
+.custom-file input[type="file"] {
+	opacity: 0;
+}
+
+#texto-file{
+    position: absolute;
+    top: 13px;
+    left: 10px;
+}
+
+#btn-conti{
+    border: 0;
+    background-color: #5591F5;
+}
+
+#photo-perfil{
+    margin-right: 13px;
+}
+
+#texto-hifive{
+    color: #5591F5;
+    text-align: center;
+}

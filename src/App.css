@@ -3,7 +3,14 @@
   margin: 0;
   padding: 0;
 }
-
+.texto-desing{
+  font-family: Quicksand;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 19px;
+  color: rgba(0, 0, 0, 0.65);
+}
 
 
 

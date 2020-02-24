@@ -1,0 +1,101 @@
+.texto-titulo-chat{
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 22px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.65);
+    justify-content: center;
+}
+
+.imagen-photo{
+    width: 70px;
+    height: 70px;
+    border-radius: 20px;
+    object-fit:cover
+}
+
+.foto-chat-perfil{
+    margin:  0px 10px 0px 0px;
+}
+
+.contenido-menu-chat{
+    top: 0;
+    bottom: 0;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.text-menu-title{
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 20px;
+    color: #090909;
+    width: 170px;
+}
+
+.text-menu-subtitle{
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 20px;
+    color: rgba(0, 0, 0, 0.8);
+    opacity: 0.8;
+    width: 250px;
+}
+
+.tiempo-menu-chat{
+    top: 0;
+    bottom: 0;
+    margin-top: 14px;
+    margin-bottom: auto;
+}
+
+.tiempo-chat{
+    text-align: right;
+}
+
+.texto-tiempo{
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 20px;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.8);
+    opacity: 0.8;
+}
+
+.line{
+    border-bottom: 1px solid #CCCCCC;  
+    width: 72%;
+    margin-top: 18px;
+    margin-bottom: 18px;
+}
+
+.espacio{
+    margin-bottom: 50px;
+}
+
+.notifi{
+    background: #5FE584;
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 19px;
+    color: white;
+    border-radius: 30px;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    padding-top: 5px;
+    margin-left: 1px;
+    margin-top: 3px;
+}

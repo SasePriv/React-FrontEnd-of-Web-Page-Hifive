@@ -73,14 +73,6 @@
     justify-content: center;
 }
 
-.texto-desing{
-    font-family: Quicksand;
-    font-style: normal;
-    font-weight: 600;
-    font-size: 15px;
-    line-height: 19px;
-    color: rgba(0, 0, 0, 0.65);
-}
 
 #titulo-header{
     margin-bottom: 30px;
@@ -121,6 +113,18 @@
 
 #contra{
     height: 47px;
+}
+
+.campos{
+    width: 80%;
+    border: 0px;
+    margin-left: 10px;
+    color: black;
+}
+
+.campos:focus{
+    border: 0px;
+    outline: none !important;
 }
 
 .mar-t{

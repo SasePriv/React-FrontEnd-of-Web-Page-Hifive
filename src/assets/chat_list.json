@@ -1,0 +1,60 @@
+{
+    "chatDatos":[
+        {
+            "name": "Sara Sanchez",
+            "path_image": "imagen-card1.jpg",
+            "cargo": "Babysister",
+            "precio": 12,
+            "notificacion": 0,
+            "ncant": 0
+        },
+        {
+            "name": "Leonardo Perez",
+            "path_image": "imagen-card2.jpg",
+            "cargo": "Asistente",
+            "precio": 16,
+            "notificacion": 1,
+            "ncant": 2
+        },
+        {
+            "name": "Juan Ricador",
+            "path_image": "imagen-card3.jpg",
+            "cargo": "Abogado",
+            "precio": 20,
+            "notificacion": 1,
+            "ncant": 5
+        },
+        {
+            "name": "Daniel Sanchez",
+            "path_image": "limpieza.jpg",
+            "cargo": "Gym",
+            "precio": 10,
+            "notificacion": 0,
+            "ncant": 0
+        },
+        {
+            "name": "Juan Ricador",
+            "path_image": "imagen-card3.jpg",
+            "cargo": "Abogado",
+            "precio": 20,
+            "notificacion": 1,
+            "ncant": 5
+        },
+        {
+            "name": "Juan Ricador",
+            "path_image": "imagen-card3.jpg",
+            "cargo": "Abogado",
+            "precio": 20,
+            "notificacion": 1,
+            "ncant": 5
+        },
+        {
+            "name": "Juan Ricador",
+            "path_image": "imagen-card3.jpg",
+            "cargo": "Abogado",
+            "precio": 20,
+            "notificacion": 1,
+            "ncant": 5
+        }
+    ]
+}

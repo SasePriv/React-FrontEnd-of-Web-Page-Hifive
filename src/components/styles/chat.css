@@ -1,0 +1,125 @@
+#imagen-current-chat{
+    width: 35px;
+    height: 35px;
+    border-radius: 20px;
+    object-fit:cover;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.texto-chat-current{
+    font-weight: bold;
+    font-size: 16px;
+    color: black;
+    margin-top: 7px;
+}
+
+.top-chat{
+    width: 100%; 
+}
+
+.arriba{
+    position: absolute;
+    background-color: #FFFFFF;
+    width: 100%;
+}
+
+.box-chat{
+    background-color: gray;
+    height: 100vh;
+    padding-top: 60px !important;
+}
+
+.prueba{
+    overflow-y: scroll;
+}
+
+.prueba::-webkit-scrollbar {
+    display: none;
+  }
+
+.texto-2{
+    background: #FFFFFF;
+    border-radius: 20px;
+    max-width: 80%;
+    display: inline-block;
+    padding: 10px 17px 10px 17px !important;
+}
+
+.texto-azul{
+    background: rgba(66, 133, 244, 0.85);
+    color: #FFFFFF !important;
+}
+
+.texto-chat-box{
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 22px;
+    letter-spacing: 0.0235294em;
+
+    color: #000000;
+}
+
+.input-text-box{
+    position: fixed;
+    width: auto;
+    margin-left: auto; 
+    margin-right: auto; 
+    left: 0;
+    right: 0;
+    bottom:0px;
+    justify-content: center;
+}
+
+html, body{
+    height: 100%;
+}
+
+.input-entrada{
+    background: #FFFFFF;
+    border: 1px solid #EEEEEE;
+    box-sizing: border-box;
+    border-radius: 50px;
+    width: 85%;
+    padding: 8px 20px 8px 30px;
+    margin: 10px;
+    margin-right: 5px;
+    max-height: 150px;
+    overflow: scroll;
+    display: block;
+
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 22px;
+    display: flex;
+    align-items: center;
+}
+
+.input-entrada::-webkit-scrollbar {
+    display: none;
+}
+
+.btn-accion{
+    background-color: #FFFFFF;
+    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.12);
+    width: 10%;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+    padding-right: 10px;
+    margin-right: 5px;
+    border-radius: 100px;
+    width: 50px;
+    height: 50px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.icon-envio{
+    margin-left: 4px;
+    margin-top: 3px;
+}
