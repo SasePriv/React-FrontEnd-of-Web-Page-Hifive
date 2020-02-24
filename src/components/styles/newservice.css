@@ -1,0 +1,281 @@
+.headerTitulo{
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 22px;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.65);
+}
+
+.textoSercice{
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    align-items: center;
+    color: rgba(0, 0, 0, 0.8);
+}
+
+.cuadro{
+    width: 50px;
+    height: 50px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    border-radius: 20px;
+    background-color: #fff;
+    position: relative;
+}
+
+.icono-foto{
+    margin-left: 12px;
+    margin-top: 12px;
+}
+
+.boton-cuadro{
+    width: 20px;
+    height: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    border-radius: 20px;
+    background-color: #fff;
+
+    position: absolute;
+    bottom: 0;
+    left: 90%;
+    transform: translate(-50%, 50%);;
+}
+
+.centro-medio{
+    text-align: center;
+}
+
+
+.boton-cuadro input[type="file"]{
+    width: 17px;
+    height: 17px;
+    opacity: 0;
+    
+	position: absolute;
+    background-color: green;
+    cursor: pointer;
+}
+
+.boton-cuadro input[type=file]::-webkit-file-upload-button { /* chromes and blink button */
+    cursor: pointer; 
+}
+
+.boton-cuadro input[type="file"] +img{
+    width: 80%;
+    
+    /* background-color: green; */
+    margin-left: 2px;
+    position: absolute;
+}
+
+.suma-icon{
+    position: absolute;
+    margin-top: 4px;
+    margin-left: 3px;
+}
+
+.sepa-derecho{
+    margin-right: 32px;
+}
+
+#titulo-foto{
+    margin-left: 40px;
+}
+
+.forma-input{
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    box-sizing: border-box;
+    border-radius: 800px;
+    padding: 14px 23px 14px 23px;
+    width: 90%;
+
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.25px;
+    color: #000000;
+}
+
+.forma-input::placeholder {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.forma-input:focus{
+    outline: none;
+    border: 2px solid rgba(0, 0, 0, 1);
+}
+
+.espacio-iz{
+    margin-left: 24px;
+}
+
+#area-form{
+    border-radius: 25px;
+    padding-left: 25px;
+    overflow: scroll;
+}
+
+#area-form::-webkit-scrollbar {
+    display: none;
+}
+
+.mapa-google{
+    height: 160px;
+    border: 1px solid black;
+    border-radius: 25px;
+}
+
+#buton-geo{
+    background: linear-gradient(90deg, #1F6FF2 -7.85%, #4285F4 52.08%, #206FF2 112.07%);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 800px;
+    width: 261px;
+    height: 48px;
+    border: 0px;
+
+    color: white;
+    line-height: 20px;
+    letter-spacing: 0.25px;
+    font-weight: 500;
+}
+
+#buton-geo img{
+    padding-left: 10px;
+}
+
+#dispo{
+    margin-left: 18px;
+}
+
+.modify-texto-ser{
+    font-size: 15px;
+    line-height: 20px;
+    color: #4F4F4F;
+    margin-right: 15px;
+    margin-left: 15px;
+
+}
+
+.icon-country{
+    height: 52px;
+    width: 52px ;
+    margin-top: -13px;
+    margin-left: -1px;
+    /* opacity: 0.5; */
+}
+
+.texto-inside-check{
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 10px;
+    line-height: 20px;
+    color: #000000;
+    padding-top: 12px;
+    /* background-color: green; */
+    width: 48px;
+    height: 48px;
+}
+
+.cuadro-check-box input{
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+    left: -9999px;
+}
+
+.check-cua{
+    height: 52px !important;
+    width: 52px !important;
+    /* background-color: green; */
+    border-radius: 800px;
+
+    border: 0.5px solid rgba(0, 0, 0, 0.7);
+    box-sizing: border-box;
+    border-radius: 800px;
+    margin-right: 2px;
+    margin-left: 2px;
+}
+
+/* On mouse-over, add a grey background color */
+.cuadro-check-box:hover input ~ .check-cua {
+    background-color: #ccc;
+    cursor: pointer;
+  }
+
+  /* When the checkbox is checked, add a blue background */
+.cuadro-check-box input:checked ~ .check-cua  {
+    background-color: #4285F4;
+    border: 0px;
+    color: #fff;
+  }
+
+
+/* Banderas */
+
+.cuadro-check-box-bandera input{
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+    left: -9999px;
+}
+
+.check-cua-bandera{
+    height: 52px !important;
+    width: 52px !important;
+    /* background-color: green; */
+    border-radius: 800px;
+    box-sizing: border-box;
+    border-radius: 800px;
+    margin-right: 10px;
+    margin-left: 10px;
+    opacity: 0.5;
+}
+
+/* On mouse-over, add a grey background color */
+.cuadro-check-box-bandera:hover input ~ .check-cua-bandera {
+    cursor: pointer;
+    opacity: 0.7;
+  }
+
+  /* When the checkbox is checked, add a blue background */
+.cuadro-check-box-bandera input:checked ~ .check-cua-bandera  {
+    border: 0px;
+    opacity: 1;
+  }
+
+#idioma{
+    opacity: 0.5;
+}
+
+.btn-crear-serv{
+    background: linear-gradient(114.34deg, #2537D6 -18.15%, #4B62FF 18.06%, #4C66FE 52.54%, #627CFF 88.84%, #4285F4 142.48%);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    border: 0px;
+    width: 80%;
+    height: 50px;
+
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 22px;
+
+    color: #FFFFFF;
+}
+  

@@ -160,6 +160,7 @@
 
 .comentario:focus{
     outline: none;
+    border: 1px solid rgba(0, 0, 0, 1);
 }
 
 .comentario::placeholder {

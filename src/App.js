@@ -9,6 +9,7 @@ import Mypersonalinfo from './components/Mypersonalinfo'
 import ChatMenu from './components/ChatMenu'
 import Chat from './components/Chat'
 import Review from './components/Review'
+import NewService from './components/NewService'
 
 function App() {
   return (
@@ -21,7 +22,8 @@ function App() {
       {/* <Mypersonalinfo></Mypersonalinfo> */}
       {/* <ChatMenu></ChatMenu> */}
       {/* <Chat></Chat> */}
-      <Review></Review>
+      {/* <Review></Review> */}
+      <NewService></NewService>
     </div>
   );
 }
