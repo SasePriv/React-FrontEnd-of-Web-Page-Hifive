@@ -1,0 +1,186 @@
+.caja-image{
+    width: 360px;
+    height: 259px;
+    border-radius: 25px;
+    display: unset !important;
+    object-fit:cover
+}
+
+.image-ca{
+    text-align: center;
+}
+
+.slick-next {
+    right: -7px !important;
+}
+
+.titutlo-servi{
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 22px;
+    line-height: 20px;
+    color: black;
+    margin-top: 15px;
+    
+}
+
+.margen-izqui{
+    margin-left: 25px;
+}
+
+.precio-name{
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    line-height: 20px;
+    color: #000000;
+}
+
+.resumen{
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 21px;
+    color: #000;
+    margin-right: 30px;
+}
+
+.subrayado{
+    color: #4285F4;
+}
+
+.counter-star{
+    font-family: Quicksand;
+font-style: normal;
+font-weight: bold;
+font-size: 14px;
+line-height: 17px;
+text-align: center;
+margin-top: 3px;
+margin-left: -5px;
+color: #4F4F4F;
+}
+
+.mini-sub-title{
+    font-family: Quicksand;
+font-style: normal;
+font-weight: 500;
+font-size: 15px;
+line-height: 20px;
+color: #929292;
+}
+
+.estilo-cora{
+    color: #FF0000;
+    margin-top: 10px;
+}
+
+.counter-cora{
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 17px;
+    text-align: center;
+    margin-top: 11px;
+    margin-left: 5px;
+    color: #4F4F4F;
+}
+
+.texto-dire{
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    color: rgba(0, 0, 0, 1);
+}
+
+.person-service-selected{
+    border: 0px !important;
+    background: rgba(196, 196, 196, 0.15);
+    padding-top: 13px;
+    color: #4F4F4F;
+    font-weight: bold;
+}
+
+.person-service-no-selected{
+    border: 0px !important;
+    padding-top: 13px;
+    color: rgba(146, 146, 146, 0.3);
+    font-weight: bold;
+}
+
+.bandera-selected{
+    opacity: 1;
+}
+
+.bandera-no-selected{
+    display: none;
+}
+
+.texto-valo{
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 19px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+    color: rgba(0, 0, 0, 0.64);
+
+}
+
+ #puntualidad{
+    padding-right: 0px !important;
+    padding-left: 10px;
+}
+
+#feeling{
+    padding-right: 30px !important;
+} 
+
+.imagen-valorac{
+    width: 40px;
+    height: 40px;
+    border-radius: 50px;
+    object-fit:cover
+}
+
+.titulo-valora{
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 24px;
+    color: #1C1A1A;
+    margin-left: 3px;
+}
+
+.texto-dentro-valo{
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 20px;
+    color: rgba(0, 0, 0, 0.543846);
+    text-align: left;
+    margin-left: 15px;
+    margin-right: 160px;
+}
+
+.texto-de-ver-mas{
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 17px;
+    text-align: center;
+
+    color: #4285F4;
+}

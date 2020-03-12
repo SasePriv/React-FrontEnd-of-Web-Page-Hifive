@@ -1,0 +1,240 @@
+.caja-perfil{
+    height: 157px;
+    background-image: url('../../assets/img/Rectangle.png');
+    background-size: cover;
+}
+
+.caja-titulo-perfil{
+    height: 50px;
+}
+
+.circulo-foto{
+    background: #C4C4C4;
+    width: 90px;
+    height: 90px;
+    border-radius: 100px;
+    text-align: center;
+    border: 4px solid #FFFFFF;
+}
+
+.centro-imagen-circulo{
+    margin-top: 30px;
+}
+
+.medio{
+    text-align: center;
+    margin-top: 10px;
+}
+
+.lapiz{
+    position: fixed;
+    right: 0;
+    margin-right: 20px;
+    margin-top: 1px;
+}
+
+.ti-perf{
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 22px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.65);
+}
+
+.fin-title{
+    padding-left: 13px;
+}
+
+.click-mode{
+    cursor: pointer;
+}
+
+.change-tama{
+    font-size: 18px;
+    padding-bottom: 0 !important;
+}
+
+.change-tama2{
+    font-size: 15px;
+    padding-bottom: 0 !important;
+}
+
+.modal{
+    display: none !important;
+}
+
+.buton-activar{
+    width: 111px;
+    height: 40px;
+    background: #4285F4;
+    border: 1px solid #4285F4;
+    box-sizing: border-box;
+    border-radius: 8px;
+
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 20px;
+    color: #FFFFFF;
+    margin-left: auto;
+    margin-right: 15px;
+}
+
+.buton-desactivar{
+    width: 111px;
+    height: 40px;
+    background: white;
+    border: 1px solid #4285F4;
+    box-sizing: border-box;
+    border-radius: 8px;
+
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 20px;
+    color: #4285F4;
+    margin-left: auto;
+    margin-right: 15px;
+}
+
+.vamos{
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 19px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin-top: auto;
+    margin-bottom: auto;
+    color: #000000;
+    display: block;
+    margin-top: 200px;
+}
+
+.crear-servi{
+
+    width: 310px;
+    height: 50px;
+    background: linear-gradient(114.34deg, #2537D6 -18.15%, #4B62FF 18.06%, #4C66FE 52.54%, #627CFF 88.84%, #4285F4 142.48%);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    border: 0px;
+
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 22px;
+    /* display: flex; */
+    align-items: center;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    color: #FFFFFF;
+    margin-top: 150px;    
+}
+
+.editar-caja-perfil{
+    height: 157px;
+    /* background-image: url('../../assets/img/Rectangle.png'); */
+}
+.editar-circulo-foto{
+    width: 90px;
+    height: 90px;
+    border-radius: 100px;
+    text-align: center;
+}
+
+.centro-imagen-editar{
+    width: 90px;
+    height: 90px;
+    border-radius: 100px;
+    object-fit:cover;
+}
+
+.type-letra{
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 20px;
+    /* identical to box height, or 143% */
+
+    text-align: center;
+
+    color: #5A5A5A;
+}
+
+
+.ne-linea{
+    display: block;
+}
+
+.label-titulos{
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    display: flex;
+    align-items: center;
+    color: rgba(0, 0, 0, 0.67);
+}
+
+.entrada-input-button{
+    height: 48px;
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    box-sizing: border-box;
+    border-radius: 800px;
+    width: 85%;
+    margin-left: 30px;
+
+    
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.25px;
+    color: #000000;
+
+    padding: 14px 23px 14px 23px;
+}
+
+.buton-crear-servi{
+    width: 310px;
+    height: 50px;
+    background: linear-gradient(114.34deg, #2537D6 -18.15%, #4B62FF 18.06%, #4C66FE 52.54%, #627CFF 88.84%, #4285F4 142.48%);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    border: 0px;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 25px;
+
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 22px;
+    text-align: center;
+    color: #FFFFFF;
+
+
+}
+
+.b-c{
+    text-align: center;
+}
