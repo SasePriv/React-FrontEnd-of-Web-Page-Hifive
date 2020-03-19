@@ -1,0 +1,129 @@
+.sepa-iz{
+    padding: 0px !important;
+    margin-left: 30px !important;
+    left: 0 !important;
+
+}
+
+.header-evento{
+    margin-bottom: 30px;
+}
+
+.afuera{
+    padding: 0px !important;
+}
+
+.boton-sepa-iz{
+    margin-left: 20px;
+}
+
+.boton-inside-evento{
+    padding: 14px 23px 14px 23px;
+}
+
+.me-eve{
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    display: flex;
+    align-items: center;
+    color: #000000;
+}
+
+.hora-input{
+    margin-right: 115px;
+    margin-top: 15px;
+}
+
+.hora-ev{
+    width: 45%;
+}
+
+.centrar-calender{
+    left: 0;
+    right: 0;
+    margin-left: 15px;
+    margin-right: 15px;
+    width: 100% !important;
+    border: 0px !important;
+
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 14px;
+    text-align: center;
+
+    color: rgba(0, 0, 0, 0.867782);
+}
+
+.centrar-calender button{
+    color: black;
+    /* background-color: white; */
+    height: 58px;
+    width: 10px;
+    border-radius: 500px;
+}
+
+.react-calendar__tile--active{
+    background: #FDE350 !important;
+    color: white !important;
+    
+}
+
+.bajar{
+    margin-top: -90px;
+}
+
+.picker{
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 30px !important;
+    color: #000000;
+    --border: 0px !important;
+}
+
+.picker-cell::before {
+    background-image: unset !important;
+}
+
+.picker-cell::after {
+    background-image: unset !important;
+}
+
+:root {
+    --border: 1px solid #eee !important;
+  }
+
+.picker-picked {
+    color: #000 !important;
+    border-top: 2px solid #FEDE3D;
+    border-bottom: 2px solid #FEDE3D;
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
+}
+
+.picker-grid{
+    width: 55% !important;
+    margin-left: 60PX;
+}
+
+.picker-cell{
+    padding-right: 25px;
+}
+
+.hora-mili{
+    position: absolute;
+    right: 70px;
+    top: 170px;
+
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 30px;
+    line-height: 27px;
+    color: #000000;
+}

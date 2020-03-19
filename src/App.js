@@ -12,6 +12,7 @@ import Review from './components/Review'
 import NewService from './components/NewService'
 import VerServicio from './components/VerServicio'
 import MyProfile from './components/MyProfile'
+import NewEvent from './components/NewEvent'
 
 function App() {
   return (
@@ -27,7 +28,8 @@ function App() {
       {/* <Review></Review> */}
       {/* <NewService></NewService> */}
       {/* <VerServicio></VerServicio> */}
-      <MyProfile></MyProfile> 
+      {/* <MyProfile></MyProfile>  */}
+      <NewEvent></NewEvent>
     </div>
   );
 }
