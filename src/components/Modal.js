@@ -16,7 +16,7 @@ const Modal = (props) => {
                 </div>
                 <div className="modal-body">
                     <div className="eleccion">Cerrar Sesión</div>
-                    <div  tabindex="1" className="eleccion eli">Eliminar mi cuenta permanentemente</div>
+                    <div  tabIndex="1" className="eleccion eli">Eliminar mi cuenta permanentemente</div>
                 </div>
                 
                 <button className="btn-confirmar-modal">Confirmar</button>

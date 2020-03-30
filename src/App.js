@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import { BrowserRouter, Route } from 'react-router-dom'
 import Home from './components/Home';
 import Register from './components/Register';
 import Login from './components/Login';
@@ -14,23 +15,17 @@ import VerServicio from './components/VerServicio'
 import MyProfile from './components/MyProfile'
 import NewEvent from './components/NewEvent'
 
+
 function App() {
   return (
-    <div>
-      {/* <Home></Home> */}
-      {/* <Register></Register> */}
-      {/* <Login></Login> */}
-      {/* <RecoverPass></RecoverPass> */}
-      {/* <RecoveringPassword></RecoveringPassword> */}
-      {/* <Mypersonalinfo></Mypersonalinfo> */}
-      {/* <ChatMenu></ChatMenu> */}
-      {/* <Chat></Chat> */}
-      {/* <Review></Review> */}
-      {/* <NewService></NewService> */}
-      {/* <VerServicio></VerServicio> */}
-      {/* <MyProfile></MyProfile>  */}
-      <NewEvent></NewEvent>
-    </div>
+      <BrowserRouter>
+        <Route exact path="/home" component={Home} />
+        <Route exact path="/viewService/:id" component={VerServicio} />
+        <Route exact path="/myprofile/:userID" component={MyProfile} />
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/signup" component={Register} />
+        <Route exact path="/myprofile" component={MyProfile} />
+      </BrowserRouter>      
   );
 }
 

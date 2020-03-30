@@ -1,29 +1,37 @@
 import React, {Component} from 'react';
+import { Link } from 'react-router-dom'
 import './styles/Content.css'
 
 import { home } from '../assets/datos_prueba.json'
 
 class Content extends Component{
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state = {
             home,
-            auth: true
+            auth: props.auth
         };
     }
     
-    generador(){
+    generador(data){
         if (this.state.auth) {
             return (
                 <div className="d-flex justify-content-center flex-wrap">
-                    {this.state.home.map( (e) => {
+                    {data.map( (currentData) => {
                         return(
-                            <div className="card card-mod">
-                                <img className="card-img-top" alt={e.alt} src={require("../assets/img/"+e.path_image)}></img>
-                                <div className="card-body card-mod-text">
-                                    <h6 className="card-text mt-1 font-weight-bold">{e.title}</h6>
-                                    <p className="card-text font-weight-bold">{e.precio}$/h · <span className="texto-dis">{e.distancia} km de mi</span></p>
-                                </div>
+                            <div className="card card-mod" key={currentData.id}>
+                                <Link to={{
+                                    pathname: "/viewService/" + currentData.id,
+                                    state: {currentData}
+                                }}>
+                                    <input type="hidden" id="serviceID" name="serviceID" value={currentData.id} />
+                                    <input type="hidden" id="userID" name="userID" value={currentData.user_id} />
+                                    <img className="card-img-top" alt={currentData.alt} src={require("../assets/img/imagen-card1.jpg")}></img>
+                                    <div className="card-body card-mod-text">
+                                        <h6 className="card-text mt-1 font-weight-bold">{currentData.title}</h6>
+                                        <p className="card-text font-weight-bold">{currentData.price}$/h · <span className="texto-dis">25 km de mi</span></p>
+                                    </div>
+                                </Link>
                             </div>
                         )
                     })}
@@ -78,7 +86,9 @@ class Content extends Component{
                         </div>
                     </div>
                     <div className="button buton-regi">
-                        <button className="boton">Registrarme</button>
+                        <Link to="/signup">
+                            <button className="boton">Registrarme</button>
+                        </Link>
                     </div>
                 </div>
                   
@@ -88,9 +98,11 @@ class Content extends Component{
     }
 
     render(){
+        const {data} = this.props
+
         return(
             <div className="container">
-                {this.generador()}
+                {this.generador(data)}
             </div>
         );
     }

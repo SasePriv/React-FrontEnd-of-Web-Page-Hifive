@@ -52,6 +52,11 @@
     color: #4285F4;
 }
 
+.read-more-button{
+    color: #4285F4;
+    cursor: pointer;
+}
+
 .counter-star{
     font-family: Quicksand;
 font-style: normal;

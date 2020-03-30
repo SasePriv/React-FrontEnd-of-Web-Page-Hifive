@@ -5,3 +5,21 @@
 .ancho{
     width: 340px;
 }
+
+.tocar{
+    cursor: pointer;
+}
+
+.error-message{
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    color: red;
+    margin-left: 10px;
+    margin-top: 5px;
+}
+
+.error-border{
+    border-color: red !important;
+}

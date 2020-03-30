@@ -27,7 +27,7 @@
 }
 
 .lapiz{
-    position: fixed;
+    position: absolute;
     right: 0;
     margin-right: 20px;
     margin-top: 1px;
@@ -222,7 +222,7 @@
     left: 0;
     margin-right: auto;
     margin-left: auto;
-    margin-bottom: 25px;
+    margin-bottom: 70px;
 
     font-family: Quicksand;
     font-style: normal;
@@ -237,4 +237,15 @@
 
 .b-c{
     text-align: center;
+}
+
+.content-scroll{
+    overflow-y: scroll;
+    height: 660px;
+}
+
+@media only screen and (max-width: 768px){
+    .content-scroll{
+        height: 470px;
+    }
 }

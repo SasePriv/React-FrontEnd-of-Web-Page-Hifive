@@ -3,6 +3,7 @@ import './styles/register.css'
 import loginImg from '../assets/svg/logo_vec.svg';
 import emailImg from '../assets/svg/email-icon.svg'
 import passImg from '../assets/svg/pass.svg'
+import { Link } from 'react-router-dom'
 
 class Register extends Component{
     constructor(){
@@ -46,7 +47,9 @@ class Register extends Component{
                         <input type="checkbox" className="desing-check" id="checkbox1"></input>
                         <label className="texto-desing" id="terminos" for="checkbox1">Acepto los <span>términos y condiciones</span> y la <span>politica de privacidad</span></label>
                     </div>
-                    <div className="texto-desing texto-inicio" id="inicio2"><a href="#">¿Ya tienes cuenta? Inicia sesión</a></div>
+                    <Link to="/login">
+                        <div className="texto-desing texto-inicio" id="inicio2"><a href="#">¿Ya tienes cuenta? Inicia sesión</a></div>
+                    </Link>
                     <div className="form-group">
                         <button type="submit" id="btn-submit" className="btn btn-desing texto-desing">Registrarme</button>
                     </div>
@@ -63,7 +66,9 @@ class Register extends Component{
                             <input type="checkbox" className="desing-check" id="checkbox1"></input>
                             <label className="texto-desing" id="terminos" for="checkbox1">Acepto los <span>términos y condiciones</span> y la <span>politica de privacidad</span></label>
                     </div>
-                    <div className="texto-desing texto-inicio"><a href="#">¿Ya tienes cuenta? Inicia sesión</a></div>
+                    <Link to="/login">
+                        <div className="texto-desing texto-inicio"><a href="#">¿Ya tienes cuenta? Inicia sesión</a></div>
+                    </Link>
                 </div>
             )
         }

@@ -3,7 +3,7 @@
         {
             "number": 0,
             "title": "Deporte",
-            "precio": 12,
+            "price": 12,
             "distancia": 25,
             "path_image": "imagen-card1.jpg",
             "alt": "imagen1"
@@ -11,7 +11,7 @@
         {
             "number": 1,
             "title": "Agencia",
-            "precio": 15,
+            "price": 15,
             "distancia": 13,
             "path_image": "imagen-card2.jpg",
             "alt": "imagen2"
@@ -19,7 +19,7 @@
         {
             "number": 2,
             "title": "Estudios",
-            "precio": 18,
+            "price": 18,
             "distancia": 20 ,
             "path_image": "imagen-card3.jpg",
             "alt": "imagen3"
@@ -27,7 +27,7 @@
         {
             "number": 3,
             "title": "Arte",
-            "precio": 20,
+            "price": 20,
             "distancia": 21,
             "path_image": "imagen-card3.jpg",
             "alt": "imagen4"
@@ -35,7 +35,7 @@
         {
             "number": 4,
             "title": "Futbol",
-            "precio": 12,
+            "price": 12,
             "distancia": 25,
             "path_image": "imagen-card2.jpg",
             "alt": "imagen5"
@@ -43,7 +43,7 @@
         {
             "number": 5,
             "title": "Basket",
-            "precio": 35,
+            "price": 35,
             "distancia": 10 ,
             "path_image": "imagen-card1.jpg",
             "alt": "imagen6"

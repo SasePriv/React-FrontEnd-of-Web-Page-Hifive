@@ -3,6 +3,8 @@ import TextareaAutosize from 'react-textarea-autosize';
 import Slider from "react-slick";
 import Rating from 'react-star-review';
 import { IoIosHeart } from 'react-icons/io';
+import ReadMoreReact from 'read-more-react';
+import { calculateAge } from './functions/calculateAge'
 
 import './styles/newservice.css'
 import './styles/verServicio.css'
@@ -20,9 +22,96 @@ import italy from '../assets/svg/italy.svg'
 import france from '../assets/svg/france.svg'
 
 class VerService extends Component{
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
+        this.state = {
+            datos: {},
+            listaDays: ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
+            listaLenguage: ["spanish", "english", "french", "italian", "german"],
+            listaCountry: [spain, uss, france, italy, germany]
+        }
+
     }
+
+    componentDidMount(){
+        const { currentData } = this.props.location.state
+        // console.log(currentData)
+        this.setState({
+            datos: currentData
+        })
+
+
+        
+    }
+
+    calculate_age = (dob1) => {
+        var today = new Date();
+        var birthDate = new Date(dob1);  // create a date object directly from `dob1` argument
+        var age_now = today.getFullYear() - birthDate.getFullYear();
+        var m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) 
+        {
+            age_now--;
+        }
+        // console.log(age_now);
+        return age_now;
+    }
+
+    generator_check_days = (day, tiempoDay, propDay ,datoServi) =>{
+        
+        if(datoServi[day] == 1){      
+            if (datoServi[day+"_time"] == propDay) {
+                return(
+                    <label className="cuadro-check-box">                                
+                        <div  id={day+"_"+propDay} name={day+"_"+propDay}  className="check-perso-box"></div>
+                        <div className="texto-inside-check check-cua person-service-selected">{tiempoDay}</div>
+                    </label>
+                )      
+            }else if(datoServi[day+"_time"] == "both"){
+                return(
+                    <label className="cuadro-check-box">                                
+                        <div  id={day+"_both_"+propDay} name={day+"_both_"+propDay}  className="check-perso-box"></div>
+                        <div className="texto-inside-check check-cua person-service-selected">{tiempoDay}</div>
+                    </label>
+                ) 
+            }else{
+                return(
+                    <label className="cuadro-check-box">                                
+                        <div className="check-perso-box"></div>
+                        <div className="texto-inside-check check-cua person-service-no-selected">{tiempoDay}</div>
+                    </label>
+                )
+            }      
+                  
+        }else{
+            return(
+                <label className="cuadro-check-box">                                
+                    <div className="check-perso-box"></div>
+                    <div className="texto-inside-check check-cua person-service-no-selected">{tiempoDay}</div>
+                </label>
+            )
+        }
+    }
+
+    generador_check_lenCountry = (language, country ,datoServi) => {
+        if (datoServi[language] == 1) {
+            return(
+                <label className="cuadro-check-box-bandera">                                
+                    <div id={"pais-"+language} className="check-perso-box-bandera"></div>
+                    <div className="texto-inside-check check-cua-bandera bandera-selected"><img alt={country+"-icon"} src={country} className="icon-country"></img></div>
+                </label> 
+                
+            )
+        } else {
+            return(
+                <label className="cuadro-check-box-bandera">                                
+                    <div id={"pais-"+country} className="check-perso-box-bandera"></div>
+                    <div className="texto-inside-check check-cua-bandera bandera-no-selected"><img alt={country+"-icon"} src={country} className="icon-country"></img></div>
+                </label>  
+            )
+        }
+    }
+
 
     render(){ 
 
@@ -33,11 +122,18 @@ class VerService extends Component{
             slidesToShow: 1,
             slidesToScroll: 1
         };
+
+        
+
         return(
             <div className="d-flex  p-out">
                 <form className="flex-column" style={{width: "100%"}}>
-                    <div className="p-2 centrar-text centrar headerTitulo" id="titulo-header">Sara Lacaour · 28 años</div>                    
-                    <div  className="p-2 image-ca">
+                    <input type="hidden" id="serviceID" name="serviceID" value={this.state.datos.id} />
+                    <input type="hidden" id="userID" name="userID" value={this.state.datos.user_id} /> 
+                    <div className="p-2 centrar-text centrar headerTitulo" id="titulo-header">
+                        {this.state.datos.userData?.name} · {(this.state.datos.userData?.date_birth != null) ? calculateAge(this.state.datos.userData?.date_birth)+ " años": "Sin Edad" } 
+                    </div>                    
+                    <div  className="p-2 image-ca">                
                         <Slider className="d-flex" {...settings}>
                             <div  className="image-ca">
                                 <img className="caja-image" alt="imagen-servi" src={require('../assets/img/imagen-card1.jpg')}></img>
@@ -47,24 +143,42 @@ class VerService extends Component{
                             </div>
                         </Slider>                       
                     </div>
-                    <div className="p-2 titutlo-servi margen-izqui">Babysister</div>
-                    <div className="p-2 margen-izqui precio-name">10 $/hora</div>
+                    <div className="p-2 titutlo-servi margen-izqui">{this.state.datos.title}</div>
+                    <div className="p-2 margen-izqui precio-name">{this.state.datos.price} $/hora</div>
                     <div className="p-2 textoSercice espacio-iz resumen">
-                    21 años. Hola soy Marta tengo 21 años. Soy una persona muy extrovertida, llevo 5 años trabajando con niños y me encanta estar con ellos. Soy una persona activa, asi que no se aburrirán conmigo, diversión asegurada! Estudio criminología en la...    <span className="subrayado">Leer más</span>
+
+                    {this.state.datos.description != undefined && <ReadMoreReact 
+                        text={this.state.datos.description}
+                        min={150}
+                        ideal={200}
+                        max={300}
+                        readMoreText={"Leer Mas"}
+                    />}
+
                     </div>
                     <div className="p-2">
                         <div className="d-flex flex-row justify-content-left">
                             <div className="p-2 ml-3">
-                                <Rating size="18px" filledColor="#ed8a19" borderColor="#ed8a19" rating={0} interactive onRatingChanged={(r) => console.log(r)}></Rating>
+                                
+                                {/* Star Reviwe component */}
+
+                                {this.state.datos.avg_rating != undefined && 
+                                <Rating 
+                                    size={18}
+                                    filledColor="#ed8a19" 
+                                    borderColor="#ed8a19" 
+                                    rating={this.state.datos.avg_rating}
+                                /> }
+
                             </div>
                             <div className="p-2">
-                                <div className="counter-star">30</div>
+                                <div className="counter-star">{this.state.datos.avg_rating}</div>
                             </div>
                             <div>
                                 <IoIosHeart className="estilo-cora"/>
                             </div>
                             <div className="counter-cora">
-                                27
+                                {this.state.datos.fav_count}
                             </div>
                         </div>                        
                     </div>
@@ -100,109 +214,23 @@ class VerService extends Component{
                             </div>
                         </div>
                         <div className="d-flex flex-row justify-content-center">
-                            <label className="cuadro-check-box">                                
-                                <div  id="lunes-maña" name="lunes-maña"  className="check-perso-box"></div>
-                                <div className="texto-inside-check check-cua person-service-no-selected">mañana</div>
-                            </label>
-
-                            <label className="cuadro-check-box">                                
-                                <div  id="martes-maña" name="martes-maña"  className="check-perso-box"></div>
-                                <div className="texto-inside-check check-cua person-service-no-selected">mañana</div>
-                            </label>
-
-                            <label className="cuadro-check-box">                                
-                                <div  id="mierco-maña" name="mierco-maña"  className="check-perso-box"></div>
-                                <div className="texto-inside-check check-cua person-service-selected">mañana</div>
-                            </label>
-
-                            <label className="cuadro-check-box">                                
-                                <div  id="jueves-maña" name="jueves-maña"  className="check-perso-box"></div>
-                                <div className="texto-inside-check check-cua person-service-selected">mañana</div>
-                            </label>
-
-                            <label className="cuadro-check-box">                                
-                                <div  id="viernes-maña" name="viernes-maña"  className="check-perso-box"></div>
-                                <div className="texto-inside-check check-cua person-service-no-selected">mañana</div>
-                            </label>
-
-                            <label className="cuadro-check-box">                                
-                                <div  id="sabado-maña" name="sabado-maña"  className="check-perso-box"></div>
-                                <div className="texto-inside-check check-cua person-service-no-selected">mañana</div>
-                            </label>
-
-                            <label className="cuadro-check-box">                                
-                                <div  id="domingo-maña" name="domingo-maña"  className="check-perso-box"></div>
-                                <div className="texto-inside-check check-cua person-service-no-selected">mañana</div>
-                            </label>
-                          
+                            {this.state.listaDays.map( (currentDay) => {
+                                return this.generator_check_days(currentDay, "mañana", "mor", this.state.datos)
+                            })}                            
                         </div>
 
                         <div className="d-flex flex-row justify-content-center">
-
-                            <label className="cuadro-check-box">                                
-                                <div  id="lunes-tarde" name="lunes-tarde"  className="check-perso-box"></div>
-                                <div className="texto-inside-check check-cua person-service-no-selected">mañana</div>
-                            </label>
-
-                            <label className="cuadro-check-box">                                
-                                <div  id="martes-tarde" name="martes-tarde"  className="check-perso-box"></div>
-                                <div className="texto-inside-check check-cua person-service-selected">mañana</div>
-                            </label>
-
-                            <label className="cuadro-check-box">                                
-                                <div  id="mierco-tarde" name="mierco-tarde"  className="check-perso-box"></div>
-                                <div className="texto-inside-check check-cua person-service-no-selected">mañana</div>
-                            </label>
-
-                            <label className="cuadro-check-box">                                
-                                <div  id="jueves-tarde" name="jueves-tarde"  className="check-perso-box"></div>
-                                <div className="texto-inside-check check-cua person-service-selected">mañana</div>
-                            </label>
-
-                            <label className="cuadro-check-box">                                
-                                <div  id="viernes-tarde" name="viernes-tarde"  className="check-perso-box"></div>
-                                <div className="texto-inside-check check-cua person-service-no-selected">mañana</div>
-                            </label>
-
-                            <label className="cuadro-check-box">                                
-                                <div  id="sabado-tarde" name="sabado-tarde"  className="check-perso-box"></div>
-                                <div className="texto-inside-check check-cua person-service-no-selected">mañana</div>
-                            </label>
-
-                            <label className="cuadro-check-box">                                
-                                <div  id="domingo-tarde" name="domingo-tarde"  className="check-perso-box"></div>
-                                <div className="texto-inside-check check-cua person-service-no-selected">mañana</div>
-                            </label>
-                         
+                            {this.state.listaDays.map( (currentDay) => {
+                                return this.generator_check_days(currentDay, "tarde", "eve", this.state.datos)
+                            })}                         
                         </div>
                     </div>
                     <div className="p-2 textoSercice espacio-iz mt-4 mini-sub-title">Idiomas</div>
                     <div className="p-2 centro-medio">
                         <div className="d-flex flex-row ml-4">
-                            <label className="cuadro-check-box-bandera">                                
-                                <div id="pais-spain" className="check-perso-box-bandera"></div>
-                                <div className="texto-inside-check check-cua-bandera bandera-selected"><img alt="spain-icon" src={spain} className="icon-country"></img></div>
-                            </label>
-
-                            <label className="cuadro-check-box-bandera">                                
-                                <div  id="pais-uss" className="check-perso-box-bandera"></div>
-                                <div className="texto-inside-check check-cua-bandera bandera-no-selected"><img alt="spain-icon" src={uss} className="icon-country"></img></div>
-                            </label>
-                            
-                            <label className="cuadro-check-box-bandera">                                
-                                <div id="pais-france" className="check-perso-box-bandera"></div>
-                                <div className="texto-inside-check check-cua-bandera bandera-selected"><img alt="spain-icon" src={france} className="icon-country"></img></div>
-                            </label>
-                            
-                            <label className="cuadro-check-box-bandera">                                
-                                <div  id="pais-italy" className="check-perso-box-bandera"></div>
-                                <div className="texto-inside-check check-cua-bandera bandera-selected"><img alt="spain-icon" src={italy} className="icon-country"></img></div>
-                            </label>
-                            
-                            <label className="cuadro-check-box-bandera">                                
-                                <div  id="pais-germany" className="check-perso-box-bandera"></div>
-                                <div className="texto-inside-check check-cua-bandera bandera-no-selected"><img alt="spain-icon" src={germany} className="icon-country"></img></div>
-                            </label>                       
+                            {this.state.listaLenguage.map( (currentCountry, index) => {
+                                return this.generador_check_lenCountry(currentCountry, this.state.listaCountry[index] ,this.state.datos)
+                            } )}                      
                         </div>
                     </div>
                     <div className="p-2 textoSercice espacio-iz mt-3 mini-sub-title">Valoraciones</div>
