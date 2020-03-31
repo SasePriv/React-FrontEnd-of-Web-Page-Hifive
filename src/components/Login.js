@@ -53,7 +53,7 @@ class Login extends Component{
         const password = this.state.form.password
 
         axios
-        .post('http://192.168.1.8:3008/login', {primary_key_type, email, password})
+        .post('/login', {primary_key_type, email, password})
         .then(res => {
             if (res.data.response) {
                 sessionStorage.setItem('userData', JSON.stringify(res.data.data))

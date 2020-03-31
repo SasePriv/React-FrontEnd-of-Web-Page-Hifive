@@ -4,13 +4,17 @@ import Slider from "react-slick";
 import Rating from 'react-star-review';
 import { IoIosHeart } from 'react-icons/io';
 import ReadMoreReact from 'read-more-react';
+import {Redirect} from 'react-router-dom'
 import { calculateAge } from './functions/calculateAge'
+import axios from 'axios'
+import ArrowBack from './ArrowBack'
 
 import './styles/newservice.css'
 import './styles/verServicio.css'
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+import papelera from '../assets/svg/papelera.svg'
 import caraBoy from '../assets/svg/cara-boy.svg'
 import niña from '../assets/svg/niña.svg'
 import simMas from '../assets/svg/mas.svg'
@@ -25,23 +29,71 @@ class VerService extends Component{
     constructor(props){
         super(props);
         this.state = {
+            user_id: "",
+            service_id: "",
             datos: {},
             listaDays: ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
             listaLenguage: ["spanish", "english", "french", "italian", "german"],
-            listaCountry: [spain, uss, france, italy, germany]
+            listaCountry: [spain, uss, france, italy, germany],
+            error: "",
+            edit: false
         }
 
     }
 
-    componentDidMount(){
-        const { currentData } = this.props.location.state
-        // console.log(currentData)
-        this.setState({
-            datos: currentData
-        })
+    UNSAFE_componentWillMount = () =>{
+        if (!sessionStorage.getItem("userData")) {
+          this.setState({
+              redirect: true
+          })
+        }else{
+          const datosStorage = JSON.parse(sessionStorage.getItem('userData'))
+          this.setState({
+            user_id: datosStorage.id
+          })
+
+          const idservice  = this.props.match.params.id
+
+            this.setState({
+                service_id: idservice
+            })
+
+        //    if (datosStorage.id == currentData.user_id) {
+        //        this.setState({
+        //            edit: true
+        //        })
+        //    } 
+        }
+      }
+
+    async componentDidMount(){
+       await this.fetchInfoServices() 
 
 
         
+    }
+
+    fetchInfoServices = async () => {
+
+        const service_id = this.state.service_id
+
+        try {
+            axios
+            .post('/getSingleServices', { service_id })
+            .then(res => {
+            if (res.data.response) {
+                this.setState({
+                datos: res.data.data,
+                })
+            }else{
+                this.setState({
+                error: res.data.message
+                })
+            }   
+            })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     calculate_age = (dob1) => {
@@ -112,8 +164,31 @@ class VerService extends Component{
         }
     }
 
+    generadorTitulo = (datos) => {
+        if (!this.state.edit) {
+            if (datos.userData?.date_birth != null) {
+                return " · "+calculateAge(datos.userData?.date_birth)+ " años"
+            } else {
+                return " · Sin Edad"
+            }
+        }
+    }
+
 
     render(){ 
+
+        if (!this.state.edit) {
+            if (this.state.user_id == this.state.datos.user_id) {
+                this.setState({
+                    edit: true
+                })
+            }  
+        }
+
+        if (this.state.redirect) {
+            return (<Redirect to="/login" />)
+        }
+      
 
         var settings = {
             dots: true,
@@ -123,16 +198,22 @@ class VerService extends Component{
             slidesToScroll: 1
         };
 
-        
+        console.log(this.state.error)
 
         return(
             <div className="d-flex  p-out">
                 <form className="flex-column" style={{width: "100%"}}>
                     <input type="hidden" id="serviceID" name="serviceID" value={this.state.datos.id} />
                     <input type="hidden" id="userID" name="userID" value={this.state.datos.user_id} /> 
-                    <div className="p-2 centrar-text centrar headerTitulo" id="titulo-header">
-                        {this.state.datos.userData?.name} · {(this.state.datos.userData?.date_birth != null) ? calculateAge(this.state.datos.userData?.date_birth)+ " años": "Sin Edad" } 
-                    </div>                    
+                    <div className="p-2">
+                        <ArrowBack />
+                        <div className="papelera"><img alt="papelera" src={papelera} /></div>   
+                        <div className="centrar-text centrar headerTitulo" id="titulo-header">
+                            {/* {this.state.datos.userData?.name+" "}  */}
+                            {this.state.edit ? "Editar servicio": this.state.datos.userData?.name}
+                            {this.generadorTitulo(this.state.datos)}
+                        </div>                                         
+                    </div>
                     <div  className="p-2 image-ca">                
                         <Slider className="d-flex" {...settings}>
                             <div  className="image-ca">
@@ -253,7 +334,7 @@ class VerService extends Component{
                             </div>
                             <div className="p-2">
                                 <div className="titulo-valora">Jannie Sky</div>
-                                <Rating size="18px" filledColor="#ed8a19" borderColor="#ed8a19" rating={0} interactive onRatingChanged={(r) => console.log(r)}></Rating>
+                                <Rating size={18} filledColor="#ed8a19" borderColor="#ed8a19" rating={0}></Rating>
                             </div>
                         </div>
                         <div className="texto-dentro-valo">
@@ -262,7 +343,7 @@ class VerService extends Component{
                     </div>
                     <div className="p-2 texto-de-ver-mas">Ver más</div>
                     <div className="p-2 centro-medio">
-                        <button className="btn-crear-serv">Chat</button>
+                        {this.state.edit ? <button className="btn-crear-serv">Editar servicio</button> : <button className="btn-crear-serv">Chat</button>}
                     </div>
                 </form>
             </div>

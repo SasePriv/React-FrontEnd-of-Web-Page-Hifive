@@ -189,3 +189,15 @@ color: #929292;
 
     color: #4285F4;
 }
+
+#titulo-header{
+    margin-bottom: 0px !important;
+}
+
+.papelera{
+    margin-top: 2px;
+    position: absolute;
+    cursor: pointer;
+    right: 0;
+    margin-right: 10px;
+}

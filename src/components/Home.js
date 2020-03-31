@@ -33,7 +33,7 @@ class Home extends Component{
 
   fetchInfo = async () => {
     try {
-      axios.get('http://localhost:3008/getAllServices').then(res => {
+      axios.get('/getAllServices').then(res => {
         this.setState({
           info: res.data.data
         })

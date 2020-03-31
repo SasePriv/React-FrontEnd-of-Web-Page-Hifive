@@ -17,6 +17,7 @@ import NewEvent from './components/NewEvent'
 
 
 function App() {
+
   return (
       <BrowserRouter>
         <Route exact path="/home" component={Home} />

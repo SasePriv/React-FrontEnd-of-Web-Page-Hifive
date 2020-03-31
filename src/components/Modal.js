@@ -1,31 +1,72 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { isMobile } from 'react-device-detect';
+import { logout } from './functions/logout'
 
 import './styles/Modal.css';
 
-const Modal = (props) => {
-    return (
-        <div>
-            <div className="modal-wrapper"
-                style={{
-                    transform: props.show ? 'translateY(0vh)' : 'translateY(-100vh)',
-                    opacity: props.show ? '1' : '0'
-                }}>
-                <div className="modal-header">
-                    <h3>Opciones</h3>
-                    <span className="close-modal-btn" onClick={props.close}>×</span>
-                </div>
-                <div className="modal-body">
-                    <div className="eleccion">Cerrar Sesión</div>
-                    <div  tabIndex="1" className="eleccion eli">Eliminar mi cuenta permanentemente</div>
-                </div>
-                
-                <button className="btn-confirmar-modal">Confirmar</button>
+class Modal extends Component{
 
-                    {/* <button className="btn-cancel" onClick={props.close}>CLOSE</button> */}
-                
+    constructor(props){
+        super(props)
+        this.state = {
+            showButton: false,
+            currentSelect: ""
+        }
+    }
+
+    handleEnableButton = (e) =>{
+        this.setState({
+            showButton: true,
+            currentSelect: e.target.tabIndex
+        })
+    }
+
+    handleDisablebutton = () =>{
+        this.setState({
+            showButton: false
+        })
+    }
+
+    handleButtonAction = () =>{
+        if(this.state.currentSelect == 1){
+            logout()
+        }else{
+            console.log("eliminacion")
+        }
+    }
+
+    render(){
+        return (
+            <div>
+                <div className="modal-wrapper"
+                    // onClick={this.handleDisablebutton}
+                    style={{
+                        transform: this.props.show ? 'translateY(0vh)' : 'translateY(-100vh)',
+                        opacity: this.props.show ? '1' : '0'
+                    }}>
+
+                    <div className="modal-header" onClick={this.handleDisablebutton}>
+                        <h3>Opciones</h3>
+                        <span className="close-modal-btn" onClick={this.props.close}>×</span>
+                    </div>
+                    <div className="modal-body">
+                        <div tabIndex="1" onClick={this.handleEnableButton} className="eleccion eli">Cerrar Sesión</div>
+                        <div tabIndex="2" onClick={this.handleEnableButton} className="eleccion eli">Eliminar mi cuenta permanentemente</div>
+                        <div 
+                            className="div-green-colo" 
+                            onClick={this.handleDisablebutton}
+                            style={isMobile ? {height: "26vh"} : {height: "22vh"}}    
+                        />
+                    </div>
+
+                    <form onSubmit={this.handleButtonAction}>
+                        {(this.state.showButton == true) ? <button type="submit" className="btn-confirmar-modal">Confirmar</button>: null}
+                    </form>
+                    
+                </div>
             </div>
-        </div>
-    )
+        )
+    }
 }
 
 export default Modal;
