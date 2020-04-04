@@ -15,12 +15,16 @@ class Home extends Component{
     this.state = {
       auth: false,
       info: [],
-      error: null
+      error: null,
+      latitude: '',
+      longitude: '',
+      url: "https://hifive.es/hifive-rest-api/public/serviceImages/"
     }
   }
   
   async componentDidMount(){
     await this.fetchInfo();
+    this.getMyLocation()
   }
 
   componentWillMount = () =>{
@@ -33,7 +37,7 @@ class Home extends Component{
 
   fetchInfo = async () => {
     try {
-      axios.get('/getAllServices').then(res => {
+      await axios.get('/getAllServices').then(res => {
         this.setState({
           info: res.data.data
         })
@@ -43,6 +47,22 @@ class Home extends Component{
           error
         })
     }
+  }
+
+  getMyLocation =() => {
+    const location = window.navigator && window.navigator.geolocation
+    
+    if (location) {
+      location.getCurrentPosition((position) => {
+        this.setState({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        })
+      }, (error) => {
+        this.setState({ latitude: 'err-latitude', longitude: 'err-longitude' })
+      })
+    }
+
   }
 
   mostrar(){
@@ -62,7 +82,10 @@ class Home extends Component{
     }
   }
 
+
   render(){
+
+    console.log("Latitude: "+this.state.latitude+ ", Longitude: "+this.state.longitude)
 
     return (
       <div className="d-flex justify-content-center flex-column p-out">
@@ -84,6 +107,7 @@ class Home extends Component{
               <Content 
                 data={this.state.info}
                 auth={this.state.auth}
+                url={this.state.url}
               />
               {this.mostrar()}
             </div>

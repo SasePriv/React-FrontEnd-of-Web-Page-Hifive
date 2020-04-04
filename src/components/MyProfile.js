@@ -3,11 +3,11 @@ import { FaEllipsisV, FaRegHandScissors } from 'react-icons/fa';
 import Rating from 'react-star-review';
 import { IoIosHeart } from 'react-icons/io';
 import { calculateAge } from './functions/calculateAge'
-import Modal from './Modal'
+import Modal from './modals/Modal'
 import Bar from './Bar';
 import axios from 'axios'
 import ArrowBack from './ArrowBack'
-import {Redirect} from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 import { isMobile } from 'react-device-detect';
 
 import smile from '../assets/svg/smile-perfil.svg'
@@ -199,15 +199,15 @@ class MyProfile extends Component{
     }
   }
 
-  prueba = () =>{
-    console.log("prueba")
+  arrowBackButton = () =>{
+    this.props.history.goBack()
   }
 
   generadorPerfil(data){
       return (
             <div>
               <div className="p-2 d-flex caja-titulo-perfil">
-                <div onClick={this.handleBack}><ArrowBack/></div>
+                <div onClick={this.arrowBackButton}><ArrowBack/></div>
                 <div className="centrar ti-perf fin-title ">Mi perfil</div>
                 <div className="ti-perf"><FaEllipsisV className="click-mode" onClick={this.openModalHandler} /></div>
               </div>
@@ -241,12 +241,14 @@ class MyProfile extends Component{
   eachService = (each) =>{
     return(
       <div key={each.id}>
+        <Link className="hover-no" to={"/viewService/"+each.id}>
         <input type="hidden" id="serviceID" name="serviceID" value={each.id}/>
         <div className={"p-2 titutlo-servi margen-izqui change-tama "+ this.estadoDesac(each.status)}>{each.title}</div>
         <div className={"p-2 margen-izqui precio-name change-tama2 "+ this.estadoDesac(each.status)}>{each.price} $/hora</div>
         <div className={"p-2 textoSercice espacio-iz resumen change-tama2 "+ this.estadoDesac(each.status)}>
           {this.shortText(each.description)}
         </div>
+        </Link>
         <div className="p-2">
             <div className="d-flex flex-row justify-content-left">
                 <div className={"p-2 ml-3 "+ this.estadoDesac(each.status)}>

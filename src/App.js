@@ -14,19 +14,23 @@ import NewService from './components/NewService'
 import VerServicio from './components/VerServicio'
 import MyProfile from './components/MyProfile'
 import NewEvent from './components/NewEvent'
+import Pruebas from './components/Pruebas'
 
 
 function App() {
 
   return (
-      <BrowserRouter>
-        <Route exact path="/home" component={Home} />
+      <BrowserRouter>                
         <Route exact path="/viewService/:id" component={VerServicio} />
-        <Route exact path="/myprofile/:userID" component={MyProfile} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Register} />
         <Route exact path="/myprofile" component={MyProfile} />
+        <Route exact path="/newservice" component={NewService} />
+        <Route exact path="/editservice/:id" component={NewService} />
+        <Route exact path="/pruebas" component={Pruebas} />
+        <Route exact path="/" component={Home} />
       </BrowserRouter>      
+      // <NewService></NewService>
   );
 }
 

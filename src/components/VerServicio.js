@@ -1,10 +1,11 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import Slider from "react-slick";
 import Rating from 'react-star-review';
 import { IoIosHeart } from 'react-icons/io';
 import ReadMoreReact from 'read-more-react';
-import {Redirect} from 'react-router-dom'
+import { Redirect, Link} from 'react-router-dom'
+import ModalService from './modals/ModalService'
 import { calculateAge } from './functions/calculateAge'
 import axios from 'axios'
 import ArrowBack from './ArrowBack'
@@ -36,9 +37,12 @@ class VerService extends Component{
             listaLenguage: ["spanish", "english", "french", "italian", "german"],
             listaCountry: [spain, uss, france, italy, germany],
             error: "",
-            edit: false
+            edit: false,
+            isShowing: false,
+            hide: "none",
+            url: "https://hifive.es/hifive-rest-api/public/serviceImages/",
+            imageFirst: true
         }
-
     }
 
     UNSAFE_componentWillMount = () =>{
@@ -164,6 +168,13 @@ class VerService extends Component{
         }
     }
 
+    closeModalHandler = () => {
+        this.setState({
+            isShowing: false,
+            hide: "none"
+        });
+    }
+
     generadorTitulo = (datos) => {
         if (!this.state.edit) {
             if (datos.userData?.date_birth != null) {
@@ -174,6 +185,22 @@ class VerService extends Component{
         }
     }
 
+    arrowBackButton = () =>{
+        this.props.history.goBack()
+    }
+
+    handleSubmit = () =>{
+        if(this.state.edit){
+
+        }
+    }
+
+    openModalHandler = () => {
+        this.setState({
+            isShowing: true,
+            hide: ""
+        });
+    }
 
     render(){ 
 
@@ -197,36 +224,53 @@ class VerService extends Component{
             slidesToShow: 1,
             slidesToScroll: 1
         };
-
-        console.log(this.state.error)
+        
+        console.log(this.state.datos.serviceImage?.length)
 
         return(
             <div className="d-flex  p-out">
-                <form className="flex-column" style={{width: "100%"}}>
-                    <input type="hidden" id="serviceID" name="serviceID" value={this.state.datos.id} />
-                    <input type="hidden" id="userID" name="userID" value={this.state.datos.user_id} /> 
+                <form onSubmit={this.handleSubmit} className="flex-column" style={{width: "100%"}}>
+                    <input type="hidden" id="serviceID" name="serviceID" value={this.state.datos.id} autofocus />
+                    <input type="hidden" id="userID" name="userID" value={this.state.datos.user_id} />
+
+                    { this.state.isShowing ? <div onClick={this.closeModalHandler} className="back-drop"></div> : null }
+
                     <div className="p-2">
-                        <ArrowBack />
-                        <div className="papelera"><img alt="papelera" src={papelera} /></div>   
+                        <div onClick={this.arrowBackButton}><ArrowBack /></div>
+                        {this.state.edit ? <div onClick={this.openModalHandler} className="papelera"><img alt="papelera" src={papelera} /></div>: null }                         
                         <div className="centrar-text centrar headerTitulo" id="titulo-header">
                             {/* {this.state.datos.userData?.name+" "}  */}
                             {this.state.edit ? "Editar servicio": this.state.datos.userData?.name}
                             {this.generadorTitulo(this.state.datos)}
                         </div>                                         
                     </div>
-                    <div  className="p-2 image-ca">                
-                        <Slider className="d-flex" {...settings}>
-                            <div  className="image-ca">
-                                <img className="caja-image" alt="imagen-servi" src={require('../assets/img/imagen-card1.jpg')}></img>
-                            </div>
-                            <div>
-                                <img className="caja-image" alt="imagen-servi" src={require('../assets/img/imagen-card2.jpg')}></img>
-                            </div>
-                        </Slider>                       
+                    
+                    <div className="p-2 image-ca" style={ this.state.isShowing ? {opacity: "0.5"} : null}>   
+                    {  this.state.datos.serviceImage?.length > 1 ?                                 
+                        <Slider className="d-flex" {...settings}>                            
+                            {this.state.datos.serviceImage?.map( (eachImage) =>{    
+                                this.setState({imageFirst: false})                            
+                                return(
+                                    <div className={this.state.imageFirst ? "image-ca" : null}>                                        
+                                        <img className="caja-image" alt="imagen-servi" src={(this.state.url + eachImage.attachment)}></img>
+                                    </div>
+                                )
+                            } )}
+                        </Slider> 
+                        :
+                        null
+                    }
                     </div>
+                    {  this.state.datos.serviceImage?.length == 1 ? 
+                    <div className={this.state.imageFirst ? "image-ca" : null}>                        
+                        <img className="caja-image" alt="imagen-servi" src={(this.state.url + this.state.datos.serviceImage[0].attachment)}></img>
+                    </div>
+                    : null}
+
                     <div className="p-2 titutlo-servi margen-izqui">{this.state.datos.title}</div>
                     <div className="p-2 margen-izqui precio-name">{this.state.datos.price} $/hora</div>
                     <div className="p-2 textoSercice espacio-iz resumen">
+
 
                     {this.state.datos.description != undefined && <ReadMoreReact 
                         text={this.state.datos.description}
@@ -239,7 +283,7 @@ class VerService extends Component{
                     </div>
                     <div className="p-2">
                         <div className="d-flex flex-row justify-content-left">
-                            <div className="p-2 ml-3">
+                            <div className="p-2 ml-3" style={ this.state.isShowing ? {opacity: "0.5"} : null}>
                                 
                                 {/* Star Reviwe component */}
 
@@ -263,6 +307,9 @@ class VerService extends Component{
                             </div>
                         </div>                        
                     </div>
+
+                    
+
                     <div className="p-2 textoSercice espacio-iz mini-sub-title">¿Dónde?</div>
                     <div className="p-2 margen-izqui texto-dire">28109 Madrid</div>
                     <div className="p-2 justify-content-center">
@@ -343,8 +390,19 @@ class VerService extends Component{
                     </div>
                     <div className="p-2 texto-de-ver-mas">Ver más</div>
                     <div className="p-2 centro-medio">
-                        {this.state.edit ? <button className="btn-crear-serv">Editar servicio</button> : <button className="btn-crear-serv">Chat</button>}
-                    </div>
+                        {this.state.edit ? 
+                        <Link to={"/editservice/"+this.state.datos.id}><button className="btn-crear-serv">Editar servicio</button></Link> 
+                        : 
+                        <button className="btn-crear-serv">Chat</button>
+                        }
+                    </div>  
+
+                    <div style={{display: this.state.hide}}>          
+                    <ModalService
+                        show={this.state.isShowing}
+                        close={this.closeModalHandler}
+                    />                    
+                    </div>                  
                 </form>
             </div>
         )

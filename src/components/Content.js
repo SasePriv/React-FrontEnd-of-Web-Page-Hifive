@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import { Link } from 'react-router-dom'
+import ImageLoader  from './ImageLoader.js';
+import LazyLoad from 'react-lazy-load';
+
 import './styles/Content.css'
 
 import { home } from '../assets/datos_prueba.json'
@@ -26,10 +29,20 @@ class Content extends Component{
                                 }}>
                                     <input type="hidden" id="serviceID" name="serviceID" value={currentData.id} />
                                     <input type="hidden" id="userID" name="userID" value={currentData.user_id} />
-                                    <img className="card-img-top" alt={currentData.alt} src={require("../assets/img/imagen-card1.jpg")}></img>
+                                    <LazyLoad 
+                                        width={288}
+                                        height={216}
+                                        debounce={false}
+                                        offsetVertical={250}
+                                        
+                                    >
+                                    <div className="img-container">
+                                        <ImageLoader className="card-img-top" alt={currentData.alt} src={(this.props.url+currentData.serviceImage[0].attachment)} />
+                                    </div>
+                                    </LazyLoad>
                                     <div className="card-body card-mod-text">
                                         <h6 className="card-text mt-1 font-weight-bold">{currentData.title}</h6>
-                                        <p className="card-text font-weight-bold">{currentData.price}$/h · <span className="texto-dis">25 km de mi</span></p>
+                                        <p className="card-text font-weight-bold">{currentData.price}€/h · <span className="texto-dis">25 km de mi</span></p>
                                     </div>
                                 </Link>
                             </div>

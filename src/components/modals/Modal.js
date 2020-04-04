@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { isMobile } from 'react-device-detect';
-import { logout } from './functions/logout'
+import { logout } from '../functions/logout'
 
-import './styles/Modal.css';
+import '../styles/Modal.css';
 
 class Modal extends Component{
 
