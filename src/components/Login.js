@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios'
-import {Redirect} from 'react-router-dom'
+import {Redirect, Link} from 'react-router-dom'
 import './styles/register.css'
 import './styles/Login.css'
 import loginImg from '../assets/svg/logo_vec.svg';
@@ -23,7 +23,7 @@ class Login extends Component{
         }
     }
 
-    componentWillMount = () =>{
+    UNSAFE_componentWillMount = () =>{
         if (sessionStorage.getItem("userData")) {
             this.setState({
                 redirect: true
@@ -52,7 +52,7 @@ class Login extends Component{
         const email = this.state.form.email
         const password = this.state.form.password
 
-        axios
+        await axios
         .post('/login', {primary_key_type, email, password})
         .then(res => {
             if (res.data.response) {
@@ -139,6 +139,7 @@ class Login extends Component{
                             <img className="icon-input"src={emailImg}></img>
                         </fieldset>
                         {this.handleError(3, "Email Incorrecto", 1)}
+                        {this.handleError(1, "Por favor verifique el correo", 1)}
                     </div>
                     <div className="form-group">
                         <fieldset id="contra" className={"border scheduler-border "+ this.handleError(2,"", 0)}>
@@ -147,8 +148,8 @@ class Login extends Component{
                         </fieldset>
                         {this.handleError(2, "Contraseña Incorrecta", 1)}
                     </div>
-                    <div className="texto-desing texto-inicio ancho"><a href="#">¿Has olvidado la contraseña? Recupérala</a></div>
-                    <div className="texto-desing texto-inicio" id="inicio2"><a href="#">¿No tienes cuenta? Registrate</a></div>
+                    <div className="texto-desing texto-inicio ancho"><Link to="/recoveringpassword">¿Has olvidado la contraseña? Recupérala</Link></div>
+                    <div className="texto-desing texto-inicio" id="inicio2"><Link to="/signup">¿No tienes cuenta? Registrate</Link></div>
                     <div className="form-group">
                         <button type="submit" id="btn-submit" className="btn btn-desing texto-desing">Iniciar sesión</button>
                     </div>
@@ -161,8 +162,8 @@ class Login extends Component{
         if (this.state.opcion) {
             return (
                 <div>
-                    <div className="texto-desing texto-inicio ancho"><a href="#">¿Has olvidado la contraseña? Recupérala</a></div>
-                    <div className="texto-desing texto-inicio"><a href="#">¿No tienes cuenta? Registrate</a></div>
+                    <div className="texto-desing texto-inicio ancho"><Link to="/recoveringpassword">¿Has olvidado la contraseña? Recupérala</Link></div>
+                    <div className="texto-desing texto-inicio"><Link to="/signup">¿No tienes cuenta? Registrate</Link></div>
                 </div>
             )
         }

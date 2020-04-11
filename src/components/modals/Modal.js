@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { isMobile } from 'react-device-detect';
 import { logout } from '../functions/logout'
+import axios from 'axios'
 
 import '../styles/Modal.css';
 
@@ -9,9 +10,16 @@ class Modal extends Component{
     constructor(props){
         super(props)
         this.state = {
+            user_id: "",
             showButton: false,
             currentSelect: ""
         }
+    }
+    
+    componentDidMount = () =>{
+        this.setState({
+            user_id: this.props.userId
+        })
     }
 
     handleEnableButton = (e) =>{
@@ -27,12 +35,37 @@ class Modal extends Component{
         })
     }
 
-    handleButtonAction = () =>{
+    handleButtonAction = (e) =>{
         if(this.state.currentSelect == 1){
             logout()
-        }else{
-            console.log("eliminacion")
+        }else if(this.state.currentSelect == 2){
+            const valid = this.deleteCurrentUser()
+            if(valid){
+                logout()
+            }
         }
+    }
+
+    deleteCurrentUser = async () => {     
+        const user_id = this.state.user_id
+        try {
+            await axios 
+            .post("/deleteUser", {user_id})
+            .then(res => {
+                console.log(res)
+                if (res.data.response) {                    
+                    console.log("Se ha eliminado la cuenta")
+                    return true
+                } else {
+                    console("Error")
+                    return false
+                }
+            })
+        } catch (error) {
+            console.log(error)
+            return false
+        }   
+        return true
     }
 
     render(){

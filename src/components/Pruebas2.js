@@ -1,18 +1,14 @@
 import React, { Component } from 'react';
 import { GOOGLE_API_KEY } from '../googleApiKey.js'
-import  Map from './Map'
+import  Map2 from './Map2'
 import { GoogleMap } from 'react-google-maps';
 
-class Pruebas extends Component {
+class Pruebas2 extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
-            latitude: "",
-            longitude: "",
-            userAddress: ""
-         }
-        this.getLocation = this.getLocation.bind(this)
-        this.getReverseGeoCoordinates = this.getReverseGeoCoordinates.bind(this)
+        this.state = {             
+        }
+
     }
 
     getLocation() {
@@ -64,38 +60,15 @@ class Pruebas extends Component {
     render() { 
         return ( 
             <div>
-                <button onClick={this.getLocation}>prueba</button>
-                <br></br>
-                <label>Latitude: </label>
-                <label>{this.state.latitude}</label>
-                <br></br>
-                <label>Longitude: </label>
-                <label>{this.state.longitude}</label>
-                <br></br>
-                <label>Address: </label>
-                <label>{this.state.userAddress}</label>
-
-
-                <div>
-                    {this.state.latitude && this.state.longitude ?
-                    <img 
-                    src={`https://maps.googleapis.com/maps/api/staticmap?center=${this.state.latitude},${this.state.longitude}&zoom=14&size=400x300&sensor=false&markers=color:red%7C${this.state.latitude},${this.state.longitude}&key=${GOOGLE_API_KEY}`} 
-                    alt='map' />
-                    :
-                    null
-                    }
-                </div>
-
-                <Map
-                    googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&key=${GOOGLE_API_KEY}`} 
-                    containerElement= {<div style={{height: '400px'}}/>}
-                    mapElement={<div style={{height: '100%'}} />}
-                    loadingElement={<p>Cargando</p>}
+                <Map2
+                    google={this.props.google}
+                    center={{lat: 18.5204, lng: 73.8567}}
+                    height='300px'
+                    zoom={15}
                 />
-
             </div>
          );
     }
 }
  
-export default Pruebas;
+export default Pruebas2;

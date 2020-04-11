@@ -6,6 +6,10 @@
     all: initial;
 }
 
+.abajo-margen{
+    margin-bottom: 100px;
+}
+
 @media only screen and (max-width: 768px) {
     /* For mobile phones: */
     .ajust-size{
@@ -29,4 +33,20 @@
 .settings-button{
   margin-top: 25px;
   width: 20px;
+}
+
+.error-message-geo{
+  position: absolute;
+  right: 0;
+  left: 0;
+  text-align: center;
+  margin-top: 150px;
+
+  font-family: Quicksand;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 20px;
+
+  color: #000;
 }

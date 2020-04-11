@@ -21,6 +21,8 @@ class MyProfile extends Component{
     super();
     this.state = {
       user_id: "",
+      file_url: null,
+      file: null,
       datos: {},
       servicios: [],
       isShowing: false,
@@ -33,11 +35,15 @@ class MyProfile extends Component{
         date_birth: ""
       },
       editShowing: false,
-      sucesMessage: ""
+      sucesMessage: "",
+      url: "https://hifive.es/hifive-rest-api/public/userProfileImages/",
+      progress: "",
+      progress_status: "none"
     }
   }
 
   UNSAFE_componentWillMount = () =>{
+    console.log(sessionStorage.getItem("userData"))
     if (!sessionStorage.getItem("userData")) {
       this.setState({
           redirect: true
@@ -60,7 +66,7 @@ class MyProfile extends Component{
     const user_id = this.state.user_id
 
     try {
-        axios
+      await  axios
       .post('/getUserDetails', { user_id })
       .then(res => {
         if (res.data.response) {
@@ -84,8 +90,11 @@ class MyProfile extends Component{
   }
 
   handleSubmitEdit = async (e) =>{
-
     e.preventDefault()
+
+    if (this.state.file) {
+      this.handleUploadImage()
+    }
 
     const user_id = this.state.user_id
     const name = this.state.form.name
@@ -110,6 +119,33 @@ class MyProfile extends Component{
       console.log(error)
     }
 
+  }
+
+  handleUploadImage = async () =>{
+    let data = new FormData
+
+    const file = this.state.file
+    const user_id = this.state.user_id
+
+    data.append('profile_image', file)
+
+    try {
+      await axios
+        .post('/addUserImage/'+user_id, data , {
+            onUploadProgress: progressEvent =>{
+              this.setState({
+                progress_status: "unset",
+                progress: Math.round(progressEvent.loaded / progressEvent.total *100)                
+              })
+            }
+        })
+        .then(res => {
+          console.log(res)
+          this.fetchInfoServices()
+        })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   handleActiServi = async (idService) =>{
@@ -182,6 +218,8 @@ class MyProfile extends Component{
       })
     } else {
       this.setState({
+        file: null,
+        file_url: null,
         editShowing: true
       })
     }
@@ -203,6 +241,21 @@ class MyProfile extends Component{
     this.props.history.goBack()
   }
 
+  hanldeImageProfile = () => {
+    if (Object.keys(this.state.datos.userProfileImage).length != 0) {
+      return this.state.url+this.state.datos.userProfileImage?.profile_image
+    }
+  }
+
+  handleChangeInput = (e) =>{
+    if (e.target.files[0]) {
+        this.setState({
+            file_url: URL.createObjectURL(e.target.files[0]),
+            file: e.target.files[0]
+        })
+    }
+  }
+
   generadorPerfil(data){
       return (
             <div>
@@ -214,14 +267,27 @@ class MyProfile extends Component{
               <div className="p-2 p-out caja-perfil ">
                 <div className="lapiz" onClick={this.handleClick}><img alt="pencil" src={pencil}></img></div>
                 <div className="d-flex justify-content-center">
-                  <div className="circulo-foto"><img className="centro-imagen-circulo" alt="profile-iamge" src={smile}></img></div>              
+                  <div id="circulo-foto" className={"" + 
+                    Object.entries(this.state.url+this.state.datos.userProfileImage).length == 0                     
+                    ?
+                    " border-foto"
+                    :
+                    null
+                  }>
+                    {Object.entries(this.state.url+this.state.datos.userProfileImage).length == 0 
+                    ?
+                    <img className="centro-imagen-smile" alt="profile-iamge" src={smile}/>
+                    :
+                    <img className="centro-imagen-circulo" alt="profile-iamge" src={this.state.url+this.state.datos.userProfileImage?.profile_image}/>
+                    }                                       
+                  </div>              
                 </div>
                 <div className="medio">
                   {this.state.datos.name} · {(this.state.datos.date_birth != null) ? calculateAge(this.state.datos.date_birth) + " años": "Sin Edad" } 
                 </div>
               </div>
               
-              <button className="buton-crear-servi">Crear servicio </button>
+              <Link to="/newservice"><button onClick={this.handleNewService} className="buton-crear-servi">Crear servicio </button></Link>
 
               <div className={"container content-scroll "+ this._isMobile()}>
                 {
@@ -289,9 +355,19 @@ class MyProfile extends Component{
       
       <div className="p-2 editar-caja-perfil ">
         <div className="d-flex justify-content-center p-out">
-          <div className="editar-circulo-foto"><img className="centro-imagen-editar" alt="profile-iamge" src={require('../assets/img/imagen-card1.jpg')}></img></div>              
+          <div className="editar-circulo-foto">
+            {Object.entries(this.state.url+this.state.datos.userProfileImage).length == 0 
+            ?
+            <img className="centro-imagen-smile" alt="profile-iamge" src={this.state.file == null ? smile : this.state.file_url}/>
+            :
+            <img className="centro-imagen-circulo" alt="profile-iamge" src={this.state.file == null ? this.state.url+this.state.datos.userProfileImage?.profile_image : this.state.file_url}/>
+            } 
+          </div>              
         </div>
-        <div className="medio type-letra">Cambiar Foto</div>
+        <label className="labelinput">
+          <input onChange={this.handleChangeInput} type="file" placeholde="foto" className="input-stl"/>
+          <div className="medio type-letra">Cambiar Foto</div>                  
+        </label>
       </div>
       
       <form className="p-2" onSubmit={this.handleSubmitEdit}>
@@ -301,7 +377,7 @@ class MyProfile extends Component{
         </div>
         <div className="form-group">
           <label className="ne-linea label-titulos ml-4 pl-2">Mi año de nacimiento</label>          
-          <input className="entrada-input-button" type="number" min="1945" max="2019" id="date_of_birth" name="date_birth" placeholder="" value={this.state.form.date_birth.split("-",1)[0]} onChange={this.handleChange}></input>
+          <input className="entrada-input-button" type="number" min="1945" max="2019" id="date_of_birth" name="date_birth" placeholder="" value={this.state.form.date_birth != null ? this.state.form.date_birth.split("-",1)[0]: ""} onChange={this.handleChange}></input>
         </div>
         <div className="form-group">
           <button className="buton-crear-servi guardar">Guardar</button>
@@ -314,12 +390,14 @@ class MyProfile extends Component{
   render(){
 
     if (this.state.redirect) {
-      return (<Redirect to="/login" />)
+      return (<Redirect to="/" />)
     }
 
     return (
       <div className="d-flex flex-column p-out">
-
+        <div class="progress" style={{height: "2px", display: this.state.progress_status}}>
+          <div class="progress-bar" role="progressbar" style={{width: this.state.progress+"%"}} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
           { this.state.editShowing ? this.generadorEditPerfil(): this.generadorPerfil(this.state.servicios) }
 
           { this.state.isShowing ? <div onClick={this.closeModalHandler} className="back-drop"></div> : null }
@@ -327,8 +405,9 @@ class MyProfile extends Component{
           <div style={{display: this.state.hide}}>          
           <Modal
               show={this.state.isShowing}
-              close={this.closeModalHandler}>
-          </Modal>
+              close={this.closeModalHandler}
+              userId={this.state.user_id}
+          />          
           </div>
           
           { !this.state.editShowing ? <Bar></Bar>: null}

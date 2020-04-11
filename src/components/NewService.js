@@ -20,7 +20,17 @@ class NewService extends Component{
         this.state = {
             service_id: "",
             user_id: "",
-            error: "",
+            error: "",      
+            imageFile:{
+                file1: null,
+                file1Url: null,
+                file2: null,
+                file2Url: null,
+                file3: null,
+                file3Url: null,
+                file4: null,
+                file4Url: null,
+            },   
             form:{
                 title: "",
                 description: "",
@@ -176,7 +186,18 @@ class NewService extends Component{
         }
     }
 
-
+    handleChangeFile = (e) => {
+        if (e.target.files[0]) {
+            this.setState({
+                imageFile: {
+                    ...this.state.imageFile,
+                    [e.target.name]: e.target.files[0],
+                    [e.target.name+"Url"]: URL.createObjectURL(e.target.files[0])
+                }
+            })
+        }
+        console.log(e.target.files)
+    }
 
     handleChangeCheckbox = (e, day) =>{
         let temp = day
@@ -243,9 +264,13 @@ class NewService extends Component{
                                 <fieldset className="cuadro">
                                     <legend className="boton-cuadro">                                
                                         <img className="suma-icon" alt="mas" src={simMas}></img>
-                                        <input type="file"></input>
+                                        <input onChange={this.handleChangeFile}  type="file" id="1" name="file1"></input>
                                     </legend>
-                                    <img alt="caraniño" src={caraBoy} className="icono-foto"></img>                                    
+                                    <img 
+                                        alt="caraniño" 
+                                        src={ this.state.imageFile.file1 != null ? this.state.imageFile.file1Url : caraBoy} 
+                                        className={this.state.imageFile.file1 != null ? "foto-puesta" : "icono-foto"}>
+                                    </img>                                 
                                 </fieldset>
                                 
                             </div>
@@ -253,9 +278,13 @@ class NewService extends Component{
                                 <fieldset className="cuadro">
                                     <legend className="boton-cuadro">                                
                                         <img className="suma-icon" alt="mas" src={simMas}></img>
-                                        <input type="file"></input>
+                                        <input onChange={this.handleChangeFile}  type="file" id="2" name="file2"></input>
                                     </legend>
-                                    <img alt="caraniño" src={niña} className="icono-foto"></img>                                    
+                                    <img 
+                                        alt="caraniño" 
+                                        src={ this.state.imageFile.file2 != null ? this.state.imageFile.file2Url : niña} 
+                                        className={this.state.imageFile.file2 != null ? "foto-puesta" : "icono-foto"}>
+                                    </img>                                    
                                 </fieldset>
                                 
                             </div>
@@ -263,9 +292,13 @@ class NewService extends Component{
                                 <fieldset className="cuadro">
                                     <legend className="boton-cuadro">                                
                                         <img className="suma-icon" alt="mas" src={simMas}></img>
-                                        <input type="file"></input>
+                                        <input onChange={this.handleChangeFile}  type="file" id="3" name="file3"></input>
                                     </legend>
-                                    <img alt="caraniño" src={caraBoy} className="icono-foto"></img>                                    
+                                    <img 
+                                        alt="caraniño" 
+                                        src={ this.state.imageFile.file3 != null ? this.state.imageFile.file3Url : caraBoy} 
+                                        className={this.state.imageFile.file3 != null ? "foto-puesta" : "icono-foto"}>
+                                    </img>                                     
                                 </fieldset>
                                 
                             </div>
@@ -273,9 +306,13 @@ class NewService extends Component{
                                 <fieldset className="cuadro">
                                     <legend className="boton-cuadro">                                
                                         <img className="suma-icon" alt="mas" src={simMas}></img>
-                                        <input type="file"></input>
+                                        <input onChange={this.handleChangeFile}  type="file" id="4" name="file4"></input>
                                     </legend>
-                                    <img alt="caraniño" src={niña} className="icono-foto"></img>                                    
+                                    <img 
+                                        alt="caraniño" 
+                                        src={ this.state.imageFile.file4 != null ? this.state.imageFile.file4Url : niña} 
+                                        className={this.state.imageFile.file4 != null ? "foto-puesta" : "icono-foto"}>
+                                    </img>                                      
                                 </fieldset>
                                 
                             </div>

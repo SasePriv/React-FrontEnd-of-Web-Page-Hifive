@@ -30,7 +30,17 @@
 
 .icono-foto{
     margin-left: 12px;
-    margin-top: 12px;
+    margin-top: 12px;    
+}
+
+.foto-puesta{
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-top: -1px;        
+    margin-left: -1px;
+    border-radius: 20px;
+    padding: 0px; 
 }
 
 .boton-cuadro{

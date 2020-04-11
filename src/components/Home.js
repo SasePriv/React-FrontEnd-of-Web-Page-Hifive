@@ -6,13 +6,16 @@ import Bar from './Bar';
 import Settings from '../assets/svg/settings.svg'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+
 import './styles/home.css'
+import { faThList } from '@fortawesome/free-solid-svg-icons';
 
 class Home extends Component{
 
   constructor(){
     super();
     this.state = {
+      user_id: "",
       auth: false,
       info: [],
       error: null,
@@ -20,49 +23,67 @@ class Home extends Component{
       longitude: '',
       url: "https://hifive.es/hifive-rest-api/public/serviceImages/"
     }
+    
   }
   
   async componentDidMount(){
-    await this.fetchInfo();
-    this.getMyLocation()
+    if(this.state.user_id != ""){
+      navigator.geolocation.getCurrentPosition((position) => {
+        let x = position.coords.latitude;
+        let y = position.coords.longitude;
+        this.setState({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        })
+        this.fetchInfo(); 
+      },
+      (error) => {
+        console.log(error)
+        if (error.code == error.PERMISSION_DENIED)
+          this.setState({
+            error: error.code
+          })
+      });
+    }
+    
   }
 
-  componentWillMount = () =>{
+  UNSAFE_componentWillMount = () =>{    
     if (sessionStorage.getItem("userData")) {
+      const idUser = JSON.parse(sessionStorage.getItem('userData'))
       this.setState({
+          user_id: idUser.id,
           auth: true
       })
     }
   }
 
-  fetchInfo = async () => {
+  fetchInfo = async (x, y) => {
+
+    const by_user_id = this.state.user_id
+    const latitude = this.state.latitude
+    const longitude = this.state.longitude
+
     try {
-      await axios.get('/getAllServices').then(res => {
-        this.setState({
-          info: res.data.data
-        })
+      await  axios
+      .post('/getServices', { by_user_id, latitude, longitude })
+      .then(res => {
+        if (res.data.response) {
+          console.log(res)
+          this.setState({
+            info: res.data.data
+          })
+        }else{
+          console.log(res)
+          this.setState({
+            error_geo: true,
+            error: res.message
+          })
+        }
       })
     } catch (error) {
-        this.setState({
-          error
-        })
+      console.log(error)
     }
-  }
-
-  getMyLocation =() => {
-    const location = window.navigator && window.navigator.geolocation
-    
-    if (location) {
-      location.getCurrentPosition((position) => {
-        this.setState({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        })
-      }, (error) => {
-        this.setState({ latitude: 'err-latitude', longitude: 'err-longitude' })
-      })
-    }
-
   }
 
   mostrar(){
@@ -84,8 +105,9 @@ class Home extends Component{
 
 
   render(){
-
-    console.log("Latitude: "+this.state.latitude+ ", Longitude: "+this.state.longitude)
+    
+    // console.log(this.state.error)
+    // console.log("Latitude: "+this.state.latitude+ ", Longitude: "+this.state.longitude)
 
     return (
       <div className="d-flex justify-content-center flex-column p-out">
@@ -104,11 +126,19 @@ class Home extends Component{
           </div>
           <div className="p-2 order-3">
             <div>
+              {this.state.error == 1
+              ?
+              <div className="error-message-geo">Por favor active Geolocalización para continuar</div>
+              :
+              <div className="abajo-margen">
               <Content 
                 data={this.state.info}
                 auth={this.state.auth}
-                url={this.state.url}
+                url={this.state.url}      
+                
               />
+              </div>
+              }                      
               {this.mostrar()}
             </div>
           </div>
