@@ -1,111 +1,16 @@
 import React, { Component } from 'react';
 import { withGoogleMap, GoogleMap, withScriptjs, InfoWindow, Marker } from "react-google-maps";
-import Geocode from "react-geocode";
-import { GOOGLE_API_KEY } from '../googleApiKey.js'
-import Autocomplete from 'react-google-autocomplete'
 
-Geocode.setApiKey(GOOGLE_API_KEY)
-Geocode.enableDebug();
+import { GOOGLE_API_KEY } from '../googleApiKey.js'
+
+
+
 
 class Map2 extends React.Component{
     constructor( props ){
         super( props );
-        this.state = {
-        address: '',
-        mapPosition: {
-            lat: this.props.center.lat,
-            lng: this.props.center.lng
-        },
-        markerPosition: {
-            lat: this.props.center.lat,
-            lng: this.props.center.lng
-        }
-        }
     }  
-    /**
-     * Get the current address from the default map position and set those values in the state
-     */
-    componentDidMount() {
-    Geocode.fromLatLng( this.state.mapPosition.lat , this.state.mapPosition.lng ).then(
-        response => {
-            const address = response.results[0].formatted_address        
-            this.setState({
-                address: ( address ) ? address : '',
-            })
-        },
-        error => {
-            console.error(error);
-        }
-        );
-    };
-/**
-  * Component should only update ( meaning re-render ), when the user selects the address, or drags the pin
-  *
-  * @param nextProps
-  * @param nextState
-  * @return {boolean}
-  */
-    shouldComponentUpdate( nextProps, nextState ){
-        if (
-            this.state.markerPosition.lat !== this.props.center.lat ||
-            this.state.address !== nextState.address
-        ) {
-            return true
-        } else if ( this.props.center.lat === nextProps.center.lat ){
-            return false
-        }
-    }
-
-/**
-  * And function for city,state and address input
-  * @param event
-  */
-    onChange = ( event ) => {
-        this.setState({ 
-            ...this.state,
-          [event.target.name]: event.target.value 
-        });
-    };
-/**
-  * This Event triggers when the marker window is closed
-  *
-  * @param event
-  */
-     onInfoWindowClose = ( event ) => {};
-
-
-        /**
-     * When the marker is dragged you get the lat and long using the functions available from event object.
-     * Use geocode to get the address, city, area and state from the lat and lng positions.
-     * And then set those values in the state.
-     *
-     * @param event
-     */
-    onMarkerDragEnd = ( event ) => {
-        console.log( 'event', event );
-        let newLat = event.latLng.lat(),
-            newLng = event.latLng.lng(),
-            addressArray = [];
-        Geocode.fromLatLng( newLat , newLng ).then(
-            response => {
-                const address = response.results[0].formatted_address
-                this.setState( {
-                    address: ( address ) ? address : '',
-                    mapPosition: {
-                        lat: newLat,
-                        lng: newLng
-                    },
-                    markerPosition: {
-                        lat: newLat,
-                        lng: newLng
-                    }
-                } )
-            },
-            error => {
-                console.error(error);
-            }
-        );
-    };
+    
 
     /**
   * When the user types an address in the search box
@@ -129,28 +34,7 @@ class Map2 extends React.Component{
         })
     };
 
-    preuba = () =>{
-            Geocode.fromAddress("Valencia, Carabobo").then(
-                response => {
-                    const { lat, lng } = response.results[0].geometry.location;
-                    this.setState({
-                        address: "Valencia, Carabobo", 
-                        markerPosition: {
-                            lat: lat,
-                            lng: lng
-                        },
-                        mapPosition: {
-                            lat: lat,
-                            lng: lng
-                        },
-                    })
-                    console.log(lat, lng);
-                },
-                error => {
-                    console.error(error);
-                }
-            );  
-    }
+
 
 
 

@@ -30,7 +30,7 @@ function App() {
         <Route exact path="/newservice" component={NewService} />
         <Route exact path="/editservice/:id" component={NewService} />
         {/* <Route exact path="/pruebas" component={Pruebas} /> */}
-        <Route exact path="/pruebas2" component={Pruebas2} />
+        {/* <Route exact path="/pruebas2" component={Pruebas2} /> */}
         <Route exact path="/recoveringpassword" component={RecoverPass} />
         <Route exact path="/" component={Home} />
       </BrowserRouter>      

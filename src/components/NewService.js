@@ -2,6 +2,10 @@ import React, {Component} from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import axios from 'axios'
 import ArrowBack from './ArrowBack'
+import Geocode from "react-geocode";
+import Map from './Map'
+import { GOOGLE_API_KEY } from '../googleApiKey.js'
+import Autocomplete from 'react-google-autocomplete'
 
 import './styles/newservice.css'
 import caraBoy from '../assets/svg/cara-boy.svg'
@@ -13,6 +17,9 @@ import uss from '../assets/svg/uss.svg'
 import germany from '../assets/svg/germany.svg'
 import italy from '../assets/svg/italy.svg'
 import france from '../assets/svg/france.svg'
+
+Geocode.setApiKey(GOOGLE_API_KEY)
+Geocode.enableDebug();
 
 class NewService extends Component{
     constructor(){
@@ -37,8 +44,8 @@ class NewService extends Component{
                 category: "",
                 price: "",
                 address: "",
-                latitude: "",
-                longitude: "",
+                latitude: 40.416775,
+                longitude: -3.703790,
                 monday: "",
                 tuesday: "",
                 wednesday: "",
@@ -69,8 +76,11 @@ class NewService extends Component{
         }
 
         const listaDays = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        this.fetchInfoServices = this.fetchInfoServices.bind(this)
     }
 
+    // Componente que verifica si hay sesion abierta y si existe un servicio para poner el modo editar
+    
     UNSAFE_componentWillMount = () =>{
         if (!sessionStorage.getItem("userData")) {
             this.setState({
@@ -91,18 +101,25 @@ class NewService extends Component{
             }
         }
     }
-
-    
-
-
+  
+    // Componente antes de que se monte el componente que hace los fetch de la info si es que existe un servicio para editar
     async componentDidMount(){
         if(this.state.service_id){
             await this.fetchInfoServices()          
             this.fetchinfoCheckDays()       
+        }else{
+            this.setState({
+                form:{
+                    address: "Madrid",
+                    latitude: 40.416775,
+                    longitude: -3.703790
+                }
+            })
         }
     }
  
-     fetchInfoServices = async () => {
+    // Haciendo el fecth de la informacion
+    fetchInfoServices = async () => {
  
         const service_id = this.state.service_id
 
@@ -118,8 +135,8 @@ class NewService extends Component{
                         category: res.data.data.category,
                         price: res.data.data.price,
                         address: res.data.data.address,
-                        latitude: res.data.data.latitude,
-                        longitude: res.data.data.longitude,
+                        latitude: parseFloat(res.data.data.latitude),
+                        longitude:  parseFloat(res.data.data.longitude),
                         monday: res.data.data.monday,
                         tuesday: res.data.data.tuesday,
                         wednesday: res.data.data.wednesday,
@@ -141,6 +158,8 @@ class NewService extends Component{
                         german: res.data.data.german,
                     }
                 })
+
+                console.log(parseFloat(res.data.data.latitude), res.data.data.latitude)
             }else{
                 this.setState({
                 error: res.data.message
@@ -152,6 +171,8 @@ class NewService extends Component{
         }
     }
 
+    // funcion para ponerle valores a los checkbox
+
     fetchinfoCheckDays = () => {
         this.setCheckboxDays(this.state.form.monday, this.state.form.monday_time, "monday", this.state.monday)
         this.setCheckboxDays(this.state.form.tuesday, this.state.form.tuesday_time, "tuesday", this.state.tuesday)
@@ -162,6 +183,7 @@ class NewService extends Component{
         this.setCheckboxDays(this.state.form.sunday, this.state.form.sunday_time, "sunday", this.state.sunday)
     }
 
+    // funcion Poner valores a los dias 
 
     setCheckboxDays = (day, dayTime, dayName, arrayDay) =>{
         let temp = arrayDay
@@ -185,6 +207,7 @@ class NewService extends Component{
             })
         }
     }
+
 
     handleChangeFile = (e) => {
         if (e.target.files[0]) {
@@ -246,16 +269,141 @@ class NewService extends Component{
         } 
     }
 
+    handleSubmit = (e) =>{
+        e.preventDefault()
+        if(this.state.service_id){
+            console.log("editar")
+        }else{
+            console.log("crear")
+        }
+    }
+
     arrowBackButton = () =>{
         this.props.history.goBack()
     }
+
+    //GOOGLE MAPS 
+
+    handleMyGeolocalitation = (e) =>{        
+        this.getLocation()
+    }
+
+    getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(this.getCoordinates, this.handleLocationError);
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+
+    getCoordinates = (position) =>{        
+        this.setState({
+            form: {
+                ...this.state.form,
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+            },
+        })
+        this.getCurrentAddres()
+    }
+
+    /**
+     * Get the current address from the default map position and set those values in the state
+     */
+
+    getCurrentAddres = () => {
+        Geocode.fromLatLng( this.state.form.latitude , this.state.form.longitude ).then(
+            response => {
+                const address = response.results[0].formatted_address        
+                this.setState({
+                    form:{
+                        address: ( address ) ? address : '',
+                    }                    
+                })
+            },
+            error => {
+                console.error(error);
+            }
+        );
+    }  
+
+    handleLocationError = (error) =>{
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                alert("User denied the request for Geolocation.")
+                break;
+            case error.POSITION_UNAVAILABLE:
+                alert("Location information is unavailable.")
+                break;
+            case error.TIMEOUT:
+                alert("The request to get user location timed out.")
+                break;
+            case error.UNKNOWN_ERROR:
+                alert("An unknown error occurred.")
+                break;
+            default:
+                alert("An unknown error occurred.")                
+        }
+    }
+
+    vamos = (e) =>{
+        this.getLatLngFromAdrress(e.target.value)
+    }
+
+    getLatLngFromAdrress = (direction) =>{
+        Geocode.fromAddress(direction).then(
+            response => {
+                const { lat, lng } = response.results[0].geometry.location;
+                this.setState({
+                    form:{        
+                        address: direction,                
+                        latitude: lat,
+                        longitude: lng
+                    }
+                })
+                console.log(lat, lng);
+            },
+            error => {
+                console.error(error);
+            }
+        );  
+    }
+
+    /**
+     * When the marker is dragged you get the lat and long using the functions available from event object.
+     * Use geocode to get the address, city, area and state from the lat and lng positions.
+     * And then set those values in the state.
+     *
+     * @param event
+     */
+    onMarkerDragEnd = ( event ) => {
+        console.log( 'event', event );
+        let newLat = event.latLng.lat(),
+            newLng = event.latLng.lng()
+        Geocode.fromLatLng( newLat , newLng ).then(
+            response => {
+                const address = response.results[0].formatted_address
+                this.setState( {
+                    form:{
+                        address: ( address ) ? address : '',
+                        latitude: newLat,
+                        longitude: newLng
+                    }
+                } )
+            },
+            error => {
+                console.error(error);
+            }
+        );
+    };
+
 
     render(){ 
 
         return(
             <div className="d-flex  p-out">
                 <div  className="p-2" onClick={this.arrowBackButton}><ArrowBack /></div>
-                <form className="flex-column" style={{width: "100%"}}>                    
+                <form onSubmit={this.handleSubmit} className="flex-column" style={{width: "100%"}}>                    
                     <div className="p-2 centrar-text centrar headerTitulo" id="titulo-header">{this.state.service_id != "" ? "Editar" : "Nuevo"} servicio</div>
                     <div  className="p-2 textoSercice" id="titulo-foto">Fotos/videos</div>
                     <div className="p-2">
@@ -345,14 +493,25 @@ class NewService extends Component{
                     </div>
                     <div className="p-2 textoSercice espacio-iz">Lugar</div>
                     <div className="p-2 d-flex justify-content-center">
-                        <input onChange={this.handleChangeInput} value={this.state.form.address} name="address" type="text" className="forma-input " placeholder="Calle y numero"></input>
+                        <input onChange={this.handleChangeInput} value={this.state.form.address} onBlur={this.vamos} name="address" type="text" className="forma-input " placeholder="Calle y numero"></input>
                     </div>
                     <div className="p-2 justify-content-center">
                             <div className="mapa-google">
+                                <Map
+                                    googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&key=${GOOGLE_API_KEY}`} 
+                                    containerElement= {<div style={{height: '100%'}}/>}
+                                    mapElement={<div style={{height: '100%',borderRadius:"25px"}} />}
+                                    loadingElement={<div style={{ height: `100%` }}>Cargando</div>}
+                                    zoom={15}
+                                    center={{lat: this.state.form.latitude, lng: this.state.form.longitude }}
+                                    form={this.state.form}
+                                    onDragEnd={this.onMarkerDragEnd}
+                                    draggable={true}
+                                />                          
                             </div>
                     </div>
                     <div  className="p-2 centro-medio">
-                        <button className="textoSercice" id="buton-geo">Usar mi geolocalizacion<span><img alt="icon-geo" src={geomap}></img></span></button>
+                        <button onClick={this.handleMyGeolocalitation} type="button"  className="textoSercice" id="buton-geo">Usar mi geolocalizacion<span><img alt="icon-geo" src={geomap}></img></span></button>
                     </div>
                     <div className="p-2 textoSercice espacio-iz mt-4">Disponibilidad</div>
                     <div className="p-2 centro-medio">
@@ -485,9 +644,9 @@ class NewService extends Component{
                     <div className="p-2 centro-medio">
                         {this.state.service_id != "" 
                         ?
-                        <button className="btn-crear-serv">Guardar</button>
+                        <button type="submit" name="edit" className="btn-crear-serv">Guardar</button>
                         :
-                        <button className="btn-crear-serv">Crear Servicio</button>
+                        <button type="submit" name="crear" className="btn-crear-serv">Crear Servicio</button>
                         }                        
                     </div>
                 </form>
