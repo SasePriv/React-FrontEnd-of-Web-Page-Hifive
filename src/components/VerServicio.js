@@ -224,7 +224,7 @@ class VerService extends Component{
             slidesToScroll: 1
         };
         
-        console.log(this.state.datos.serviceImage?.length)
+        console.log(this.state.datos)
 
         return(
             <div className="d-flex  p-out">
@@ -414,10 +414,14 @@ class VerService extends Component{
                         }
                     </div>  
 
-                    <div style={{display: this.state.hide}}>          
+                    <div style={{display: this.state.hide}}>
+
+                    {/* Arreglar los botones de aqui, el de eliminar si sirve  */}
                     <ModalService
                         show={this.state.isShowing}
                         close={this.closeModalHandler}
+                        serviceId={this.state.service_id}
+                        status={this.state.datos.status}
                     />                    
                     </div>                  
                 </form>

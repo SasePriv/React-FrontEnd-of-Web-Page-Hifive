@@ -6,11 +6,13 @@ import Geocode from "react-geocode";
 import Map from './Map'
 import { GOOGLE_API_KEY } from '../googleApiKey.js'
 import Autocomplete from 'react-google-autocomplete'
+import {Redirect} from 'react-router-dom'
 
 import './styles/newservice.css'
 import caraBoy from '../assets/svg/cara-boy.svg'
 import niña from '../assets/svg/niña.svg'
 import simMas from '../assets/svg/mas.svg'
+import menos from '../assets/svg/menos.svg'
 import geomap from '../assets/svg/geo.svg'
 import spain from '../assets/svg/spain.svg'
 import uss from '../assets/svg/uss.svg'
@@ -31,12 +33,16 @@ class NewService extends Component{
             imageFile:{
                 file1: null,
                 file1Url: null,
+                file1Type: "",
                 file2: null,
                 file2Url: null,
+                file2Type: "",
                 file3: null,
                 file3Url: null,
+                file3Type: "",
                 file4: null,
                 file4Url: null,
+                file4Type: "",
             },   
             form:{
                 title: "",
@@ -44,8 +50,8 @@ class NewService extends Component{
                 category: "",
                 price: "",
                 address: "",
-                latitude: 40.416775,
-                longitude: -3.703790,
+                latitude: "",
+                longitude: "",
                 monday: "",
                 tuesday: "",
                 wednesday: "",
@@ -60,11 +66,23 @@ class NewService extends Component{
                 friday_time: "",
                 saturday_time: "",
                 sunday_time: "",
-                spanish: "",
-                english: "",
-                french: "",
-                italian: "",
-                german: "",
+                spanish: 0,
+                english: 0,
+                french: 0,
+                italian: 0,
+                german: 0,
+                experience: "0-2",
+                service_type: "onsite",
+
+            },
+            inputError: {
+                fileError: "",
+                titleError: "",
+                descriptionError: "",
+                categoryError: "",
+                priceError: "",
+                checkCountryError: "",
+                checkDayError: ""
             },
             monday: [false,false],
             tuesday: [false,false],
@@ -73,9 +91,11 @@ class NewService extends Component{
             friday: [false,false],
             saturday: [false,false],
             sunday: [false,false],
+            redirect: false,
+            redirecToView: false,
+            createServiceId: ""
         }
 
-        const listaDays = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
         this.fetchInfoServices = this.fetchInfoServices.bind(this)
     }
 
@@ -110,6 +130,7 @@ class NewService extends Component{
         }else{
             this.setState({
                 form:{
+                    ...this.state.form,
                     address: "Madrid",
                     latitude: 40.416775,
                     longitude: -3.703790
@@ -202,9 +223,37 @@ class NewService extends Component{
                     break;
             }
 
-            this.setState({
+            this.setState({                
                [dayName] : temp
             })
+        }
+    }
+
+    //funcion para transformar los checkbox para el form    
+
+    chagneCheckboxDaysToForm = (day, dayofWeek) =>{
+        if (day[0]) {
+            this.setState({
+                form:{
+                    ...this.state.form,
+                    [dayofWeek]: 1 
+                }                
+            })
+            if(day[1]){
+                return "both"
+            }else{
+                return "mor"
+            }
+        }else if(day[1]){
+            this.setState({
+                form:{
+                    ...this.state.form,
+                    [dayofWeek]: 1     
+                }                
+            })
+            return "eve"
+        }else{
+            return null
         }
     }
 
@@ -215,29 +264,28 @@ class NewService extends Component{
                 imageFile: {
                     ...this.state.imageFile,
                     [e.target.name]: e.target.files[0],
-                    [e.target.name+"Url"]: URL.createObjectURL(e.target.files[0])
+                    [e.target.name+"Url"]: URL.createObjectURL(e.target.files[0]),
+                    [e.target.name+"Type"]: e.target.files[0].type.split("/")[0]
                 }
             })
         }
-        console.log(e.target.files)
     }
 
     handleChangeCheckbox = (e, day) =>{
-        let temp = day
-
-        console.log(e.target.name + " " + e.target.id + ": " + e.target.checked)
 
         if (e.target.name == "mor") {
-            temp[0] = e.target.checked
+            day[0] = e.target.checked            
             this.setState({
-                [e.target.id] : temp 
+                [e.target.id] : day 
             })            
-        }else{
-            temp[1] = e.target.checked
+        }else{            
+            day[1] = e.target.checked
             this.setState({
-                [e.target.id] : temp 
+                [e.target.id] : day 
             })
         }
+
+        console.log(this.state.monday)
     }
 
     handleChangeInput = (e) =>{
@@ -269,18 +317,230 @@ class NewService extends Component{
         } 
     }
 
-    handleSubmit = (e) =>{
+    //Submit
+
+    handleSubmit = async (e) =>{
         e.preventDefault()
         if(this.state.service_id){
             console.log("editar")
         }else{
-            console.log("crear")
+            let form = this.state.form
+            form.user_id = this.state.user_id
+            form.monday_time = this.chagneCheckboxDaysToForm(this.state.monday, "monday")
+            form.tuesday_time = this.chagneCheckboxDaysToForm(this.state.tuesday, "tuesday")
+            form.wednesday_time = this.chagneCheckboxDaysToForm(this.state.wednesday, "wednesday")            
+            form.thursday_time = this.chagneCheckboxDaysToForm(this.state.thursday, "thursday")
+            form.friday_time = this.chagneCheckboxDaysToForm(this.state.friday, "friday")
+            form.saturday_time = this.chagneCheckboxDaysToForm(this.state.saturday, "saturday")
+            form.sunday_time = this.chagneCheckboxDaysToForm(this.state.sunday, "sunday")            
+            form = this.formDaySet(form)
+
+            const isValidate = this.validateInputs()
+            let service_id = ""
+
+            try {
+                if (isValidate) {
+                    await axios
+                    .post('/addUserServices', form)
+                    .then(res => {
+                        if (res.data.response) {
+                            this.setState({
+                                redirecToView: true,
+                                createServiceId: res.data.data.id
+                            })
+                            service_id = res.data.data.id
+                            this.addFileImagetoService(service_id)
+                            console.log(res)
+                        }
+                    })
+                }
+            } catch (error) {
+                
+            }
+
         }
+    }
+
+    addFileImagetoService = async (service_id) => {
+        const user_id = this.state.user_id
+        const files = ["file1", "file2", "file3", "file4"]
+        files.forEach(async (eachFile) => {
+            if (this.state.imageFile[eachFile] != null) {
+                let attachment = this.state.imageFile[eachFile]
+                let formData = new FormData()
+                formData.append("attachment", attachment)
+                try {                    
+                    await axios
+                    .post(`/addServicesImage/${this.state.imageFile[eachFile+"Type"]}/${user_id}/${service_id}`, formData, {
+                        headers: {'content-type': 'multipart/form-data'}
+                    })
+                    .then(res => {
+                        if (res.data.response) {
+                            console.log("Se ha agragado perfecto")                            
+                        }
+                    })
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+        })
+        
+    }
+
+    formDaySet = (form) =>{
+        const listaDays = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        const funx = (day) =>{
+            if (this.state[day][0]) {
+                return 1
+            }else if(this.state[day][1]){
+                return 1
+            }else{
+                return 0
+            }
+        }
+
+        listaDays.forEach(day => {
+            form[day] = funx(day) 
+        });
+
+        return form
     }
 
     arrowBackButton = () =>{
         this.props.history.goBack()
     }
+
+    validateInputs = () => {
+        const listaDays = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        let re = ""
+        //File
+        if (this.state.imageFile.file1 == null && this.state.imageFile.file2 == null && this.state.imageFile.file3 == null && this.state.imageFile.file4 == null) {
+            this.setState({
+                inputError: {                    
+                    fileError: "Por favor agrega al menos una foto"
+                }
+            })
+            return false
+        }else{
+            this.setState({
+                inputError: {                    
+                    fileError: ""
+                }
+            })
+        }
+        //title
+        if (this.state.form.title == "") {
+            this.setState({
+                inputError: {                    
+                    titleError: "Por favor introduza un titulo"
+                }
+            })
+            return false
+        }else{
+            this.setState({
+                inputError: {                    
+                    titleError: null
+                } 
+            })    
+        }
+        // Description
+        if (this.state.form.description == ""){
+            this.setState({
+                inputError: {                    
+                    descriptionError: "Por favor introduzca una descripcion"
+                }
+            })
+            return false
+        }else{
+            this.setState({
+                inputError: {                    
+                    descriptionError: ""
+                }
+            })
+        }
+        //Category
+        if (this.state.form.category == "") {
+            this.setState({
+                inputError:{
+                    categoryError: "Por favor seleccione una categoria"
+                }
+            })
+            return false
+        }else{
+            this.setState({
+                inputError:{
+                    categoryError: ""
+                }
+            })
+        }
+        //Price
+        if (this.state.form.price == ""){
+            this.setState({
+                inputError:{                    
+                    priceError: "Por favor introduzca un precio"
+                }
+            })
+        }else{
+            this.setState({
+                inputError:{                    
+                    priceError: ""
+                }
+            })
+        }
+        if (this.state.form.price == ""){
+            this.setState({
+                inputError:{                    
+                    priceError: "Por favor introduza un valor"
+                }
+            })
+            return false
+        }else{
+            this.setState({
+                inputError:{                    
+                    priceError: ""
+                }
+            })
+        }
+        //CheckDays
+        var temp = false
+        listaDays.forEach( (day, index) => {
+            if (this.state[day][0] == true || this.state[day][1] == true) {
+                temp = true
+            }
+        })
+        if(!temp){
+            this.setState({
+                inputError:{
+                    ...this.state.inputError,
+                    checkDayError: "Por favor seleccione al menos un dia"
+                }
+            })
+            return false
+        }else{
+            this.setState({
+                inputError:{                    
+                    checkDayError: ""
+                }
+            }) 
+        }
+        //Leanguaje
+        if (this.state.form.spanish == 0 && this.state.form.italian == 0 && this.state.form.german == 0 && this.state.form.english == 0 && this.state.form.french == 0) {
+            this.setState({
+                inputError:{                    
+                    checkCountryError: "Por favor eliga un idioma"
+                }
+            })
+            return false
+        }else{
+            this.setState({
+                inputError:{                    
+                    checkCountryError: ""
+                }
+            })
+        }
+
+        return true
+    } 
 
     //GOOGLE MAPS 
 
@@ -303,8 +563,11 @@ class NewService extends Component{
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude
             },
-        })
-        this.getCurrentAddres()
+        },
+        () => {
+            this.getCurrentAddres()    
+            }
+        )
     }
 
     /**
@@ -317,6 +580,7 @@ class NewService extends Component{
                 const address = response.results[0].formatted_address        
                 this.setState({
                     form:{
+                        ...this.state.form,
                         address: ( address ) ? address : '',
                     }                    
                 })
@@ -355,7 +619,8 @@ class NewService extends Component{
             response => {
                 const { lat, lng } = response.results[0].geometry.location;
                 this.setState({
-                    form:{        
+                    form:{   
+                        ...this.state.form,     
                         address: direction,                
                         latitude: lat,
                         longitude: lng
@@ -385,6 +650,7 @@ class NewService extends Component{
                 const address = response.results[0].formatted_address
                 this.setState( {
                     form:{
+                        ...this.state.form,
                         address: ( address ) ? address : '',
                         latitude: newLat,
                         longitude: newLng
@@ -394,24 +660,46 @@ class NewService extends Component{
             error => {
                 console.error(error);
             }
-        );
+        );  
     };
+
+    prueba = () => {
+ 
+            console.log("preuba")
+        
+    }
 
 
     render(){ 
 
+        if (this.state.redirect) {
+            return (<Redirect to="/" />)
+        }
+
+        if(this.state.redirecToView){
+            return (<Redirect to={`/viewService/${this.state.createServiceId}`} />)
+        }
+
+        console.log(this.state.imageFile["file1"])
+        console.log(this.state.imageFile["file2"] != null)
+        console.log(this.state.imageFile["file1"+"Type"])
+
         return(
-            <div className="d-flex  p-out">
-                <div  className="p-2" onClick={this.arrowBackButton}><ArrowBack /></div>
-                <form onSubmit={this.handleSubmit} className="flex-column" style={{width: "100%"}}>                    
-                    <div className="p-2 centrar-text centrar headerTitulo" id="titulo-header">{this.state.service_id != "" ? "Editar" : "Nuevo"} servicio</div>
+            <div className="d-flex  p-out">                
+                <form onSubmit={this.handleSubmit} className="flex-column" style={{width: "100%"}}>      
+                    <div  className="p-2" onClick={this.arrowBackButton}><ArrowBack /></div>          
+                    <div className="p-2 centrar-text centrar headerTitulo" id="titulo-header" style={{marginTop: "-9px"}}>{this.state.service_id != "" ? "Editar" : "Nuevo"} servicio</div>                            
                     <div  className="p-2 textoSercice" id="titulo-foto">Fotos/videos</div>
                     <div className="p-2">
                         <div className="d-flex flex-row justify-content-center">
                             <div className="p-2 sepa-derecho">
                                 <fieldset className="cuadro">
                                     <legend className="boton-cuadro">                                
-                                        <img className="suma-icon" alt="mas" src={simMas}></img>
+                                        <img 
+                                            className={this.state.imageFile.file1 != null ? "menos-icon" :"suma-icon"} 
+                                            alt="mas" 
+                                            src={this.state.imageFile.file1 != null ? menos : simMas}>
+                                        </img>
                                         <input onChange={this.handleChangeFile}  type="file" id="1" name="file1"></input>
                                     </legend>
                                     <img 
@@ -425,7 +713,11 @@ class NewService extends Component{
                             <div className="p-2 sepa-derecho">
                                 <fieldset className="cuadro">
                                     <legend className="boton-cuadro">                                
-                                        <img className="suma-icon" alt="mas" src={simMas}></img>
+                                        <img 
+                                            className={this.state.imageFile.file2 != null ? "menos-icon" :"suma-icon"}
+                                            src={this.state.imageFile.file2 != null ? menos : simMas} 
+                                            alt="mas">                                            
+                                        </img>
                                         <input onChange={this.handleChangeFile}  type="file" id="2" name="file2"></input>
                                     </legend>
                                     <img 
@@ -439,7 +731,12 @@ class NewService extends Component{
                             <div className="p-2 sepa-derecho">
                                 <fieldset className="cuadro">
                                     <legend className="boton-cuadro">                                
-                                        <img className="suma-icon" alt="mas" src={simMas}></img>
+                                        <img 
+                                            className={this.state.imageFile.file3 != null ? "menos-icon" :"suma-icon"}
+                                            src={this.state.imageFile.file3 != null ? menos : simMas} 
+                                            alt="mas"
+                                            >
+                                        </img>
                                         <input onChange={this.handleChangeFile}  type="file" id="3" name="file3"></input>
                                     </legend>
                                     <img 
@@ -451,10 +748,19 @@ class NewService extends Component{
                                 
                             </div>
                             <div className="p-2">
-                                <fieldset className="cuadro">
-                                    <legend className="boton-cuadro">                                
-                                        <img className="suma-icon" alt="mas" src={simMas}></img>
+                                <fieldset className="cuadro" >
+                                    <legend  className="boton-cuadro">                                
+                                        <img 
+                                            className={this.state.imageFile.file4 != null ? "menos-icon" :"suma-icon"}
+                                            src={this.state.imageFile.file4 != null ? menos : simMas} 
+                                            alt="mas">                                                
+                                        </img>
+                                        {this.state.imageFile.file4 != null 
+                                        ? 
+                                        <div onClick={this.prueba(this.state.imageFile.file4)}></div>
+                                        : 
                                         <input onChange={this.handleChangeFile}  type="file" id="4" name="file4"></input>
+                                        }                                        
                                     </legend>
                                     <img 
                                         alt="caraniño" 
@@ -466,14 +772,17 @@ class NewService extends Component{
                             </div>
                         </div>
                     </div>
+                    <div className="ml-5 error-message mb-2">{this.state.inputError.fileError}</div>
                     <div className="p-2 textoSercice espacio-iz">¿Que ofreces?</div>
                     <div className="p-2 d-flex justify-content-center">
                         <input onChange={this.handleChangeInput} value={this.state.form.title} type="text" className="forma-input " name="title" placeholder="Ej: Profesor de piano" />
                     </div>
+                    <div className="ml-5 error-message mb-2">{this.state.inputError.titleError}</div>
                     <div className="p-2 textoSercice espacio-iz">Detalles</div>
                     <div className="p-2 d-flex justify-content-center">
                         <TextareaAutosize onChange={this.handleChangeInput} value={this.state.form.description} name="description" minRows={8} maxRows={8} className="forma-input" id="area-form" placeholder="Sigue esta estructura&#13;&#10;1. Presentación personal y biografía&#13;&#10;2. Formación en la materia&#13;&#10;3. Expereciencia en la materia"></TextareaAutosize>
                     </div>
+                    <div className="ml-5 error-message mb-2">{this.state.inputError.descriptionError}</div>
                     <div className="p-2 textoSercice espacio-iz">Categoría</div>
                     <div className="p-2 d-flex justify-content-center">
                         <select onChange={this.handleChangeInput} value={this.state.form.category} name="category" className="forma-input" id="select-form">
@@ -487,10 +796,12 @@ class NewService extends Component{
                             <option value="Otros">Otros</option>
                         </select>
                     </div>
+                    <div className="ml-5 error-message mb-2">{this.state.inputError.categoryError}</div>
                     <div className="p-2 textoSercice espacio-iz">Precio por hora</div>
                     <div className="p-2 d-flex justify-content-center">
-                        <input onChange={this.handleChangeInput} value={this.state.form.price} name="price" type="text" className="forma-input " placeholder="Euros"></input>
+                        <input onChange={this.handleChangeInput} value={this.state.form.price} name="price" type="number" className="forma-input " placeholder="Euros"></input>
                     </div>
+                    <div className="ml-5 error-message mb-2">{this.state.inputError.priceError}</div>
                     <div className="p-2 textoSercice espacio-iz">Lugar</div>
                     <div className="p-2 d-flex justify-content-center">
                         <input onChange={this.handleChangeInput} value={this.state.form.address} onBlur={this.vamos} name="address" type="text" className="forma-input " placeholder="Calle y numero"></input>
@@ -612,6 +923,7 @@ class NewService extends Component{
                             </label>                            
                         </div>
                     </div>
+                    <div className="ml-5 error-message mb-2">{this.state.inputError.checkDayError}</div>
                     <div className="p-2 textoSercice espacio-iz mt-4" id="idioma">Idiomas(bilingue)</div>
                     <div className="p-2 centro-medio">
                         <div className="d-flex flex-row justify-content-center">
@@ -641,6 +953,7 @@ class NewService extends Component{
                             </label>                      
                         </div>
                     </div>
+                    <div className="ml-5 error-message mb-2">{this.state.inputError.checkCountryError}</div>
                     <div className="p-2 centro-medio">
                         {this.state.service_id != "" 
                         ?

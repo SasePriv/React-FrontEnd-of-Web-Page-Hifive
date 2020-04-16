@@ -15,7 +15,6 @@ import VerServicio from './components/VerServicio'
 import MyProfile from './components/MyProfile'
 import NewEvent from './components/NewEvent'
 import Pruebas from './components/Pruebas'
-import Pruebas2 from './components/Pruebas2';
 
 
 function App() {
@@ -29,9 +28,9 @@ function App() {
         <Route exact path="/myprofile" component={MyProfile} />
         <Route exact path="/newservice" component={NewService} />
         <Route exact path="/editservice/:id" component={NewService} />
-        {/* <Route exact path="/pruebas" component={Pruebas} /> */}
-        {/* <Route exact path="/pruebas2" component={Pruebas2} /> */}
         <Route exact path="/recoveringpassword" component={RecoverPass} />
+        <Route exact path="/chat-menu" component={ChatMenu} />
+        <Route exact path="/chat" component={Chat} />
         <Route exact path="/" component={Home} />
       </BrowserRouter>      
       // <NewService></NewService>

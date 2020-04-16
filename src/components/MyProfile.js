@@ -298,7 +298,8 @@ class MyProfile extends Component{
                 :
                 <div className="p-2 centrar vamos">¡Vamos, crea tu primer servicio! </div>
               
-                }             
+                } 
+                {console.log(data)}            
               </div>
             </div>
       )
@@ -310,7 +311,7 @@ class MyProfile extends Component{
         <Link className="hover-no" to={"/viewService/"+each.id}>
         <input type="hidden" id="serviceID" name="serviceID" value={each.id}/>
         <div className={"p-2 titutlo-servi margen-izqui change-tama "+ this.estadoDesac(each.status)}>{each.title}</div>
-        <div className={"p-2 margen-izqui precio-name change-tama2 "+ this.estadoDesac(each.status)}>{each.price} $/hora</div>
+        <div className={"p-2 margen-izqui precio-name change-tama2 "+ this.estadoDesac(each.status)}>{each.price} €/hora</div>
         <div className={"p-2 textoSercice espacio-iz resumen change-tama2 "+ this.estadoDesac(each.status)}>
           {this.shortText(each.description)}
         </div>

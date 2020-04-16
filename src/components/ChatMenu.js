@@ -26,6 +26,9 @@ class ChatMenu extends Component{
             <div className="d-flex justify-content-center">
                 <div className="flex-column espacio">
                     <div className="p-2 texto-titulo-chat">Chat</div>
+                    <div className="p-2">
+                        
+                    </div>
                     {this.state.chatDatos.map( (e) => {
                         return(
                             <div>
