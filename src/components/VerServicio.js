@@ -9,6 +9,8 @@ import ModalService from './modals/ModalService'
 import { calculateAge } from './functions/calculateAge'
 import axios from 'axios'
 import ArrowBack from './ArrowBack'
+import Map from './Map'
+import { GOOGLE_API_KEY } from '../googleApiKey.js'
 
 import './styles/newservice.css'
 import './styles/verServicio.css'
@@ -71,10 +73,7 @@ class VerService extends Component{
       }
 
     async componentDidMount(){
-       await this.fetchInfoServices() 
-
-
-        
+       await this.fetchInfoServices()
     }
 
     fetchInfoServices = async () => {
@@ -225,7 +224,7 @@ class VerService extends Component{
             slidesToScroll: 1
         };
         
-        console.log(this.state.datos.serviceImage?.length)
+        console.log(this.state.datos)
 
         return(
             <div className="d-flex  p-out">
@@ -311,10 +310,28 @@ class VerService extends Component{
                     
 
                     <div className="p-2 textoSercice espacio-iz mini-sub-title">¿Dónde?</div>
-                    <div className="p-2 margen-izqui texto-dire">28109 Madrid</div>
+                    <div className="p-2 margen-izqui texto-dire">{this.state.datos.address}</div>
                     <div className="p-2 justify-content-center">
-                            <div className="mapa-google">
-                            </div>
+                        <div className="mapa-google">
+                            {console.log("lat: "+ this.state.datos.latitude+ " lng: "+this.state.datos.longitude)}
+                            {this.state.datos.latitude 
+                            ?
+                            <Map
+                                googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&key=${GOOGLE_API_KEY}`} 
+                                containerElement= {<div style={{height: '100%'}}/>}
+                                mapElement={<div style={{height: '100%',borderRadius:"25px"}} />}
+                                loadingElement={<div style={{ height: `100%` }}>Cargando</div>}
+                                zoom={15}
+                                center={{lat: this.state.datos.latitude , lng: this.state.datos.longitude }}
+                                form={this.state.datos}
+                                onDragEnd={() => {}}
+                                draggable={false}
+                            /> 
+                            :
+                            null
+                            }
+                            
+                        </div>
                     </div>
                     <div className="p-2 textoSercice espacio-iz mt-4 mini-sub-title">¿Cuándo?</div>
                     <div className="p-2 centro-medio">
@@ -397,10 +414,14 @@ class VerService extends Component{
                         }
                     </div>  
 
-                    <div style={{display: this.state.hide}}>          
+                    <div style={{display: this.state.hide}}>
+
+                    {/* Arreglar los botones de aqui, el de eliminar si sirve  */}
                     <ModalService
                         show={this.state.isShowing}
                         close={this.closeModalHandler}
+                        serviceId={this.state.service_id}
+                        status={this.state.datos.status}
                     />                    
                     </div>                  
                 </form>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { isMobile } from 'react-device-detect';
+import axios from 'axios'
 
 import '../styles/Modal.css';
 
@@ -26,11 +27,43 @@ class Modal extends Component{
         })
     }
 
-    handleButtonAction = () =>{
+    handleButtonAction = async () =>{
         if(this.state.currentSelect == 1){
             console.log("Desactivar")
         }else{
-            console.log("eliminacion")
+            try{
+                await axios
+                .post(`/removedServices/${this.props.serviceId}`)
+                .then(res => {
+                    if (res.data.response) {
+                        console.log(res)
+                    }
+                })
+            }catch(error){
+                const service_id = this.props.serviceId
+                try{
+                    if (this.props.status) {
+                        axios
+                        .post('/servicesStatusChange', { service_id })
+                        .then(res => {
+                          if(res.data.response){
+                            this.setState({
+                              sucesMessage: res.data.message
+                            })
+                            this.fetchInfoServices()
+                          }else{
+                            this.setState({
+                              error: res.message
+                            })
+                          }
+                        }) 
+                    }else{
+                        alert("El servicio ya fue desactivado")
+                    }                    
+                }catch(error){
+                    console.log(error)
+                }
+            }
         }
     }
 

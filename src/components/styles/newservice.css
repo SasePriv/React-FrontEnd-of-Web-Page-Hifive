@@ -90,6 +90,12 @@
     margin-left: 3px;
 }
 
+.menos-icon{
+    position: absolute;
+    margin-top: 8px;
+    margin-left: 4.8px;
+}
+
 .sepa-derecho{
     margin-right: 32px;
 }
