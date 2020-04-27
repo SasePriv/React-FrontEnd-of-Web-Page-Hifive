@@ -15,7 +15,7 @@ class Search extends Component {
                 </div>
                 <div className="in">
                     <FontAwesomeIcon className="icono-buscar"icon={faSearch}/>
-                    <input type="text" className="form-control search-input" placeholder="Buscar en hifive" />
+                    <input onKeyDown={this.props.changeErrase} onChange={this.props.onChange} type="text" className="form-control search-input" placeholder="Buscar en hifive" />
                 </div>
             </div>
         )

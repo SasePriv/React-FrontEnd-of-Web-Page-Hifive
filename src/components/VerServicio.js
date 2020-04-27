@@ -33,6 +33,7 @@ class VerService extends Component{
         super(props);
         this.state = {
             user_id: "",
+            user_service_id: "",
             service_id: "",
             datos: {},
             listaDays: ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
@@ -43,7 +44,10 @@ class VerService extends Component{
             isShowing: false,
             hide: "none",
             url: "https://hifive.es/hifive-rest-api/public/serviceImages/",
-            imageFirst: true
+            imageFirst: true,
+            room_id: "",
+            redirect: false,
+            redirecToChat: false,
         }
     }
 
@@ -87,6 +91,7 @@ class VerService extends Component{
             if (res.data.response) {
                 this.setState({
                 datos: res.data.data,
+                user_service_id: res.data.data.user_id
                 })
             }else{
                 this.setState({
@@ -112,26 +117,26 @@ class VerService extends Component{
         return age_now;
     }
 
-    generator_check_days = (day, tiempoDay, propDay ,datoServi) =>{
+    generator_check_days = (day, tiempoDay, propDay ,datoServi, index) =>{
         
         if(datoServi[day] == 1){      
             if (datoServi[day+"_time"] == propDay) {
                 return(
-                    <label className="cuadro-check-box">                                
+                    <label className="cuadro-check-box" key={index}>                                
                         <div  id={day+"_"+propDay} name={day+"_"+propDay}  className="check-perso-box"></div>
                         <div className="texto-inside-check check-cua person-service-selected">{tiempoDay}</div>
                     </label>
                 )      
             }else if(datoServi[day+"_time"] == "both"){
                 return(
-                    <label className="cuadro-check-box">                                
+                    <label className="cuadro-check-box" key={index}>                                
                         <div  id={day+"_both_"+propDay} name={day+"_both_"+propDay}  className="check-perso-box"></div>
                         <div className="texto-inside-check check-cua person-service-selected">{tiempoDay}</div>
                     </label>
                 ) 
             }else{
                 return(
-                    <label className="cuadro-check-box">                                
+                    <label className="cuadro-check-box" key={index}>                                
                         <div className="check-perso-box"></div>
                         <div className="texto-inside-check check-cua person-service-no-selected">{tiempoDay}</div>
                     </label>
@@ -140,7 +145,7 @@ class VerService extends Component{
                   
         }else{
             return(
-                <label className="cuadro-check-box">                                
+                <label className="cuadro-check-box" key={index}>                                
                     <div className="check-perso-box"></div>
                     <div className="texto-inside-check check-cua person-service-no-selected">{tiempoDay}</div>
                 </label>
@@ -148,10 +153,10 @@ class VerService extends Component{
         }
     }
 
-    generador_check_lenCountry = (language, country ,datoServi) => {
+    generador_check_lenCountry = (language, country ,datoServi, index) => {
         if (datoServi[language] == 1) {
             return(
-                <label className="cuadro-check-box-bandera">                                
+                <label className="cuadro-check-box-bandera" key={index}>                                
                     <div id={"pais-"+language} className="check-perso-box-bandera"></div>
                     <div className="texto-inside-check check-cua-bandera bandera-selected"><img alt={country+"-icon"} src={country} className="icon-country"></img></div>
                 </label> 
@@ -159,7 +164,7 @@ class VerService extends Component{
             )
         } else {
             return(
-                <label className="cuadro-check-box-bandera">                                
+                <label className="cuadro-check-box-bandera" key={index}>                                
                     <div id={"pais-"+country} className="check-perso-box-bandera"></div>
                     <div className="texto-inside-check check-cua-bandera bandera-no-selected"><img alt={country+"-icon"} src={country} className="icon-country"></img></div>
                 </label>  
@@ -188,9 +193,29 @@ class VerService extends Component{
         this.props.history.goBack()
     }
 
-    handleSubmit = () =>{
-        if(this.state.edit){
+    handleButtonChat = async () =>{
+        let formData = new FormData
+        formData.append("user_id",this.state.user_id)
+        formData.append("service_id", this.state.service_id)
+        formData.append("to_user_id", this.state.user_service_id)
 
+        try {
+            await axios 
+            .post("/create_chat_room", formData)
+            .then(res =>{
+                if (res.data.response) {
+                    console.log(res)
+                    this.setState({
+                        redirecToChat: true,
+                        room_id: res.data.data.room_id
+                    })
+                }else{
+                    console.log("error del server")
+                    console.log(res)
+                }
+            })
+        } catch (error) {
+            console.log(error)
         }
     }
 
@@ -214,6 +239,10 @@ class VerService extends Component{
         if (this.state.redirect) {
             return (<Redirect to="/login" />)
         }
+
+        if (this.state.redirecToChat) {
+            return (<Redirect to={`/chat/${this.state.room_id}`} />)
+        }
       
 
         var settings = {
@@ -222,16 +251,11 @@ class VerService extends Component{
             speed: 500,
             slidesToShow: 1,
             slidesToScroll: 1
-        };
-        
-        console.log(this.state.datos)
+        };        
 
         return(
             <div className="d-flex  p-out">
-                <form onSubmit={this.handleSubmit} className="flex-column" style={{width: "100%"}}>
-                    <input type="hidden" id="serviceID" name="serviceID" value={this.state.datos.id} autofocus />
-                    <input type="hidden" id="userID" name="userID" value={this.state.datos.user_id} />
-
+                <div className="flex-column" style={{width: "100%"}}>
                     { this.state.isShowing ? <div onClick={this.closeModalHandler} className="back-drop"></div> : null }
 
                     <div className="p-2">
@@ -313,7 +337,6 @@ class VerService extends Component{
                     <div className="p-2 margen-izqui texto-dire">{this.state.datos.address}</div>
                     <div className="p-2 justify-content-center">
                         <div className="mapa-google">
-                            {console.log("lat: "+ this.state.datos.latitude+ " lng: "+this.state.datos.longitude)}
                             {this.state.datos.latitude 
                             ?
                             <Map
@@ -359,14 +382,14 @@ class VerService extends Component{
                             </div>
                         </div>
                         <div className="d-flex flex-row justify-content-center">
-                            {this.state.listaDays.map( (currentDay) => {
-                                return this.generator_check_days(currentDay, "mañana", "mor", this.state.datos)
+                            {this.state.listaDays.map( (currentDay, index) => {
+                                return this.generator_check_days(currentDay, "mañana", "mor", this.state.datos, index)
                             })}                            
                         </div>
 
                         <div className="d-flex flex-row justify-content-center">
-                            {this.state.listaDays.map( (currentDay) => {
-                                return this.generator_check_days(currentDay, "tarde", "eve", this.state.datos)
+                            {this.state.listaDays.map( (currentDay, index) => {
+                                return this.generator_check_days(currentDay, "tarde", "eve", this.state.datos, index)
                             })}                         
                         </div>
                     </div>
@@ -374,7 +397,7 @@ class VerService extends Component{
                     <div className="p-2 centro-medio">
                         <div className="d-flex flex-row ml-4">
                             {this.state.listaLenguage.map( (currentCountry, index) => {
-                                return this.generador_check_lenCountry(currentCountry, this.state.listaCountry[index] ,this.state.datos)
+                                return this.generador_check_lenCountry(currentCountry, this.state.listaCountry[index] ,this.state.datos, index)
                             } )}                      
                         </div>
                     </div>
@@ -410,7 +433,7 @@ class VerService extends Component{
                         {this.state.edit ? 
                         <Link to={"/editservice/"+this.state.datos.id}><button className="btn-crear-serv">Editar servicio</button></Link> 
                         : 
-                        <button className="btn-crear-serv">Chat</button>
+                        <button onClick={this.handleButtonChat} className="btn-crear-serv">Chat</button>
                         }
                     </div>  
 
@@ -424,7 +447,7 @@ class VerService extends Component{
                         status={this.state.datos.status}
                     />                    
                     </div>                  
-                </form>
+                </div>
             </div>
         )
     }

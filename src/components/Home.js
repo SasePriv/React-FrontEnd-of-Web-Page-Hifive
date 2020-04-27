@@ -18,10 +18,15 @@ class Home extends Component{
       user_id: "",
       auth: false,
       info: [],
+      originalInfo: [],
       error: null,
       latitude: '',
       longitude: '',
-      url: "https://hifive.es/hifive-rest-api/public/serviceImages/"
+      url: "https://hifive.es/hifive-rest-api/public/serviceImages/",
+      catego: {
+        selectItem: undefined,
+        opcion: 0
+      }
     }
     
   }
@@ -69,12 +74,11 @@ class Home extends Component{
       .post('/getServices', { by_user_id, latitude, longitude })
       .then(res => {
         if (res.data.response) {
-          console.log(res)
           this.setState({
-            info: res.data.data
+            info: res.data.data,
+            originalInfo: res.data.data
           })
         }else{
-          console.log(res)
           this.setState({
             error_geo: true,
             error: res.message
@@ -103,22 +107,169 @@ class Home extends Component{
     }
   }
 
+  cateFiltrado = (elemnt, cat1, cat2) =>{
+
+    if (cat2 == undefined) {
+      cat2 = false
+    }
+
+    if (!cat2) {
+      if (elemnt.category == cat1) {
+        return true
+      } else {
+        return false
+      }
+    } else {
+      if (elemnt.category == cat1 || elemnt.category == cat2) {
+        return true
+      } else {
+        return false
+      }
+    } 
+  }
+
+  filtradoCate = (num) =>{
+    let cat1 = ""
+    let cat2 = ""
+
+    switch (num) {
+      case 1:
+        cat1 = "Babysister"
+        cat2= "Canguros"
+        this.setState({
+          info: this.state.originalInfo.filter(x => this.cateFiltrado(x, cat1, cat2))
+        })
+        break;
+      case 2:
+        cat1 = "Limpieza"
+        this.setState({
+          info: this.state.originalInfo.filter(x => this.cateFiltrado(x, cat1))
+        })
+        break;
+      case 3:
+        cat1 = "Mascotas"
+        this.setState({
+          info: this.state.originalInfo.filter(x => this.cateFiltrado(x, cat1))
+        })
+        break;
+      case 4:
+        cat1 = "Profesores" 
+        this.setState({
+          info: this.state.originalInfo.filter(x => this.cateFiltrado(x, cat1))
+        })
+        break;
+      case 5:
+        cat1 = "Entrenadores" 
+        cat2 = "Entrenadores personales"
+        this.setState({
+          info: this.state.originalInfo.filter(x => this.cateFiltrado(x, cat1, cat2))
+        })        
+        break;
+      case 6:
+        cat1 = "Hogar" 
+        cat2 = "Reparaciones y manitas"
+        this.setState({
+          info: this.state.originalInfo.filter(x => this.cateFiltrado(x, cat1, cat2))
+        })
+        break;
+      case 7:
+        cat1 = "Otros" 
+        this.setState({
+          info: this.state.originalInfo.filter(x => this.cateFiltrado(x, cat1))
+        })
+        break;
+      default:
+        break;
+    }
+    
+  }
+
+  handaleSelect = (e, number) => {
+    e.preventDefault()
+    this.setState({
+      catego:{
+        selectItem: number,
+        opcion: 1,
+      }
+    })
+
+    this.filtradoCate(number)
+
+    // console.log(index)
+    // console.log(this.state.selectItem)
+  }
+
+  handaleUnSelect = (e) => {
+    e.preventDefault()
+    this.setState({
+      catego:{
+        selectItem: undefined,
+        opcion: 0
+      },
+      info: this.state.originalInfo
+    })
+  }
+
+  eliminarDiacriticos = texto => {
+    return texto.normalize('NFD').replace(/[\u0300-\u036f]/g,"");
+  }
+
+
+  filtroSearch = (element, valor) =>{
+    let x = this.eliminarDiacriticos(element.title.toLowerCase())
+    if (x.includes(this.eliminarDiacriticos(valor.toLowerCase()))) {
+      return true
+    }else{
+      return false
+    }
+  }
+
+  handleSearchChange = (e) =>{
+    // console.log(e.target.value)
+    if (e.target.value != "") {
+      this.setState({
+        info: this.state.info.filter(x => this.filtroSearch(x, e.target.value))
+      })
+      console.log("denro")
+    }else{
+      this.setState({
+        info: this.state.originalInfo
+      })
+    }
+  }
+
+  handleErraseChange = (e) =>{
+    if (e.keyCode === 8) {
+      this.setState({
+        info: this.state.originalInfo
+      })
+    }
+  }
 
   render(){
     
-    // console.log(this.state.error)
+    // const x = this.state.info.filter(this.pruebaFiltrado)
+
+    // console.log(this.state.error) Profesores
     // console.log("Latitude: "+this.state.latitude+ ", Longitude: "+this.state.longitude)
 
     return (
       <div className="d-flex justify-content-center flex-column p-out">
           <div className="p-2 p-out order-2">
             <div>
-              <Category></Category>
+              <Category 
+                setSelected={this.handaleSelect}
+                unSelected={this.handaleUnSelect}
+                cate={this.state.catego}
+              />
             </div>
           </div>
           <div className="d-inline-flex p-2 ajust-size order-1">
             <div>
-              <Search></Search>
+              <Search 
+                onChange={this.handleSearchChange}
+                changeErrase={this.handleErraseChange}
+              />
             </div>
             <div>
               {this.mostrarSettings()}

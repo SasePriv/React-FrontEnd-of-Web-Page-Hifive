@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import ScrollContainer from 'react-indiana-drag-scroll'
 import './styles/Category.css'
 
 import { cate } from '../assets/category_list.json'
@@ -8,39 +9,21 @@ class Category extends Component {
     super();
     this.state = {
         cate,
-        selectItem: undefined,
-        opcion: 0
     };
-    
-    this.handaleSelect = this.handaleSelect.bind(this);
   }
 
-  handaleSelect = (e,index) => {
-    this.setState({
-      selectItem: index,
-      opcion: 1
-    })
-    // console.log(index)
-    // console.log(this.state.selectItem)
-  }
-
-  handaleUnSelect = (e) => {
-    this.setState({
-      selectItem: undefined,
-      opcion: 0
-    })
-  }
 
   selected() {
 
-    const select_pers = this.state.cate.filter(cate => {return cate.number === this.state.selectItem})
+    let select_pers = ""
+    if (this.props.cate.opcion === 1) {
+      select_pers = this.state.cate.filter(cate => {return cate.number === this.props.cate.selectItem})
 
-    if (this.state.opcion === 1) {
       return (<div className="box1 justify-content-center">  
                 <div>
                   <img className="picture rounded-circle red-shadow" alt={select_pers.alt}src={require("../assets/img/"+select_pers[0].path_image)}></img>
                 </div>                
-                  <div className="text-box red-box" onClick={(e) => this.handaleUnSelect(e)}>
+                  <div className="text-box red-box" onClick={(x) => this.props.unSelected(x)}>
                     <p>{select_pers[0].title}</p>
                   </div>                
               </div> )
@@ -48,18 +31,17 @@ class Category extends Component {
   }
 
   render(){
-
     var catego = undefined;
     var size = {
-      width: '808px',
+      width: '878px',
     };
 
-    if(this.state.opcion !== 0){
+    if(this.props.cate.opcion !== 0){
       catego = this.state.cate.filter((cate) => {
-        return cate.number !== this.state.selectItem
+        return cate.number !== this.props.cate.selectItem
       });
       size = {
-        width: '748px',
+        width: '838px',
         left: '31%',
       };
     }else{
@@ -69,7 +51,7 @@ class Category extends Component {
     return (
       <div className="d-flex justify-content-center p-out">
         { this.selected()}
-        <div className="slide-cate p-out">
+        <ScrollContainer className="slide-cate p-out">
             <div className="Category " style={size}>
                 <div className="container boxe">
                   <div className="row">
@@ -78,16 +60,15 @@ class Category extends Component {
                       <div>
                         <img className="picture rounded-circle" alt={e.alt} src={require("../assets/img/"+e.path_image)}></img>
                       </div>
-                        <div className="text-box" onClick={(x) => this.handaleSelect(x,e.number)}>
-                          <p>{e.title}</p>
-                        </div>
+                      <div className="text-box" onClick={(x) => this.props.setSelected(x,e.number)}>
+                        <p>{e.title}</p>
+                      </div>
                     </div>
-                    )}
-                    
+                    )}                    
                   </div>
                 </div>
             </div>  
-        </div>
+        </ScrollContainer>
       </div>
     );
   }

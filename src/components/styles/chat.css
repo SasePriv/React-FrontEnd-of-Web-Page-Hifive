@@ -16,10 +16,11 @@
 
 .top-chat{
     width: 100%; 
+    /* height: 100vh; */
 }
 
 .arriba{
-    position: absolute;
+    position: fixed;
     background-color: #FFFFFF;
     width: 100%;
 }
@@ -28,14 +29,24 @@
     background-color: rgb(214, 214, 214);
     height: 100vh;
     padding-top: 60px !important;
+    padding-bottom: 80px !important;
 }
 
-.prueba{
-    overflow-y: scroll;
+.box-chat-scroll{
+    /* overflow-y: scroll; */
+    position: unset;
 }
 
-.prueba::-webkit-scrollbar {
-    display: none;
+.mes-de{
+    padding-right: 50px;
+}
+
+.mes-iz{
+    margin-left: 10px;
+}
+
+.box-chat-scroll::-webkit-scrollbar {
+    display: none !important;
   }
 
 .texto-2{
@@ -58,8 +69,10 @@
     font-size: 15px;
     line-height: 22px;
     letter-spacing: 0.0235294em;
-
+    word-wrap: break-word;
     color: #000000;
+    margin-right: 10px;
+    margin-left: 10px;
 }
 
 .input-text-box{
@@ -71,6 +84,7 @@
     right: 0;
     bottom:0px;
     justify-content: center;
+    margin-top: 10px;
 }
 
 html, body{
@@ -83,7 +97,8 @@ html, body{
     box-sizing: border-box;
     border-radius: 50px;
     width: 85%;
-    padding: 8px 20px 8px 30px;
+    padding-left: 18px !important;
+    padding-right: 18px !important;
     margin: 10px;
     margin-right: 5px;
     max-height: 150px;
@@ -117,9 +132,128 @@ html, body{
     height: 50px;
     margin-top: auto;
     margin-bottom: auto;
+    cursor: pointer;
+    border: 0px;
 }
 
 .icon-envio{
     margin-left: 4px;
     margin-top: 3px;
+}
+
+.arrowBackChat div{
+    position: unset !important;
+}
+
+.event-box1{
+    width: 253px;
+    height: 45px;
+    background: #FFFFFF;
+    border-radius: 10px 10px 0px 0px;
+    padding: 10px 30px 10px 30px;
+}
+
+.event-box1 div{
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.event-box1 img{
+    margin-right: 10px;
+    width: 25px;
+    height: 25px;
+}
+
+.event-box2{
+    width: 253px;
+    height: 52px;
+    background: #FFFFFF;
+    border-radius: 0px 0px 10px 10px;
+    padding: 15px 52px 10px 52px;
+}
+
+.review-box2{
+    padding: 15px 0px 10px 32px !important;
+    text-align: left !important;
+
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 22px;
+    letter-spacing: 0.0235294em;
+    color: #000000;
+}
+
+.review-box1 div{
+    font-weight: 600;
+}
+
+.btn-event{    
+    width: 253px;
+    height: 48px;        
+    background: #FFFFFF;
+    border-radius: 50px;
+    border: 0px;
+    color: #FF544C !important;
+    font-weight: 700 !important;
+}
+
+.review-btn{
+    color: black !important;
+}
+
+.event-font{
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 22px;
+    letter-spacing: 0.0235294em;
+    color: #000000;
+    text-align: center !important
+}
+
+.event-azul{
+    text-align: -webkit-right;
+}
+
+.review-user-right{
+    text-align: -webkit-right;
+}
+
+.event-azul div{
+    color: white;
+}
+
+.event-azul-fondo{
+    background: rgba(66, 133, 244, 0.85);
+}
+
+.typing-live{
+    position: absolute;
+    left: 95px;
+    top: 24px;
+    color: gray;
+    font-size: 11px;
+}
+
+.ciruclo-online{
+    width: 11px;
+    height: 11px;
+    background-color: greenyellow;
+    border-radius: 50px;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 2px;
+}
+
+.contaier-online{
+    margin-left: 5px;
+}
+
+.online-text{
+    font-size: 13px;
+    margin-top: 8px;
+    color: rgba(0, 0, 0, 0.7);
 }

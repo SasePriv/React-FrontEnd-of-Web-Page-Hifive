@@ -99,3 +99,51 @@
     margin-left: 1px;
     margin-top: 3px;
 }
+
+.nav-tabs .nav-link{
+    width: 50%;
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 22px;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+}
+
+.nav-tabs a {
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.nav-tabs .nav-link.active {
+    color: #007bff !important;
+}
+
+.cada-chat a:hover{
+    text-decoration: none;
+}
+
+.no-chats{
+    width: 379px;
+}
+
+.no-chats img{
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.no-chats div{
+    display: inline;
+    text-align: center;
+    width: 400px;
+}
+
+.content-nchat{
+    position: fixed;
+    top: 35%;
+    display: absolute;
+}
+
+

@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Route } from 'react-router-dom'
 import Home from './components/Home';
 import Register from './components/Register';
@@ -30,7 +31,7 @@ function App() {
         <Route exact path="/editservice/:id" component={NewService} />
         <Route exact path="/recoveringpassword" component={RecoverPass} />
         <Route exact path="/chat-menu" component={ChatMenu} />
-        <Route exact path="/chat" component={Chat} />
+        <Route exact path="/chat/:roomid" component={Chat} />
         <Route exact path="/" component={Home} />
       </BrowserRouter>      
       // <NewService></NewService>

@@ -38,7 +38,8 @@ class MyProfile extends Component{
       sucesMessage: "",
       url: "https://hifive.es/hifive-rest-api/public/userProfileImages/",
       progress: "",
-      progress_status: "none"
+      progress_status: "none",
+      change: ""
     }
   }
 
@@ -59,6 +60,12 @@ class MyProfile extends Component{
 
   async componentDidMount(){
     this.fetchInfoServices()
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    if (prevProps.location.status !== this.state.change) {
+      this.fetchInfoServices()
+    }
   }
 
   fetchInfoServices = async () => {
@@ -389,6 +396,8 @@ class MyProfile extends Component{
   }
 
   render(){
+
+    
 
     if (this.state.redirect) {
       return (<Redirect to="/" />)

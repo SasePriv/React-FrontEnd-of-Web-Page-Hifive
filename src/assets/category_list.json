@@ -31,10 +31,17 @@
             "number": 5
         },
         {
-            "title": "Otros",
+            "title": "Reparaciones",
             "path_image": "otros.jpg",
             "alt": "Imagen-Persona",
             "number": 6
+        },
+        {
+            "title": "Otros",
+            "path_image": "otros.jpg",
+            "alt": "Imagen-Persona",
+            "number": 7
         }
+        
     ]
 }

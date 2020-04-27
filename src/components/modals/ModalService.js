@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 import { isMobile } from 'react-device-detect';
+import { Redirect } from 'react-router-dom'
 import axios from 'axios'
 
 import '../styles/Modal.css';
 
-class Modal extends Component{
+class ModalService extends Component{
 
     constructor(props){
         super(props)
         this.state = {
             showButton: false,
-            currentSelect: ""
+            currentSelect: "",
+            redirect: false,
+            error: ""
         }
     }
 
@@ -27,16 +30,43 @@ class Modal extends Component{
         })
     }
 
+    handleActiServi = async () =>{
+
+        const service_id = this.props.serviceId
+    
+        try{
+          axios
+          .post('/servicesStatusChange', { service_id })
+          .then(res => {
+            if(res.data.response){
+                this.setState({
+                    redirect: true
+                })
+            //   this.fetchInfoServices()
+            }else{
+              this.setState({
+                error: res.message
+              })
+            }
+          })
+        }catch(error){
+          console.log(error)
+        }
+      }
+
     handleButtonAction = async () =>{
         if(this.state.currentSelect == 1){
-            console.log("Desactivar")
+            this.handleActiServi()
+            this.setState({
+                redirect: true
+            })
         }else{
             try{
                 await axios
                 .post(`/removedServices/${this.props.serviceId}`)
                 .then(res => {
                     if (res.data.response) {
-                        console.log(res)
+                        console.log("eliminado")
                     }
                 })
             }catch(error){
@@ -64,10 +94,21 @@ class Modal extends Component{
                     console.log(error)
                 }
             }
+            this.setState({
+                redirect: true
+            })
         }
     }
 
     render(){
+
+        if (this.state.redirect) {
+            return (<Redirect to={{
+                pathname: "/myprofile/",
+                state: {status: Math.random()}
+            }} />)
+        }
+
         return (
             <div>
                 <div className="modal-wrapper"
@@ -103,4 +144,4 @@ class Modal extends Component{
     }
 }
 
-export default Modal;
+export default ModalService;
