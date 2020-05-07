@@ -6,6 +6,7 @@ import diploma from '../assets/svg/diploma.svg'
 import relog from '../assets/svg/relog.svg'
 import smile from '../assets/svg/smile.svg'
 import axios from 'axios';
+import xIcon from '../assets/svg/x.svg'
 
 class Review extends Component{
     constructor(props){
@@ -89,7 +90,7 @@ class Review extends Component{
         e.preventDefault()
 
         let newData
-        let formData = new FormData
+        let formData = new FormData()
         formData.append("service_id", this.state.service_id)
         formData.append("user_id", this.state.user_id)
         formData.append("kindness", this.state.formReview.kindness)
@@ -108,13 +109,20 @@ class Review extends Component{
         this.props.onSubmitEvent(newData)
     }
 
+    clickCloseX = () =>{
+        this.props.closeReview()
+    }
+
 
     render(){ 
         return(
             <div className="d-flex fondo tamaño-window">
+                <div onClick={this.clickCloseX} className="xSalir">
+                    <img src={xIcon} alt="xSalir"  />
+                </div>
                 <div className="flex-column carta">
                     <div className="p-2 sin-padding">
-                        <img src={require('../assets/img/fondo-review.jpg')}></img>
+                        <img alt="reviewFondo" src={require('../assets/img/fondo-review.jpg')}></img>
                     </div>
                     <form onSubmit={this.handleSubmit} className="p-2 card-style">
                         <div className="d-flex flex-row">

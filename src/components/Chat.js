@@ -371,9 +371,9 @@ class Chat extends Component{
         if (mes.sender_id == this.state.user_id) {
             if (review[0]) {
                 return(
-                <React.Fragment>
+                <React.Fragment key={mes.id}>
                 {this.handleTimeMessage(mes)}
-                <div className="p-2 flex-row-reverse mt-3 mt-1 mr-1 review-user-right">                    
+                <div  className="p-2 flex-row-reverse mt-3 mt-1 mr-1 review-user-right">                    
                     <div className="d-flex event-box1 review-box1 event-font ">
                         <img alt="estrella" src={startReview} />
                         <div>Valoración</div>
@@ -387,9 +387,9 @@ class Chat extends Component{
                 )
             }else{
                 return(
-                <React.Fragment>
+                <React.Fragment key={mes.id}>
                 {this.handleTimeMessage(mes)}
-                <div className="p-2 flex-row-reverse mt-3 mt-1 mr-1 review-user-right">                    
+                <div key={mes.id} className="p-2 flex-row-reverse mt-3 mt-1 mr-1 review-user-right">                    
                     <div className="d-flex event-box1 review-box1 event-font ">
                         <img alt="estrella" src={startReview} />
                         <div>Valoración</div>
@@ -405,9 +405,9 @@ class Chat extends Component{
         }else{
             if (review[0]) {
                 return(
-                <React.Fragment>
+                <React.Fragment key={mes.id}>
                 {this.handleTimeMessage(mes)}
-                <div className="p-2 flex-row-reverse mt-3 mt-1 mr-1 ml-1">                    
+                <div  className="p-2 flex-row-reverse mt-3 mt-1 mr-1 ml-1">                    
                     <div className="d-flex event-box1 review-box1 event-font ">
                         <img alt="estrella" src={startReview} />
                         <div>Valoración</div>
@@ -420,9 +420,9 @@ class Chat extends Component{
                 )
             }else{
                 return(
-                <React.Fragment>
+                <React.Fragment key={mes.id}>
                 {this.handleTimeMessage(mes)}                    
-                <div className="p-2 flex-row-reverse mt-3 mt-1 mr-1 ml-1">                    
+                <div  className="p-2 flex-row-reverse mt-3 mt-1 mr-1 ml-1">                    
                     <div className="d-flex event-box1 review-box1 event-font ">
                         <img alt="estrella" src={startReview} />
                         <div>Valoración</div>
@@ -464,7 +464,7 @@ class Chat extends Component{
         if (mess.sender_id == this.state.user_id) {
             if (status == "active") {
                 return( 
-                    <div className="p-2 flex-row-reverse mt-3 mt-1 mr-1 event-azul" key={mess.id}>
+                    <div key={mess.id} className="p-2 flex-row-reverse mt-3 mt-1 mr-1 event-azul" >
                         <div className="d-flex event-box1 event-font event-azul-fondo">
                             <img alt="evento 1" src={event_one}></img>
                             <div>Evento Pendiente</div>
@@ -475,7 +475,7 @@ class Chat extends Component{
                 )
             }else if (status == "accepted"){
                 return(
-                    <div className="p-2 flex-row-reverse mt-3 mt-1 mr-1 event-azul" key={mess.id}>
+                    <div key={mess.id} className="p-2 flex-row-reverse mt-3 mt-1 mr-1 event-azul" >
                         <div className="d-flex event-box1 event-font event-azul-fondo">
                             <img alt="evento 1" src={event_two}></img>
                             <div>Evento Confirmado</div>
@@ -486,7 +486,7 @@ class Chat extends Component{
                 )
             }else if (status == "rejected"){
                 return(
-                    <div className="p-2 flex-row-reverse mt-3 mt-1 mr-1 event-azul" key={mess.id}>
+                    <div key={mess.id} className="p-2 flex-row-reverse mt-3 mt-1 mr-1 event-azul" >
                         <div className="d-flex event-box1 event-font event-azul-fondo">
                             <img alt="evento 1" src={event_three}></img>
                             <div>Evento Cancelado</div>
@@ -498,7 +498,7 @@ class Chat extends Component{
         }else{
             if (status == "active") {
                 return(
-                    <div className="p-2 flex-row mt-3 mt-1 ml-1" key={mess.id}>
+                    <div key={mess.id} className="p-2 flex-row mt-3 mt-1 ml-1" >
                         <div className="d-flex event-box1 event-font">
                             <img alt="evento 1" src={event_one}></img>
                             <div>Evento Pendiente</div>
@@ -509,7 +509,7 @@ class Chat extends Component{
                 )
             }else if (status == "accepted"){
                 return(
-                    <div className="p-2 flex-row mt-3 mt-1 ml-1" key={mess.id}>
+                    <div key={mess.id} className="p-2 flex-row mt-3 mt-1 ml-1" >
                         <div className="d-flex event-box1 event-font">
                             <img alt="evento 1" src={event_two}></img>
                             <div>Evento Confirmado</div>
@@ -520,7 +520,7 @@ class Chat extends Component{
                 )
             }else if (status == "rejected"){
                 return(
-                    <div className="p-2 flex-row mt-3 mt-1 ml-1" key={mess.id}>
+                    <div key={mess.id} className="p-2 flex-row mt-3 mt-1 ml-1" >
                         <div className="d-flex event-box1 event-font">
                             <img alt="evento 1" src={event_three}></img>
                             <div>Evento Cancelado</div>
@@ -674,6 +674,18 @@ class Chat extends Component{
         })
     }
 
+    handleCloseEvent = () =>{
+        this.setState({
+            eventStatus: false
+        })
+    }
+
+    handleCloseReview = () =>{
+        this.setState({
+            reviewStatus: false
+        })
+    }
+
     submitEvent = async (dateStart, hourStart, hourfisnish, timeZone) =>{
         this.setState({
             eventStatus: false
@@ -820,12 +832,14 @@ class Chat extends Component{
         }
     }
 
+
     render(){
         
         if (this.state.eventStatus) {
             return (
                 <NewEvent 
                     subEvent={this.submitEvent}
+                    closeEvent={this.handleCloseEvent}
                 />
             )
         }
@@ -839,6 +853,7 @@ class Chat extends Component{
                     formReview={this.state.formReview}
                     modi={this.state.reviewModifi}
                     onSubmitEvent={this.handleSubmitReview}
+                    closeReview={this.handleCloseReview}
                 />
             )
         }

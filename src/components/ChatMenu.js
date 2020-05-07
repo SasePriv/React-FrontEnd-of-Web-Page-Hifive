@@ -20,7 +20,7 @@ class ChatMenu extends Component{
             chatPro: null,
             chatCus: null,
             redirect: false,
-            url: "https://hifive.es/hifive-rest-api/public/userProfileImages/"
+            url: "https://3.9.241.37/hifive-rest-api/public/userProfileImages/"
         }
     }
 

@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import React, {Component} from 'react';
 import axios from 'axios'
 import {Redirect } from 'react-router-dom'
@@ -85,13 +86,13 @@ class RecoverPass extends Component{
                 <div className="flex-column">
                     <div className="p-2 centrar-text centrar texto-desing" id="titulo-header">Restablecer contraseña</div>
                     <div className="p-2">                    
-                     <img className="centrar" id="imagen-logo" src={loginImg}></img>
+                     <img className="centrar" alt="logo" id="imagen-logo" src={loginImg}></img>
                     </div>
                    <form onSubmit={this.handleSubmit} className="p-2 customCheckbox">
                         <div className="form-group">    
                             <fieldset id="contra" className="border scheduler-border ancho">
                                 <input onChange={this.handleChange} name="email" value={this.state.form.email} className="texto-desing mar-t" type="email" id="email" placeholder="Email"></input>
-                                <img className="icon-input recover-input"src={emailImg}></img>
+                                <img className="icon-input recover-input" alt="iconinput" src={emailImg}></img>
                             </fieldset>
                         </div>
                         {this.handleError()}

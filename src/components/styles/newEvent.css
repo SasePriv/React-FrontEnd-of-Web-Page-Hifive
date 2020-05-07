@@ -127,3 +127,21 @@
     line-height: 27px;
     color: #000000;
 }
+
+.xSalir{
+    position: absolute;
+    width: 76px;
+    height: 60px;    
+    top: 36px;
+    margin-left: 400px;
+    background: #FFFFFF;
+    border-radius: 50px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.xSalir img{
+    width: 30px;
+    height: 30px;
+    margin-top: 14px;
+}

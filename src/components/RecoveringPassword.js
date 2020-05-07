@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import React, {Component} from 'react';
 import {Redirect, Link} from 'react-router-dom'
 import axios from 'axios'
@@ -50,7 +51,7 @@ class RecoveringPassword extends Component{
     handleSubmit = async (e) =>{
         e.preventDefault()
         
-        let formData = new FormData
+        let formData = new FormData()
         formData.append("token",this.state.token)
         formData.append("password", this.state.password)
 
@@ -154,14 +155,14 @@ class RecoveringPassword extends Component{
                     <div className="p-2 centrar-text centrar texto-desing" id="titulo-header">Restablecer contraseña</div>
                     <Link to="/">
                         <div className="p-2">                    
-                        <img className="centrar" id="imagen-logo" src={loginImg}></img>
+                        <img className="centrar" alt="login" id="imagen-logo" src={loginImg}></img>
                         </div>
                     </Link>
                    <form onSubmit={this.handleSubmit} className="p-2 customCheckbox" style={this.state.status ? {display: "none"} : null}>
                         <div className="form-group">    
                             <fieldset id="contra" className="border scheduler-border ancho">
                                 <input onChange={this.handleChange} className="texto-desing mar-t" value={this.state.password} name="password" type="password" id="pass" placeholder="Nueva contraseña"></input>
-                                <img className="icon-input recover-input"src={passImg}></img>
+                                <img className="icon-input recover-input" alt="passwordIcon" src={passImg}></img>
                             </fieldset>
                             <div className="error-message mb-2">{this.state.passError}</div>
                         </div>

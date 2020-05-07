@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import React, {Component} from 'react';
 import {Redirect} from 'react-router-dom'
 import './styles/register.css'
@@ -105,8 +106,6 @@ class Mypersonalinfo extends Component{
                         this.setState({
                             redirect: true
                         })
-                        console.log(res.data)
-                        console.log(user_id + " 3")
                         user_id = res.data.data.id  
                         this.handleBirthDay(user_id, date_birth)                             
                     }else{
@@ -192,13 +191,13 @@ class Mypersonalinfo extends Component{
                 <div className="flex-column">
                     <div className="p-2 centrar-text centrar texto-desing" id="titulo-header">Mis datos</div>
                     <div className="p-2">                    
-                     <img className="centrar" id="imagen-logo" src={loginImg}></img>
+                     <img className="centrar" alt="loginImg" id="imagen-logo" src={loginImg}></img>
                     </div>
                    <form onSubmit={this.handleSubmit} className="p-2">
                         <div className="form-group">    
                             <fieldset id="contra" className="border scheduler-border ancho">
                                 <input onChange={this.handleChange} value={this.state.form.name} name="name" className="texto-desing mar-t campos" type="text" id="name" placeholder="Nombre y apellidos"></input>
-                                <img className="icon-input recover-input"src={usuarioImg}></img>
+                                <img className="icon-input recover-input" alt="usuario" src={usuarioImg}></img>
                             </fieldset>
                         </div>
                         <div className="error-message mb-2">{this.state.nameError}</div>
@@ -210,6 +209,7 @@ class Mypersonalinfo extends Component{
                                     id="photo-perfil" 
                                     className={this.state.form.file != null ? "circule-file icon-input recover-input " : "icon-input recover-input"}
                                     src={this.state.form.file != null ? this.state.form.file_url : fotoPerfil}
+                                    alt="perfil"
                                 />
                             </fieldset>
                         </div>
@@ -217,7 +217,7 @@ class Mypersonalinfo extends Component{
                         <div className="form-group">    
                             <fieldset id="contra" className="border scheduler-border ancho">
                                 <input onChange={this.handleChange} value={this.state.form.date_birth} name="date_birth" className="texto-desing mar-t campos" type="number" min="1945" max="2019" id="year" placeholder="Año de nacimiento"></input>
-                                <img className="icon-input recover-input"src={torta}></img>
+                                <img alt="torta" className="icon-input recover-input"src={torta}></img>
                             </fieldset>
                         </div>
                         <div className="error-message mb-2">{this.state.dateError}</div>

@@ -21,7 +21,7 @@ class Home extends Component{
       error: null,
       latitude: '',
       longitude: '',
-      url: "https://hifive.es/hifive-rest-api/public/serviceImages/",
+      url: "http://3.9.241.37/hifive-rest-api/public/serviceImages/",
       catego: {
         selectItem: undefined,
         opcion: 0

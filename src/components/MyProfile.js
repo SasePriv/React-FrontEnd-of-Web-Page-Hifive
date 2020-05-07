@@ -1,5 +1,6 @@
+/* eslint-disable eqeqeq */
 import React, {Component} from 'react';
-import { FaEllipsisV, FaRegHandScissors } from 'react-icons/fa';
+import { FaEllipsisV } from 'react-icons/fa';
 import Rating from 'react-star-review';
 import { IoIosHeart } from 'react-icons/io';
 import { calculateAge } from './functions/calculateAge'
@@ -129,7 +130,7 @@ class MyProfile extends Component{
   }
 
   handleUploadImage = async () =>{
-    let data = new FormData
+    let data = new FormData()
 
     const file = this.state.file
     const user_id = this.state.user_id

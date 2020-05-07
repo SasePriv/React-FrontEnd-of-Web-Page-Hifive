@@ -1,10 +1,11 @@
+/* eslint-disable eqeqeq */
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom'
 import './styles/review.css'
 import './styles/newEvent.css'
 import 'react-calendar/dist/Calendar.css';
 import Calendar from 'react-calendar';
 import Picker from '../../node_modules/pickerjs/dist/picker.js'
+import xIcon from '../assets/svg/x.svg'
 import '../../node_modules/pickerjs/dist/picker.css'
 
 
@@ -12,7 +13,7 @@ class NewEvent extends Component{
     constructor(){
         super();
         this.state = {
-            date: new Date,
+            date: new Date(),
             formatDate: "",
             calenderStatus: false,
             horaStatus: false,
@@ -65,6 +66,10 @@ class NewEvent extends Component{
         }
     }
 
+    changeDefault = (e) =>{
+        const valure = e.target
+    }
+
     generadorInputs = () =>{
         if(this.state.inputsStatus){
             return(
@@ -75,11 +80,11 @@ class NewEvent extends Component{
                         </div>
                     </div>
                     <div className="d-flex flex-row boton-sepa-iz">
-                        <input onClick={this.handleClickDay} value={this.state.formatDate} className="boton-inside-evento" type="text" className="comentario" placeholder="Seleciones el día"></input>
+                        <input onClick={this.handleClickDay} value={this.state.formatDate} onChange={this.changeDefault} className="boton-inside-evento comentario" type="text" placeholder="Seleciones el día"></input>
                     </div>        
                     <div className="error-message mb-2 ml-5">{this.state.timeError}</div>            
                     <div className="d-flex flex-row boton-sepa-iz">
-                        <input onMouseEnter={this.handleClickHour} on ref={this.timeHour} className="boton-inside-evento" type="text" className="comentario hora-ev" placeholder="Selecione la hora"></input>
+                        <input onMouseEnter={this.handleClickHour} on="true" ref={this.timeHour} className="boton-inside-evento comentario hora-ev" type="text" placeholder="Selecione la hora"></input>
                     </div> 
                     <div className="error-message mb-2 ml-5">{this.state.hourError}</div>
                     <div className="sepa-iz me-eve hora-input">Se os enviará un recordatorio a ambos un día y una hora antes del evento</div>
@@ -180,12 +185,19 @@ class NewEvent extends Component{
         return [year, month, day].join('-');
     }
     
+    clickCloseX = () =>{
+        this.props.closeEvent()
+    }
+
     render(){ 
         return(
             <div className="d-flex fondo tamaño-window">
+                <div onClick={this.clickCloseX} className="xSalir">
+                    <img src={xIcon} alt="xSalir"  />
+                </div>
                 <div className="flex-column carta" >
                     <div className="p-2 sin-padding">
-                        <img src={require('../assets/img/image11.jpg')}></img>
+                        <img alt="relog" src={require('../assets/img/image11.jpg')}></img>
                     </div>
                     <div className="p-2 card-style afuera bajar">
                         <div className="d-flex flex-row">

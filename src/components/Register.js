@@ -7,6 +7,8 @@ import emailImg from '../assets/svg/email-icon.svg'
 import passImg from '../assets/svg/pass.svg'
 import { Link, Redirect } from 'react-router-dom'
 import axios from 'axios'
+import ArrowBack from './ArrowBack'
+import { GoogleLogin } from 'react-google-login';
 
 class Register extends Component{
     constructor(){
@@ -226,6 +228,10 @@ class Register extends Component{
         }
     }
 
+    arrowBackButton = () =>{
+        this.props.history.goBack()
+    }
+
     handleEmail(){
         if (!this.state.opcion) {
             return(
@@ -267,13 +273,36 @@ class Register extends Component{
                 <div>
                     <div className="form-check p-out pa-right">
                             <input type="checkbox" className="desing-check" id="checkbox1"></input>
-                            <label className="texto-desing" id="terminos" for="checkbox1">Acepto los <span>términos y condiciones</span> y la <span>politica de privacidad</span></label>
+                            <label className="texto-desing" id="terminos" htmlFor="checkbox1">Acepto los <span>términos y condiciones</span> y la <span>politica de privacidad</span></label>
                     </div>
                     <Link to="/login">
                         <div className="texto-desing texto-inicio">¿Ya tienes cuenta? Inicia sesión</div>
                     </Link>
                 </div>
             )
+        }
+    }
+
+    responseGoogle = async (response) =>{        
+        let formData = new FormData()
+        formData.append("id_type", "google")
+        formData.append("social_id", response.profileObj.googleId)
+        formData.append("email", response.profileObj.email)
+        formData.append("name", response.profileObj.name)
+
+        try {
+            await axios
+            .post("/social_site_login", formData)
+            .then(res => {
+                if (res.data.response) {
+                    sessionStorage.setItem('userData', JSON.stringify(res.data.data))
+                    this.setState({
+                        redirect: true
+                    })
+                }
+            })
+        } catch (error) {
+            console.log(error)
         }
     }
 
@@ -292,6 +321,7 @@ class Register extends Component{
 
         return(
             <div className="d-flex justify-content-center p-out">
+                <div className="arrowLogin " onClick={this.arrowBackButton}><ArrowBack /></div>
                 <div className="flex-column">
                     <div className="p-2 centrar-text centrar texto-desing" id="titulo-header">Crear Cuenta</div>
                     <Link to="/">
@@ -300,9 +330,19 @@ class Register extends Component{
                     </div>
                     </Link>
                    <div className="p-2 customCheckbox">
-                        <div className="form-group">    
-                            <button className="desing buton-centro" style={{border: '1px solid #000'}}><img alt="google" src={require("../assets/img/google-icon.png")}></img><p>Continuar con Google</p></button>
-                        </div>
+                        <GoogleLogin
+                            clientId="358457156007-t7lf5979glqc17tvburi2gj95u5orao9.apps.googleusercontent.com"
+                            render={renderProps => (
+                                <div className="form-group">    
+                                    <button className="desing buton-centro"  onClick={renderProps.onClick} disabled={renderProps.disabled} style={{border: '1px solid #000'}}><img alt="google" src={require("../assets/img/google-icon.png")}></img><p>Continuar con Google</p></button>
+                                </div>
+                            )}
+                            buttonText="Login"
+                            onSuccess={this.responseGoogle}
+                            onFailure={this.responseGoogle}
+                            cookiePolicy={'single_host_origin'}
+                        />
+                                                                           
                         <div className="form-group">
                             <button className="desing buton-centro" style={this.handleEmailStyle()} onClick={(x) => this.changeBoolean(x)}><img id="email-icon" alt="email" style={this.handleEmailStyleImg()} src={emailImg}></img><p>Continuar con Email</p></button>
                         </div>

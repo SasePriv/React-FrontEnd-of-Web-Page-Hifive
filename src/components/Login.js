@@ -1,6 +1,9 @@
+/* eslint-disable eqeqeq */
 import React, {Component} from 'react';
 import axios from 'axios'
 import {Redirect, Link} from 'react-router-dom'
+import { GoogleLogin } from 'react-google-login';
+import ArrowBack from './ArrowBack'
 import './styles/register.css'
 import './styles/Login.css'
 import loginImg from '../assets/svg/logo_vec.svg';
@@ -66,6 +69,29 @@ class Login extends Component{
                 })
             }
         })
+    }
+
+    responseGoogle = async (response) =>{        
+        let formData = new FormData()
+        formData.append("id_type", "google")
+        formData.append("social_id", response.profileObj.googleId)
+        formData.append("email", response.profileObj.email)
+        formData.append("name", response.profileObj.name)
+
+        try {
+            await axios
+            .post("/social_site_login", formData)
+            .then(res => {
+                if (res.data.response) {
+                    sessionStorage.setItem('userData', JSON.stringify(res.data.data))
+                    this.setState({
+                        redirect: true
+                    })
+                }
+            })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     handleError = (codigo, mess, place) => {
@@ -136,7 +162,7 @@ class Login extends Component{
                         <fieldset className={"border scheduler-border "+ this.handleError(3,"", 0)}>
                             <legend className="w-auto texto-desing">Email</legend>
                             <input className="texto-desing" type="email" id="email" name="email" placeholder="Correo" value={this.state.form.email} onChange={this.onChange}></input>
-                            <img className="icon-input"src={emailImg}></img>
+                            <img className="icon-input" alt="email" src={emailImg}></img>
                         </fieldset>
                         {this.handleError(3, "Email Incorrecto", 1)}
                         {this.handleError(1, "Por favor verifique el correo", 1)}
@@ -144,7 +170,7 @@ class Login extends Component{
                     <div className="form-group">
                         <fieldset id="contra" className={"border scheduler-border "+ this.handleError(2,"", 0)}>
                             <input className="texto-desing mar-t" type="password" id="pass" name="password" placeholder="Contraseña"  value={this.state.form.password} onChange={this.onChange}></input>
-                            <img className="icon-input mar-t" id="icon-pass" src={passImg}></img>
+                            <img className="icon-input mar-t" alt="password" id="icon-pass" src={passImg}></img>
                         </fieldset>
                         {this.handleError(2, "Contraseña Incorrecta", 1)}
                     </div>
@@ -185,25 +211,39 @@ class Login extends Component{
         }
     }
 
+    arrowBackButton = () =>{
+        this.props.history.goBack()
+    }
+
     render(){ 
         if (this.state.redirect) {
             return (<Redirect to="/" />)
         }
         return(
             <div className="d-flex justify-content-center p-out">
+                <div className="arrowLogin " onClick={this.arrowBackButton}><ArrowBack /></div>
                 <div className="flex-column">
                     <div className="p-2 centrar-text centrar texto-desing" id="titulo-header">Iniciar sesión</div>
                     <Link to="/">
                         <div className="p-2">                    
-                        <img className="centrar" id="imagen-logo" src={loginImg}></img>
+                        <img className="centrar" alt="login" id="imagen-logo" src={loginImg}></img>
                         </div>
                     </Link>
                    <form className="p-2 customCheckbox" onSubmit={this.handlesubmit}>
-                        <div className="form-group">    
-                            <button className="desing buton-centro" style={{border: '1px solid #000'}}><img src={require("../assets/img/google-icon.png")}></img><p>Continuar con Google</p></button>
-                        </div>
+                        <GoogleLogin
+                            clientId="358457156007-t7lf5979glqc17tvburi2gj95u5orao9.apps.googleusercontent.com"
+                            render={renderProps => (
+                                <div className="form-group">    
+                                    <button className="desing buton-centro"  onClick={renderProps.onClick} disabled={renderProps.disabled} style={{border: '1px solid #000'}}><img alt="google" src={require("../assets/img/google-icon.png")}></img><p>Continuar con Google</p></button>
+                                </div>
+                            )}
+                            buttonText="Login"
+                            onSuccess={this.responseGoogle}
+                            onFailure={this.responseGoogle}
+                            cookiePolicy={'single_host_origin'}
+                        />
                         <div className="form-group tocar">
-                            <div className="desing buton-centro" style={this.handleEmailStyle()} onClick={(x) => this.changeBoolean(x)}><img id="email-icon" style={this.handleEmailStyleImg()} src={emailImg}></img><p>Continuar con Email</p></div>
+                            <div className="desing buton-centro" style={this.handleEmailStyle()} onClick={(x) => this.changeBoolean(x)}><img id="email-icon" alt="email" style={this.handleEmailStyleImg()} src={emailImg}></img><p>Continuar con Email</p></div>
                         </div>
                         {this.handleEmail()}
                         {this.handleInfo()}
