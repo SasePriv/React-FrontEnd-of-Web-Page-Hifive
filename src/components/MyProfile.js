@@ -37,7 +37,7 @@ class MyProfile extends Component{
       },
       editShowing: false,
       sucesMessage: "",
-      url: "https://hifive.es/hifive-rest-api/public/userProfileImages/",
+      url: "https://ec2-35-178-169-125.eu-west-2.compute.amazonaws.com/hifive-rest-api/public/userProfileImages/",
       progress: "",
       progress_status: "none",
       change_status: true,       

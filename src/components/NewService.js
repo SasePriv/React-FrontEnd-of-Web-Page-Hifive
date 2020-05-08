@@ -100,7 +100,7 @@ class NewService extends Component{
             redirect: false,
             redirecToView: false,
             createServiceId: "",
-            urlService: "https://hifive.es/hifive-rest-api/public/serviceImages/",
+            urlService: "https://ec2-35-178-169-125.eu-west-2.compute.amazonaws.com/hifive-rest-api/public/serviceImages/",
         }
 
         this.fetchInfoServices = this.fetchInfoServices.bind(this)
