@@ -21,7 +21,7 @@ class Home extends Component{
       error: null,
       latitude: '',
       longitude: '',
-      url: "http://ec2-35-178-169-125.eu-west-2.compute.amazonaws.com/hifive-rest-api/public/serviceImages/",
+      url: "http://ec2-3-10-139-219.eu-west-2.compute.amazonaws.com/hifive-rest-api/public/serviceImages/",
       catego: {
         selectItem: undefined,
         opcion: 0

@@ -20,7 +20,7 @@ class ChatMenu extends Component{
             chatPro: null,
             chatCus: null,
             redirect: false,
-            url: "https://ec2-35-178-169-125.eu-west-2.compute.amazonaws.com/hifive-rest-api/public/userProfileImages/"
+            url: "https://ec2-3-10-139-219.eu-west-2.compute.amazonaws.com/hifive-rest-api/public/userProfileImages/"
         }
     }
 
