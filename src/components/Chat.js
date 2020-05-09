@@ -22,7 +22,7 @@ class Chat extends Component{
     constructor(props){
         super(props);
         this.textarea1 = React.createRef();
-        this.socket = io.connect('http://ec2-3-10-139-219.eu-west-2.compute.amazonaws.com:3007');
+        this.socket = io.connect('http://3.8.170.106:3007');
         this.state = {
             user_id: "",
             to_user_id: "",
